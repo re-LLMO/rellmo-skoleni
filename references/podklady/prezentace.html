@@ -392,6 +392,11 @@ html.anim .slide.in .r-children>*:nth-child(6){transition-delay:.5s}
 .slide.grad .dim{color:rgba(255,255,255,.78)}
 .slide.grad .statement{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
 .slide.divider .who,.slide.divider .who b,.slide.grad .who,.slide.grad .who b{color:rgba(255,255,255,.88)}
+/* presenter: zrcadlo v iframe bez navigace */
+html.mirror .progress,html.mirror .dots,html.mirror .counter,html.mirror .hint{display:none}
+html.mirror{scroll-behavior:auto}
+html.mirror .deck{scroll-behavior:auto;scroll-snap-type:none}
+html.past-end .deck{opacity:0}
 </style>
 </head>
 <body>
@@ -3032,14 +3037,71 @@ Plánovač úloh       # Windows</div>
 </div>
 <script>
 (function(){
-  // Reveal animace jen když je tab viditelný a bez reduce-motion (jinak fail-open: obsah rovnou vidět).
-  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(!document.hidden && !rm){document.documentElement.classList.add('anim');}
+  // ---- role stránky -------------------------------------------------------
+  // index.html            → živý deck (to, co je na projektoru)
+  // index.html#view=current → zrcadlo aktuálního slidu (běží v presenter.html)
+  // index.html#view=next    → zrcadlo následujícího slidu
+  var params = new URLSearchParams(location.hash.replace(/^#/,''));
+  var view   = params.get('view');
+  var mirror = (view === 'current' || view === 'next');
+  var offset = (view === 'next') ? 1 : 0;
+
   var deck=document.getElementById('deck');
   var slides=Array.prototype.slice.call(deck.querySelectorAll('.slide'));
   var dotsWrap=document.getElementById('dots');
-  var cur=document.getElementById('cur'), tot=document.getElementById('tot'), prog=document.getElementById('progress'), hint=document.getElementById('hint');
+  var cur=document.getElementById('cur'), tot=document.getElementById('tot');
+  var prog=document.getElementById('progress'), hint=document.getElementById('hint');
   tot.textContent=slides.length;
+
+  // Reveal animace jen v živém decku, když je tab viditelný a bez reduce-motion.
+  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!mirror && !document.hidden && !rm){document.documentElement.classList.add('anim');}
+
+  // ---- kanál mezi okny ----------------------------------------------------
+  // BroadcastChannel funguje i na file://, takže presenter view nepotřebuje server.
+  var ch=null;
+  try{ ch=new BroadcastChannel('rellmo-deck'); }catch(e){}
+
+  // Popisek slidu bereme z HTML komentáře nad ním; poznámky z data-notes.
+  function meta(i){
+    var s=slides[i]; if(!s) return {label:'',notes:''};
+    var n=s.previousSibling, label='';
+    while(n && n.nodeType!==8 && n.nodeType!==1){ n=n.previousSibling; }
+    if(n && n.nodeType===8) label=n.textContent.trim();
+    return {label:label, notes:s.getAttribute('data-notes')||''};
+  }
+
+  function scrollTo(i, smooth){
+    i=Math.max(0,Math.min(slides.length-1,i));
+    if(smooth){ slides[i].scrollIntoView({behavior:'smooth'}); }
+    else { deck.scrollTop += slides[i].getBoundingClientRect().top - deck.getBoundingClientRect().top; }
+  }
+
+  // ---- zrcadlo ------------------------------------------------------------
+  if(mirror){
+    document.documentElement.classList.add('mirror');
+    document.documentElement.classList.remove('anim');
+    slides.forEach(function(s){ s.classList.add('in'); });
+    deck.style.scrollBehavior='auto';
+    deck.style.scrollSnapType='none';
+    var shown=-1;
+    if(ch){
+      ch.onmessage=function(e){
+        var m=e.data||{};
+        if(m.type!=='state') return;
+        var i=m.i+offset;
+        if(i>slides.length-1){ document.documentElement.classList.add('past-end'); return; }
+        document.documentElement.classList.remove('past-end');
+        if(i===shown) return;
+        shown=i; scrollTo(i,false);
+      };
+      ch.postMessage({type:'ping'});          // ať živý deck hned pošle svůj stav
+    }
+    window.addEventListener('resize',function(){ if(shown>=0) scrollTo(shown,false); });
+    return;                                   // zrcadlo nic neovládá
+  }
+
+  // ---- živý deck ----------------------------------------------------------
   slides.forEach(function(s,i){
     var b=document.createElement('button'); b.setAttribute('aria-label','Slide '+(i+1));
     if(s.classList.contains('reference')){b.classList.add('ref');}
@@ -3048,12 +3110,21 @@ Plánovač úloh       # Windows</div>
   });
   var dots=Array.prototype.slice.call(dotsWrap.children);
   var current=0;
+
+  function broadcast(){
+    if(!ch) return;
+    var m=meta(current), nx=meta(current+1);
+    ch.postMessage({type:'state', i:current, total:slides.length,
+                    label:m.label, notes:m.notes, nextLabel:nx.label});
+  }
+
   function setActive(i){
     if(i===current && slides[i].classList.contains('in')) return;
     current=i;
     dots.forEach(function(d,j){d.classList.toggle('active',j===i);});
     cur.textContent=(i+1);
     prog.style.width=((i+1)/slides.length*100)+'%';
+    broadcast();
   }
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
@@ -3061,13 +3132,26 @@ Plánovač úloh       # Windows</div>
     });
   },{threshold:0.55});
   slides.forEach(function(s){io.observe(s);});
+
   function go(d){var n=Math.max(0,Math.min(slides.length-1,current+d));slides[n].scrollIntoView({behavior:'smooth'});}
   window.addEventListener('keydown',function(e){
     if(['ArrowDown','ArrowRight','PageDown',' '].indexOf(e.key)>-1){e.preventDefault();go(1);}
     else if(['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();go(-1);}
     else if(e.key==='Home'){e.preventDefault();slides[0].scrollIntoView({behavior:'smooth'});}
     else if(e.key==='End'){e.preventDefault();slides[slides.length-1].scrollIntoView({behavior:'smooth'});}
+    else if(e.key==='p'||e.key==='P'){ window.open('presenter.html','rellmo-presenter','width=1280,height=800'); }
   });
+
+  if(ch){
+    ch.onmessage=function(e){
+      var m=e.data||{};
+      if(m.type==='nav')  go(m.d);
+      else if(m.type==='goto') scrollTo(m.i,true);
+      else if(m.type==='ping') broadcast();
+    };
+  }
+  broadcast();
+
   var hidHint=false;
   deck.addEventListener('scroll',function(){if(!hidHint){hidHint=true;hint.style.opacity='0';}},{passive:true});
 })();
