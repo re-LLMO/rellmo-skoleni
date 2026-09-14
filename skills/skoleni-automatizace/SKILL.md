@@ -282,6 +282,14 @@ chce jen podívat na hotový tvar, sáhni po vzoru:
 cp -R "${CLAUDE_PLUGIN_ROOT}/assets/vzorovy-skill" "${CLAUDE_PROJECT_DIR}/.claude/skills/<jmeno>"
 ```
 
+Když je zadáním **dokument ve firemní značce** (report, prezentace,
+nabídka), ukaž ještě `${CLAUDE_PLUGIN_ROOT}/assets/vzorovy-brandkit/`:
+značka nepatří do skillu, ale do samostatné složky souborů (barvy, písmo,
+loga, `tokens.css`), na kterou skill jen odkazuje. Dnes stačí vyplnit
+`colors.md` a `typography.md` z toho, co má účastník v hlavě; zbytek podle
+návodu 19 doma, z manuálu. Skill pak říká „barvy a písmo viz
+`brandkit/tokens.css`", ne hex kódy v těle.
+
 Pak přejmenuj `name`, vyprázdni `description` na `<TODO>` (napíše ho sám v
 kroku 6) a nahraď tělo. Reference a assety značky, které ve vzoru zůstaly,
 smaž, pokud je skill nepotřebuje — jinak si bude tahat kontext, který k

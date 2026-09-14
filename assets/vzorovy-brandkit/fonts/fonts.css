@@ -1,0 +1,32 @@
+/*
+ * [Značka] — písmo k self-hostingu
+ *
+ * Soubory písma (woff2, případně ttf) ulož do téhle složky. Jeden @font-face
+ * na řez. Licenci písma ověř dřív, než ho sem dáš — komerční písma obvykle
+ * nedovolují sdílet soubory v repozitáři, pak sem patří jen tenhle CSS
+ * a soubory si každý doplní ze svého účtu.
+ */
+
+@font-face {
+  font-family: '[název]';
+  src: url('[nazev]-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: '[název]';
+  src: url('[nazev]-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: '[název]';
+  src: url('[nazev]-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}

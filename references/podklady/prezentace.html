@@ -395,7 +395,7 @@ html.anim .slide.in .r-children>*:nth-child(6){transition-delay:.5s}
 
 <div class="progress" id="progress"></div>
 <div class="dots" id="dots"></div>
-<div class="counter"><b id="cur">1</b> / <span id="tot">127</span></div>
+<div class="counter"><b id="cur">1</b> / <span id="tot">128</span></div>
 <div class="hint" id="hint">↓ / mezerník pro další</div>
 
 <div class="deck" id="deck">
@@ -2709,6 +2709,32 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</div>
     <p class="callout r">Takhle máme napojený Sklik i interní Allfred. Ani jeden hotový MCP server nenabízel.</p>
   </div>
   <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S3-12b · brandkit jako soubory -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · brandkit</div>
+    <h2 class="r">Značka jako soubory, které umí číst model</h2>
+    <p class="lead wide r">Brandkit není skill. Je to složka, na kterou skilly jen odkazují. Změní se logo, mění se jeden soubor.</p>
+    <div class="two top r-children">
+      <div class="code"><span class="c"># brandkit/</span>
+colors.md          <span class="c">paleta, co značka NENÍ</span>
+typography.md      <span class="c">písmo, poměry, řádkování</span>
+logo.md            <span class="c">varianty, ochranná zóna, zákazy</span>
+brand-identity.md  <span class="c">claim, tón, vzory stran</span>
+tokens.css         <span class="c">totéž jako CSS proměnné</span>
+corrections.md     <span class="c">co se změnilo po ověření</span>
+fonts/  logo/  examples/</div>
+      <ul class="bullets">
+        <li><b>Zdroj pravdy je manuál.</b> Každá hodnota má stranu, odkud je. Co v manuálu není, zůstává v závorkách.</li>
+        <li><b>První extrakce má chyby.</b> Barva z grafu v prezentaci skončí jako brand akcent. Ověřuje člověk, rozdíly jdou do corrections.md.</li>
+        <li><b>Ukázkový výstup drží víc než pravidla.</b> Skill říká: vyrob to jako examples/report.html, jen s jiným obsahem.</li>
+      </ul>
+    </div>
+    <p class="callout r">Vzor se strukturou máš v pluginu: assets/vzorovy-brandkit/, postup v návodu 19.</p>
+  </div>
+  <div class="source">náš brandkit Effectixu: 9 souborů, verifikovaný proti Visual Manualu 09/2024</div>
 </section>
 
 <!-- S3-13 · další zdroje dat -->

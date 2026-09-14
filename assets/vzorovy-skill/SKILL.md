@@ -50,6 +50,13 @@ ne popis, co skill umí.
 | [vstup] | [náhradní postup, ne odmítnutí] |
 | [přístup] | [na koho se obrátit, co jde udělat mezitím] |
 
+## Značka patří do brandkitu, ne sem
+
+Barvy, písmo, loga a pravidla drž v samostatné složce `brandkit/` (vzor
+`assets/vzorovy-brandkit/`, postup v návodu 19) a odsud na ni jen odkazuj:
+„barvy a písmo podle `brandkit/tokens.css`, logo z `brandkit/logo/`". Když
+se značka změní, mění se jeden soubor tam, ne každý skill.
+
 ## Co do tohohle souboru nepatří
 
 - **Dlouhé tabulky a metodika** → `references/`. Načtou se, až budou potřeba.

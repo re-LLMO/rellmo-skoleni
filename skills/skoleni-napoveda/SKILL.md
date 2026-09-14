@@ -78,6 +78,7 @@ soubory použij tuto mapu:
 | Skládat reporty z více zdrojů a mít brandkit jako skill | `16-reporty-z-vice-zdroju.md` |
 | Zorientovat se v agentních systémech (Hermes, Paperclip) | `17-agentni-systemy.md` |
 | Postavit další vlastní automatizaci v osmi krocích | `18-postup-vlastni-automatizace.md` |
+| Postavit brandkit — značku jako soubory pro model | `19-brandkit.md` |
 
 Pokud požadovaný soubor neexistuje, řekni to přesně. Neodkazuj na něj jako na
 dostupný návod a nenahrazuj chybějící obsah smyšleným postupem. Odpověz jen z

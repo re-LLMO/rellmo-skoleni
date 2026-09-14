@@ -1,0 +1,72 @@
+/*
+ * [Značka] — Design tokens (CSS proměnné)
+ *
+ * Zdroj pravdy je manuál; tenhle soubor je jeho strojově čitelná podoba.
+ * Hodnoty musí sedět s colors.md a typography.md — když se liší, platí
+ * manuál a oprava se zapíše do corrections.md.
+ *
+ * Použití v HTML dokumentu:
+ *   <link rel="stylesheet" href="tokens.css">
+ *   h1 { color: var(--color-primary); font-family: var(--font-sans); }
+ */
+
+@import url('fonts/fonts.css');
+
+:root {
+  /* ── Barvy — hlavní paleta ─────────────────────────── */
+  --color-primary:      #000000; /* [název] — dominantní barva značky */
+  --color-cta:          #000000; /* [název] — jen výzvy k akci */
+  --color-white:        #FFFFFF;
+
+  /* ── Barvy — vedlejší (jen grafy a grafika) ─────────── */
+  --color-secondary-1:  #000000;
+  --color-secondary-2:  #000000;
+
+  /* ── Barvy — rozhraní dokumentů ─────────────────────── */
+  --color-bg:           #FFFFFF;
+  --color-text:         #1A1A1A;
+  --color-muted:        #666666;
+  --color-border:       #E5E5E5;
+
+  /* ── Písmo ──────────────────────────────────────────── */
+  --font-sans: '[název]', Arial, sans-serif;
+  --font-mono: ui-monospace, Menlo, Consolas, monospace;
+
+  --fs-h1:   2.5rem;   /* [poměr nadpis : text = 5:2] */
+  --fs-h2:   1.5rem;   /* [poměr podnadpis : text = 3:2] */
+  --fs-h3:   1.25rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+
+  --lh-body:  1.5;     /* [závazné řádkování textu] */
+  --lh-tight: 1.15;
+
+  --ls-tight: -0.02em;
+  --ls-caps:   0.08em;
+
+  /* ── Rozestupy ──────────────────────────────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+
+  /* ── Zaoblení a stíny ───────────────────────────────── */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Tmavý režim — vyplň jen, když ho manuál řeší. Jinak blok smaž. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:     #111111;
+    --color-text:   #F2F2F2;
+    --color-muted:  #A0A0A0;
+    --color-border: #2A2A2A;
+  }
+}

@@ -48,6 +48,12 @@ skill, jaký si postavíš — a použije ho každý report i prezentace. Co kam
 
 Hotový tvar je ve vzorovém skillu v pluginu (`assets/vzorovy-skill/`).
 
+Skill ale nemá značku opisovat — má na ni odkazovat. Značka samotná
+(barvy, písmo, loga, pravidla, `tokens.css`) žije v **brandkitu**: složce
+souborů, kterou používá každý skill, report i prezentace. Jak si ho
+postavit z vlastního manuálu, je v návodu 19; vzor se strukturou je
+v `assets/vzorovy-brandkit/`.
+
 Výstupem bývá **samostatná HTML stránka** — otevře se v prohlížeči, dá se v
 ní hledat, a do mailu se převede na PDF (návod 12). Prezentace je totéž,
 jen víc stránek. Word nebo PowerPoint jde taky, ale HTML je nejméně práce a

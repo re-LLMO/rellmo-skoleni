@@ -1,6 +1,6 @@
 # Návody ze školení Claude Code pro markeťáky
 
-Osmnáct souborů, každý na jedno téma. Nemusíš je číst v pořadí — otevři ten,
+Devatenáct souborů, každý na jedno téma. Nemusíš je číst v pořadí — otevři ten,
 který zrovna potřebuješ. Nebo se rovnou zeptej: `/skoleni-napoveda`.
 
 | Soubor | Kdy ho otevřít |
@@ -23,6 +23,7 @@ který zrovna potřebuješ. Nebo se rovnou zeptej: `/skoleni-napoveda`.
 | `16-reporty-z-vice-zdroju.md` | Skládáš pravidelný report z více zdrojů a chceš ho ve firemní značce. |
 | `17-agentni-systemy.md` | Narazil jsi na Hermes, Paperclip a „agenty“ a chceš vědět, co to pro tebe znamená. |
 | `18-postup-vlastni-automatizace.md` | Chceš si postavit další automatizaci a chceš postup, ne inspiraci. |
+| `19-brandkit.md` | Chceš značku jako soubory, které umí číst model — barvy, písmo, logo, tokens.css. |
 
 ## Odkud to je
 
