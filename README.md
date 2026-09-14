@@ -10,7 +10,8 @@ kolegy. Po školení zůstává jako příručka. Je stejný pro každý běh š
 |---|---|
 | `/skoleni-start` | Založí pracovní složku, doinstaluje superpowers a skill-creator, ověří prostředí, zapíše nástroje účastníka |
 | `/skoleni-automatizace` | Provede stavbou vlastní automatizace v osmi krocích, včetně zabalení do pluginu a sdílení |
-| `/skoleni-napoveda` | Příručka: návody 01–18, prezentace, katalog automatizací, řešení problémů. Funguje i dlouho po školení |
+| `/skoleni-brandkit` | Postaví brandkit: vytěží logo, barvy a písma z webu a manuálu, ověří je s účastníkem, vyrobí tokens.css, ukázkový report a skill se značkou |
+| `/skoleni-napoveda` | Příručka: návody 01–19, prezentace, katalog automatizací, řešení problémů. Funguje i dlouho po školení |
 | `/skoleni-shrnuti` | Inventura dne a návrh jednoho opakovaně běžícího procesu |
 
 ## Instalace

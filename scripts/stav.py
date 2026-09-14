@@ -8,13 +8,14 @@ plugin naváže tam, kde se přestalo. Jen standardní knihovna.
 import json
 from pathlib import Path
 
-KROKY = ("start", "automatizace", "shrnuti")
+KROKY = ("start", "automatizace", "brandkit", "shrnuti")
 STAVY = ("nezacato", "hotovo", "ceka-na-prihlaseni",
          "jede-na-ukazkovych-datech", "blokovano", "preskoceno")
 
 POPIS_KROKU = {
     "start": "nastavení, pluginy a první report",
     "automatizace": "vlastní automatizace",
+    "brandkit": "brandkit a skill se značkou",
     "shrnuti": "shrnutí dne",
 }
 

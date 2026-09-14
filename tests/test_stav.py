@@ -45,7 +45,7 @@ def test_veta_hlasi_pocet_a_duvod_zablokovani():
     S.nastav_krok(s, "start", "hotovo")
     S.nastav_krok(s, "automatizace", "ceka-na-prihlaseni", "GitHub")
     v = S.veta(s)
-    assert "1 z 3" in v
+    assert "1 z 4" in v
     assert "GitHub" in v
 
 

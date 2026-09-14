@@ -31,12 +31,13 @@ plánovanou cestu za dostupný podklad.
 Soubory načítej až po určení tématu. Otevři jeden konkrétní soubor, ne celou
 složku.
 
-## Čtyři příkazy pluginu
+## Pět příkazů pluginu
 
 | Příkaz | Kdy |
 |---|---|
 | `/skoleni-start` | nastavení složky, pluginů a prostředí; jde spustit znovu na dalším počítači |
 | `/skoleni-automatizace` | stavba vlastní automatizace v osmi krocích; jde spustit znovu na další úkol |
+| `/skoleni-brandkit` | značka jako soubory: vytěží web a manuál, ověří s účastníkem, vyrobí tokens.css a skill se značkou |
 | `/skoleni-napoveda` | tenhle skill |
 | `/skoleni-shrnuti` | inventura toho, co ze školení vzniklo, a návrh opakovaného běhu |
 

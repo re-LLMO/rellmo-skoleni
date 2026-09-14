@@ -57,7 +57,7 @@ def test_skripty_pluginu_se_volaji_pres_promennou():
 
 
 OCEKAVANE = {
-    "skoleni-start", "skoleni-automatizace", "skoleni-napoveda", "skoleni-shrnuti",
+    "skoleni-start", "skoleni-automatizace", "skoleni-brandkit", "skoleni-napoveda", "skoleni-shrnuti",
 }
 
 

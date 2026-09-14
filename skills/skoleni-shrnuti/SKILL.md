@@ -11,24 +11,28 @@ metadata:
 
 # skoleni-shrnuti
 
-Závěr trvá přibližně čtyři minuty na účastníka. Projdi čtyři položky a u
+Závěr trvá přibližně čtyři minuty na účastníka. Projdi pět položek a u
 každé uveď skutečnou cestu nebo pravdivě řekni, že nevznikla.
 
 Používej stejná podstatná jména jako v ranním programu. Nevymýšlej artefakty,
 které ve stavu nebo na disku nejsou.
 
-## Čtyři položky
+## Pět položek
 
 1. **Připravené prostředí** — pracovní složka s `CLAUDE.md` a `.gitignore`,
    pluginy superpowers a skill-creator.
 2. **Vlastní automatizace** — skill (`SKILL.md`), případně zabalený plugin a
    odkaz na GitHub.
-3. **Návrh procesu**, který se bude spouštět opakovaně.
-4. **Co zůstává** — plugin školení s příručkou, superpowers a skill-creator,
+3. **Brandkit a skill se značkou** — složka `brandkit/` s `tokens.css`,
+   ukázkový report, skill, který na ni odkazuje (jen když účastník šel touhle
+   cestou; jinak řekni, že je to na doma podle návodu 19).
+4. **Návrh procesu**, který se bude spouštět opakovaně.
+5. **Co zůstává** — plugin školení s příručkou, superpowers a skill-creator,
    jeden plugin z katalogu re:LLMO zdarma podle vlastního výběru a 10 % na
    ostatní.
 
-Položka 3 vznikne až v kroku 3. Položky 1 a 2 hledej ve stavu. Položka 4 je
+Položka 4 vznikne až v kroku 3. Položky 1 až 3 hledej ve stavu (brandkit v
+`kroky["brandkit"]`). Položka 5 je
 pevný seznam; u pluginů řekni jen to, co dnešní průchod prokázal
 (`stav["kroky"]["start"]`), a plugin z katalogu neoznačuj jako
 nainstalovaný — vybírá si ho účastník sám po školení.
