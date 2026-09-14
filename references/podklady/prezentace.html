@@ -395,7 +395,7 @@ html.anim .slide.in .r-children>*:nth-child(6){transition-delay:.5s}
 
 <div class="progress" id="progress"></div>
 <div class="dots" id="dots"></div>
-<div class="counter"><b id="cur">1</b> / <span id="tot">129</span></div>
+<div class="counter"><b id="cur">1</b> / <span id="tot">128</span></div>
 <div class="hint" id="hint">↓ / mezerník pro další</div>
 
 <div class="deck" id="deck">
@@ -441,7 +441,7 @@ html.anim .slide.in .r-children>*:nth-child(6){transition-delay:.5s}
       <div class="card"><div class="ic">Blok 3</div><h3>Agregované reporty z různých služeb</h3><p>Search Console, GA4, reklamní účty. Skript stáhne a sečte, model napíše výklad.</p></div>
       <div class="card"><div class="ic">Blok 2</div><h3>Viditelnost v AI, AIO a AEO</h3><p>Audit viditelnosti v AI chatbotech rozebereme zevnitř.</p></div>
       <div class="card"><div class="ic">Blok 2</div><h3>Zjednodušit opakované úkoly, naučit se skilly</h3><p>Celý druhý blok. Postup v osmi krocích a cvičení.</p></div>
-      <div class="card"><div class="ic">Blok 2</div><h3>Reporty pro klienty, hlídání obrázků od dodavatele</h3><p>Oboje je skill. Rozdíl je jen v tom, odkud si bere data.</p></div>
+      <div class="card"><div class="ic">Blok 2</div><h3>Reporty pro klienty, hlídání obrázků od dodavatele</h3><p>Oboje je skill. Report začíná brandkitem — to je dnešní cvičení.</p></div>
       <div class="card"><div class="ic">Blok 2</div><h3>„Dělám prompty správně?"</h3><p>Otázka, na kterou má Blok 2 odpověď: prompt, který se má opakovat, patří do skillu.</p></div>
     </div>
   </div>
@@ -460,7 +460,7 @@ html.anim .slide.in .r-children>*:nth-child(6){transition-delay:.5s}
         <tr><td class="mono">9:00</td><td>0 · Start</td><td>instalace pluginu školení, <code>/skoleni-start</code></td></tr>
         <tr><td class="mono">9:25</td><td>1 · Jak to celé funguje</td><td>teorie a čtyři ukázky na plátně</td></tr>
         <tr><td class="mono">10:25</td><td>Pauza</td><td>&mdash;</td></tr>
-        <tr><td class="mono">10:40</td><td>2 · Vlastní automatizace</td><td>postup v osmi krocích, cvičení, zabalení a sdílení</td></tr>
+        <tr><td class="mono">10:40</td><td>2 · Vlastní automatizace</td><td>postup v osmi krocích, cvičení: brandkit z vlastního webu, zabalení a sdílení</td></tr>
         <tr><td class="mono">11:40</td><td>Pauza s občerstvením</td><td>&mdash;</td></tr>
         <tr><td class="mono">12:05</td><td>3 · Vlastní model, více zdrojů, výhled</td><td>klasifikátor záměru, reporty, agenti</td></tr>
         <tr><td class="mono">12:50</td><td>Závěr</td><td>co si odnášíš, první týden, zpětná vazba</td></tr>
@@ -2241,22 +2241,47 @@ reportu ji zahrň zvlášť.</div>
   </div>
 </section>
 
-<!-- S2-30 · cvičení: vlastní automatizace -->
+<!-- S2-30a · brandkit jako soubory -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · brandkit</div>
+    <h2 class="r">Značka jako soubory, které umí číst model</h2>
+    <p class="lead wide r">Brandkit není skill. Je to složka, na kterou skilly jen odkazují. Změní se logo, mění se jeden soubor.</p>
+    <div class="two top r-children">
+      <div class="code"><span class="c"># brandkit/</span>
+colors.md          <span class="c">paleta, co značka NENÍ</span>
+typography.md      <span class="c">písmo, poměry, řádkování</span>
+logo.md            <span class="c">varianty, ochranná zóna, zákazy</span>
+brand-identity.md  <span class="c">claim, tón, vzory stran</span>
+tokens.css         <span class="c">totéž jako CSS proměnné</span>
+corrections.md     <span class="c">co se změnilo po ověření</span>
+fonts/  logo/  examples/</div>
+      <ul class="bullets">
+        <li><b>Zdroj pravdy je manuál.</b> Každá hodnota má stranu, odkud je. Co v manuálu není, zůstává v závorkách.</li>
+        <li><b>První extrakce má chyby.</b> Barva z grafu v prezentaci skončí jako brand akcent. Ověřuje člověk, rozdíly jdou do corrections.md.</li>
+        <li><b>Ukázkový výstup drží víc než pravidla.</b> Skill říká: vyrob to jako examples/report.html, jen s jiným obsahem.</li>
+      </ul>
+    </div>
+    <p class="callout r">Vzor se strukturou máš v pluginu: assets/vzorovy-brandkit/, postup v návodu 19.</p>
+  </div>
+  <div class="source">náš brandkit Effectixu: 9 souborů, verifikovaný proti Visual Manualu 09/2024</div>
+</section>
+
+<!-- S2-30 · cvičení: brandkit (hlavní), automatizace když zbude čas -->
 <section class="slide task">
   <div class="inner stack">
     <div class="task-head r">
       <div class="kicker" style="margin:0">Cvičení</div>
-      <span class="mins">25 minut</span>
+      <span class="mins">30 minut</span>
     </div>
-    <h2 class="r">Postav si první vlastní automatizaci.</h2>
-    <div class="cmd r">/skoleni-automatizace</div>
-    <p class="lead r">Skill tě provede osmi kroky z tohohle bloku. Téma je tvoje: cokoli, co děláš opakovaně a umíš popsat.</p>
+    <h2 class="r">Postav si brandkit z vlastního webu.</h2>
+    <div class="cmd r">/skoleni-brandkit</div>
+    <p class="lead wide r">Skript vytáhne z webu kandidáty na logo, barvy a písma. Co web nedá, doplníš ty nebo manuál. Každou hodnotu odsouhlasíš, rozdíly jdou do corrections.md. Na konci vznikne skill se značkou — tvůj první vlastní skill.</p>
     <div class="task-grid r">
-      <div class="card base"><div class="lb">Hotovo, když</div><p>Skill naostro vyrobil výstup na jednom malém vstupu a máš ho na disku.</p></div>
-      <div class="card"><div class="lb">Když ti zbude čas</div><p>Zabal skill do pluginu a zkus ho nainstalovat z vlastní složky.</p></div>
-      <div class="card brake"><div class="lb">Když se zasekneš</div><p>V pluginu je vzorový skill ke zkopírování. Nebo zúžit rozsah — menší verze, která doběhne.</p></div>
+      <div class="card base"><div class="lb">Hotovo, když</div><p>Existuje <code>brandkit/tokens.css</code> s tvými barvami a písmem a skill se značkou vyrobil dokument, který sedí na manuál.</p></div>
+      <div class="card"><div class="lb">Když ti zbude čas</div><p><code>/skoleni-automatizace</code>: postav skill na úkol, který děláš opakovaně. Stejných osm kroků, tentokrát s daty.</p></div>
+      <div class="card brake"><div class="lb">Když se zasekneš</div><p>Web nejde stáhnout? Skill si barvy, písmo a logo vyžádá od tebe. Bez manuálu je brandkit „odvozený z webu" — to je v pořádku.</p></div>
     </div>
-    <p class="dim r">Bez přístupů to jde taky: text, dokument, kontrola podle pravidel. Data můžeš napojit doma.</p>
   </div>
 </section>
 
@@ -2691,7 +2716,7 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</div>
       <li><b>Model napíše výklad.</b> Co se změnilo, proč pravděpodobně, co s tím. Dostane čísla, ne exporty.</li>
       <li><b>Skill se značkou vyrobí dokument.</b> Barvy, logo, font a pravidla v <code>references/</code> a <code>assets/</code>. HTML, prezentace, z obojího PDF.</li>
     </ol>
-    <p class="callout r">Brandkit jako skill používá celá firma: jednou napsaný, každý report vypadá stejně. Když se změní logo, mění se jeden soubor.</p>
+    <p class="callout r">Brandkit z dnešního cvičení používá celá firma: jednou postavený, každý report vypadá stejně. Když se změní logo, mění se jeden soubor.</p>
   </div>
 </section>
 
@@ -2709,50 +2734,6 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</div>
     <p class="callout r">Takhle máme napojený Sklik i interní Allfred. Ani jeden hotový MCP server nenabízel.</p>
   </div>
   <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
-</section>
-
-<!-- S3-12b · brandkit jako soubory -->
-<section class="slide">
-  <div class="inner stack">
-    <div class="kicker r">Blok 3 · brandkit</div>
-    <h2 class="r">Značka jako soubory, které umí číst model</h2>
-    <p class="lead wide r">Brandkit není skill. Je to složka, na kterou skilly jen odkazují. Změní se logo, mění se jeden soubor.</p>
-    <div class="two top r-children">
-      <div class="code"><span class="c"># brandkit/</span>
-colors.md          <span class="c">paleta, co značka NENÍ</span>
-typography.md      <span class="c">písmo, poměry, řádkování</span>
-logo.md            <span class="c">varianty, ochranná zóna, zákazy</span>
-brand-identity.md  <span class="c">claim, tón, vzory stran</span>
-tokens.css         <span class="c">totéž jako CSS proměnné</span>
-corrections.md     <span class="c">co se změnilo po ověření</span>
-fonts/  logo/  examples/</div>
-      <ul class="bullets">
-        <li><b>Zdroj pravdy je manuál.</b> Každá hodnota má stranu, odkud je. Co v manuálu není, zůstává v závorkách.</li>
-        <li><b>První extrakce má chyby.</b> Barva z grafu v prezentaci skončí jako brand akcent. Ověřuje člověk, rozdíly jdou do corrections.md.</li>
-        <li><b>Ukázkový výstup drží víc než pravidla.</b> Skill říká: vyrob to jako examples/report.html, jen s jiným obsahem.</li>
-      </ul>
-    </div>
-    <p class="callout r">Vzor se strukturou máš v pluginu: assets/vzorovy-brandkit/, postup v návodu 19.</p>
-  </div>
-  <div class="source">náš brandkit Effectixu: 9 souborů, verifikovaný proti Visual Manualu 09/2024</div>
-</section>
-
-<!-- S3-12c · cvičení brandkit (volitelné) -->
-<section class="slide task">
-  <div class="inner stack">
-    <div class="task-head r">
-      <div class="kicker" style="margin:0">Cvičení · volitelné, i na doma</div>
-      <span class="mins">30 minut</span>
-    </div>
-    <h2 class="r">Postav si brandkit z vlastního webu.</h2>
-    <div class="cmd r">/skoleni-brandkit</div>
-    <p class="lead wide r">Skript vytáhne z webu kandidáty na logo, barvy a písma. Co web nedá, doplníš ty nebo manuál. Každou hodnotu odsouhlasíš, rozdíly jdou do corrections.md.</p>
-    <div class="task-grid r">
-      <div class="card base"><div class="lb">Hotovo, když</div><p>Existuje <code>brandkit/tokens.css</code> s tvými barvami a písmem a skill se značkou vyrobil dokument, který sedí na manuál.</p></div>
-      <div class="card"><div class="lb">Když ti zbude čas</div><p>Přidej manuál (PDF) a projdi druhé kolo ověření. Ulož schválený výstup do <code>examples/</code>.</p></div>
-      <div class="card brake"><div class="lb">Když se zasekneš</div><p>Web nejde stáhnout? Skill si barvy, písmo a logo vyžádá od tebe. Bez manuálu je brandkit „odvozený z webu" — to je v pořádku.</p></div>
-    </div>
-  </div>
 </section>
 
 <!-- S3-13 · další zdroje dat -->
