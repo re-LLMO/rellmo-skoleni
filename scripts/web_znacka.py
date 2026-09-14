@@ -78,6 +78,7 @@ class _Parser(HTMLParser):
         self._hloubka_header = 0
         self._svg_buf = None
         self._svg_attrs = None
+        self._svg_stack = []
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
@@ -106,9 +107,16 @@ class _Parser(HTMLParser):
                                  a.get("class") or "", a.get("id") or "", self._hloubka_header > 0))
         elif tag == "svg" and self._svg_buf is None:
             self._svg_buf = [self.get_starttag_text()]
+            self._svg_stack = ["svg"]
             self._svg_attrs = (a.get("class") or "", self._hloubka_header > 0, a.get("aria-label") or "")
         elif self._svg_buf is not None:
-            self._svg_buf.append(self.get_starttag_text())
+            raw = self.get_starttag_text()
+            self._svg_buf.append(raw)
+            # HTMLParser názvy značek zmenšuje; SVG je XML a `linearGradient`
+            # potřebuje stejnou velikost písmen i v uzavírací značce.
+            m = re.match(r"<\s*([\w:.-]+)", raw)
+            if not raw.rstrip().endswith("/>"):
+                self._svg_stack.append(m.group(1) if m else tag)
         if tag == "style" and a.get("style"):
             pass
         if a.get("style"):
@@ -122,13 +130,19 @@ class _Parser(HTMLParser):
         if tag == "title":
             self._v_title = False
         if self._svg_buf is not None:
-            self._svg_buf.append(f"</{tag}>")
-            if tag == "svg":
+            raw = self._svg_stack.pop() if self._svg_stack else tag
+            self._svg_buf.append(f"</{raw}>")
+            if tag == "svg" and not self._svg_stack:
                 cls, v_hl, label = self._svg_attrs
                 self.svg.append(("".join(self._svg_buf), cls, v_hl, label))
                 self._svg_buf = None
 
     def handle_startendtag(self, tag, attrs):
+        # Samouzavírací značka (`<path …/>`): uvnitř SVG se zapíše jen jednou,
+        # bez dodatečného `</path>` — jinak by výsledek nebyl platné XML.
+        if self._svg_buf is not None and tag != "svg":
+            self._svg_buf.append(self.get_starttag_text())
+            return
         self.handle_starttag(tag, attrs)
         if tag not in ("link", "meta", "img"):
             self.handle_endtag(tag)

@@ -79,3 +79,22 @@ def test_norm_hex():
     assert web_znacka._norm_hex("abc") == "#aabbcc"
     assert web_znacka._norm_hex("AABBCCDD") == "#aabbcc"
     assert web_znacka._norm_hex("abcde") is None
+
+
+SVG_HTML = """<html><head><title>X</title></head><body><header>
+<svg class="logo" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="g"><stop offset="0"/><stop offset="1"/></linearGradient></defs>
+<path d="M0 0h10v10z" fill="url(#g)"/><rect width="1" height="1"></rect>
+</svg></header></body></html>"""
+
+
+def test_inline_svg_je_platne_xml(monkeypatch, tmp_path):
+    import xml.dom.minidom as m
+    monkeypatch.setattr(web_znacka, "stahni", lambda url, limit, binarni=False: (SVG_HTML, url, "text/html"))
+    n = web_znacka.analyzuj("priklad.cz", str(tmp_path))
+    soubory = [k["soubor"] for k in n["loga"] if k.get("soubor", "").endswith("inline.svg")]
+    assert soubory, "inline SVG z hlavičky se nezachytilo"
+    text = open(soubory[0], encoding="utf-8").read()
+    assert "</path>" not in text and "</stop>" not in text          # samouzavírací zůstanou samouzavírací
+    assert "</linearGradient>" in text and "</lineargradient>" not in text
+    m.parseString(text)                                              # platné XML
