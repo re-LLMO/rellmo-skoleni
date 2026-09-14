@@ -382,6 +382,16 @@ html.anim .slide.in .r-children>*:nth-child(6){transition-delay:.5s}
 .two .figure{width:100%}
 .figure img{width:100%;height:auto;display:block;max-height:56vh;object-fit:contain}
 @media(max-height:720px){.figure img{max-height:50vh}.figure{width:min(100%,calc(50vh * 16 / 9))}.two .figure{width:100%}}
+
+/* ---- doplněno 14. 9. večer: pravidla z Jakubova decku, která v hlavičce chyběla (kontrast na tmavých plochách) ---- */
+.vs .col.alt h3{color:#fff}
+.vs .col.alt code{background:rgba(255,255,255,.12);color:var(--c-brand-red-light)}
+.slide.divider .wmark .logo,.slide.grad .wmark .logo{filter:brightness(0) invert(1);opacity:.72}
+.slide.grad .stat .n{background:#fff;-webkit-background-clip:text;background-clip:text}
+.slide.grad ul.bullets li{color:rgba(255,255,255,.92)}
+.slide.grad .dim{color:rgba(255,255,255,.78)}
+.slide.grad .statement{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.slide.divider .who,.slide.divider .who b,.slide.grad .who,.slide.grad .who b{color:rgba(255,255,255,.88)}
 </style>
 </head>
 <body>
@@ -2444,6 +2454,7 @@ claude plugin install muj-plugin@muj-marketplace</div>
       <p class="callout">Pokud nástroj, který používáš, má API, dá se napojit. Nemusíš být programátor. Víc v Bloku 3.</p>
     </div>
   </div>
+  <div class="source">Hub běží na open-source MCPHub: github.com/samanhappy/mcphub (self-hosted brána a správa MCP serverů)</div>
 </section>
 
 <!-- S2-38 · worktree na později -->
@@ -2732,7 +2743,9 @@ eval "$(/opt/homebrew/bin/brew shellenv)"</div>
       <li>Claude server napíše, napojí a společně ho otestujete.</li>
     </ol>
     <p class="callout r">Takhle máme napojený Sklik i interní Allfred. Ani jeden hotový MCP server nenabízel.</p>
+    <p class="r">Hotový průvodce od Anthropicu: skill <code>mcp-builder</code>. Provede rešerší API, návrhem nástrojů, kódem i testem. Je v pluginu <code>example-skills</code> z marketplace <code>anthropics/skills</code>.</p>
   </div>
+  <div class="source">claude plugin marketplace add anthropics/skills · claude plugin install example-skills@anthropic-agent-skills</div>
   <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
 </section>
 

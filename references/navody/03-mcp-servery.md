@@ -63,8 +63,16 @@ nástroji až po restartu.
 
 ## Když server pro tvůj nástroj neexistuje
 
-Stačí, aby ten nástroj měl API. Skill `mcp-builder` z balíčku
-`anthropic-agent-skills` z API postaví MCP server. My jsme takhle udělali
+Stačí, aby ten nástroj měl API. Skill `mcp-builder` od Anthropicu z API
+postaví MCP server: provede rešerší dokumentace, návrhem nástrojů, kódem
+(Python nebo TypeScript) i testem. Je v pluginu `example-skills`:
+
+```bash
+claude plugin marketplace add anthropics/skills
+claude plugin install example-skills@anthropic-agent-skills
+```
+
+Pak stačí říct „postav MCP server pro <nástroj>, dokumentace je na <adresa>". My jsme takhle udělali
 server nad interním CRM — dokumentace API na vstupu, funkční server na
 výstupu.
 
