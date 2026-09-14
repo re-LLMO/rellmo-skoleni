@@ -1,0 +1,18 @@
+{
+  "name": "rellmo-skoleni",
+  "version": "1.0.0",
+  "description": "Průvodce školením Claude Code pro markeťáky (re:LLMO). Nastaví prostředí a pluginy superpowers a skill-creator, provede stavbou vlastní automatizace v osmi krocích a jejím zabalením pro kolegy, nese návody, prezentaci a katalog automatizací. Použij, když uživatel píše /skoleni-start nebo se ptá, jak pokračovat ve školení. Po školení slouží jako příručka.",
+  "author": {
+    "name": "Rellmo",
+    "url": "https://rellmo.com"
+  },
+  "license": "LicenseRef-Rellmo-Commercial",
+  "keywords": [
+    "skoleni",
+    "marketing",
+    "onboarding",
+    "claude-code"
+  ],
+  "homepage": "https://github.com/re-LLMO/rellmo-skoleni",
+  "repository": "https://github.com/re-LLMO/rellmo-skoleni"
+}
