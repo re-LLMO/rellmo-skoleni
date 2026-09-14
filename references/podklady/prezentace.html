@@ -1,0 +1,3038 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code pro markeťáky · školení re:LLMO · 15. 9. 2026</title>
+<meta name="description" content="Půldenní praktické školení Claude Code pro markeťáky. Od nuly k sadě fungujících automatizací. re:LLMO & Effectix.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<style>
+/* ============================================================
+   re:LLMO - Školení Claude Code pro markeťáky (15. 9. 2026)
+   Brandkit: /Users/lukaskostka/rellmo/brandkit (BRAND.md). Design systém přebrán ze seologer talku.
+   Vizuál: plný brand, střídmě - paper mesh, ribbon z kraje,
+   gold gradient ikony/čísla, glass panely, statická jiskřička.
+   ============================================================ */
+
+/* ============ Fonts (re:LLMO brandkit) ============ */
+@font-face{font-family:'Degular';src:url('assets/fonts/degular-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Degular';src:url('assets/fonts/degular-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Degular';src:url('assets/fonts/degular-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'Degular';src:url('assets/fonts/degular-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'General Sans';src:url('assets/fonts/general-sans-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'General Sans';src:url('assets/fonts/general-sans-500.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'General Sans';src:url('assets/fonts/general-sans-600.woff2') format('woff2');font-weight:600;font-display:swap}
+@font-face{font-family:'General Sans';src:url('assets/fonts/general-sans-700.woff2') format('woff2');font-weight:700;font-display:swap}
+
+/* ============ Tokens (z brandkit tokens.css) ============ */
+:root{
+  --c-brand-red:#eb4a61; --c-brand-red-text:#c8324a; --c-brand-red-light:#ff8aa0;
+  --c-logo:#ff3162; --c-ink:#161616; --c-body:#2b2b2b; --c-muted:#666; --c-disabled:#ababab;
+  --c-bg:#ffffff; --c-surface-soft:#fbf7f6; --c-border:#ececec; --c-border-strong:#d9d9d9; --c-accent:#f7901e;
+  --grad-from:#6b4de6; --grad-mid:#c13c92; --grad-to:#f1506a;
+  --grad-brand:linear-gradient(95deg,#6b4de6 0%,#c13c92 50%,#f1506a 100%);
+  --grad-btn:linear-gradient(90deg,#5a52ff 0%,#ff3162 100%);
+  --grad-icon:linear-gradient(90deg,#ff7000 0%,#ffd363 100%);
+  --font-head:'Degular','General Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,'SF Mono',Menlo,Consolas,monospace;
+  --container:74rem;
+  --ls-tight:-0.02em;
+}
+
+/* ============ Reset / base ============ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-head); color:var(--c-body);
+  /* paper mesh: base #fbf7f6 + měkké bloby (růžová/coral/zelená/béžová) - viz BRAND.md §9 */
+  background-color:#fbf7f6;
+  background-image:
+    radial-gradient(58vw 52vh at 10% -6%, rgba(196,156,178,.22), transparent 60%),
+    radial-gradient(52vw 46vh at 96% 6%, rgba(241,80,106,.10), transparent 56%),
+    radial-gradient(52vw 52vh at 82% 104%, rgba(150,178,158,.16), transparent 60%),
+    radial-gradient(46vw 42vh at -4% 98%, rgba(232,214,196,.24), transparent 60%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow:hidden;
+}
+/* jemné zrno přes celé plátno (premium textura) */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+img{display:block;max-width:100%}
+
+/* ============ Deck / slides ============ */
+.deck{height:100vh;height:100dvh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth;position:relative;z-index:1}
+.deck::-webkit-scrollbar{display:none}
+.deck{scrollbar-width:none}
+.slide{
+  position:relative; overflow:hidden;
+  min-height:100vh; min-height:100dvh; scroll-snap-align:start; scroll-snap-stop:always;
+  display:flex; flex-direction:column; justify-content:center;
+  padding:clamp(2.2rem,6vh,5rem) clamp(1.6rem,7vw,7rem);
+  background:transparent;
+}
+/* lehký bílý závoj pro střídání rytmu (mesh prosvítá méně) */
+.slide.soft::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.55);z-index:0}
+.inner{position:relative;z-index:2;width:100%;max-width:var(--container);margin:0 auto}
+
+/* ============ Typografie ============ */
+.kicker{
+  font-family:var(--mono); font-size:.74rem; font-weight:600; letter-spacing:.22em;
+  text-transform:uppercase; color:var(--c-brand-red-text); margin-bottom:1.3rem;
+  display:flex; align-items:center; gap:.7rem;
+}
+.kicker::before{content:"";width:1.8rem;height:2px;background:var(--c-brand-red);display:inline-block;flex:none}
+h1{font-size:clamp(2.7rem,7.6vw,6rem);font-weight:700;line-height:1.02;letter-spacing:var(--ls-tight);text-wrap:balance;color:var(--c-ink)}
+h2{font-size:clamp(2rem,4.4vw,3.5rem);font-weight:700;line-height:1.07;letter-spacing:var(--ls-tight);text-wrap:balance;color:var(--c-ink)}
+h3{font-size:clamp(1.18rem,2vw,1.5rem);font-weight:600;line-height:1.2;color:var(--c-ink)}
+.lead{font-size:clamp(1.05rem,1.6vw,1.42rem);line-height:1.5;color:var(--c-body);max-width:46ch;font-weight:400}
+.lead.wide{max-width:60ch}
+.dim{color:var(--c-muted)}
+.hl{color:var(--c-logo)}
+.grad-text{background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gold-text{background:var(--grad-icon);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 code,h2 code{background:none;padding:0;color:inherit;font-size:.82em}
+code{font-family:var(--mono);font-size:.9em;background:rgba(235,74,97,.08);padding:.08em .35em;border-radius:6px;color:var(--c-brand-red-text)}
+strong{font-weight:600;color:var(--c-ink)}
+.statement{font-size:clamp(2.3rem,6.4vw,5rem);font-weight:700;line-height:1.05;letter-spacing:var(--ls-tight);text-wrap:balance;color:var(--c-ink)}
+
+/* ============ Layout helpers ============ */
+.stack>*+*{margin-top:1.5rem}
+.stack-sm>*+*{margin-top:.9rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.6rem,4vw,3.4rem);align-items:center}
+.two.top{align-items:start}
+.two.lean{grid-template-columns:1.05fr .95fr}
+@media(max-width:820px){.two,.two.lean{grid-template-columns:1fr}}
+.cards{display:grid;gap:1.05rem}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:820px){.cards.c4,.cards.c3,.cards.c2{grid-template-columns:1fr 1fr}}
+
+/* karta - bílá, plave nad mesh (BRAND.md §7) */
+.card{
+  border:1px solid var(--c-border); border-radius:18px; padding:1.4rem 1.35rem; background:#fff;
+  box-shadow:0 1px 2px rgba(20,12,12,.04),0 12px 30px rgba(20,12,12,.05);
+}
+.card .ic{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c-brand-red-text)}
+.card h3{margin:.55rem 0 .4rem}
+.card p{font-size:.96rem;line-height:1.48;color:var(--c-body)}
+/* glass panel (BRAND.md §7) - pro hero/akcentní plochy */
+.glass{
+  background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(1.6) blur(14px);backdrop-filter:saturate(1.6) blur(14px);
+  border:1px solid rgba(255,255,255,.7);border-radius:20px;
+  box-shadow:0 8px 30px rgba(20,12,12,.1),0 1px 0 rgba(255,255,255,.6) inset;
+}
+.tag{
+  display:inline-block;font-family:var(--mono);font-size:.76rem;font-weight:500;
+  padding:.32rem .68rem;border:1px solid var(--c-border-strong);border-radius:999px;color:var(--c-body);background:rgba(255,255,255,.7);
+}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+
+/* ============ Gold gradient ikony (BRAND.md §6) ============ */
+.gi{width:clamp(2rem,3.4vw,2.5rem);height:clamp(2rem,3.4vw,2.5rem);display:block;flex:none}
+.gi.s{fill:none;stroke:url(#giGrad);stroke-width:15;stroke-linecap:round;stroke-linejoin:round}
+.gi.f{fill:url(#giGrad)}
+.card .gi{margin-bottom:.2rem}
+/* signature jiskřička (star-four), statická */
+.spark{position:absolute;z-index:3;pointer-events:none;width:1.5rem;height:1.5rem}
+.spark svg{width:100%;height:100%;display:block;filter:drop-shadow(0 2px 6px rgba(247,144,30,.4))}
+
+/* ============ Ribbon - signature, zatéká z kraje (BRAND.md §8) ============ */
+.ribbon{position:absolute;z-index:1;pointer-events:none;filter:drop-shadow(0 24px 50px rgba(235,74,97,.16))}
+.ribbon.hero{right:clamp(-11rem,-9vw,-6rem);top:46%;width:min(58vw,640px);transform:translateY(-50%)}
+.ribbon.corner{right:-8%;top:-12%;width:min(34vw,420px);opacity:.55}
+.ribbon.tail{left:-12rem;bottom:-6rem;width:min(40vw,460px);opacity:.7}
+@media(max-width:820px){.ribbon.hero{opacity:.4}}
+
+/* ============ Lists ============ */
+ul.bullets{list-style:none;display:flex;flex-direction:column;gap:.8rem}
+ul.bullets li{position:relative;padding-left:1.7rem;font-size:clamp(1rem,1.4vw,1.12rem);line-height:1.45;color:var(--c-body)}
+ul.bullets li::before{content:"";position:absolute;left:0;top:.5em;width:.55rem;height:.55rem;border-radius:2px;background:var(--grad-brand)}
+ol.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:.7rem}
+ol.steps li{position:relative;padding-left:2.5rem;font-size:clamp(.98rem,1.3vw,1.06rem);line-height:1.4;color:var(--c-body)}
+ol.steps li::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:0;top:.05em;font-family:var(--mono);font-size:.82rem;font-weight:600;color:var(--c-brand-red-text)}
+ol.steps li b{color:var(--c-ink)}
+
+/* callout */
+.callout{border-left:3px solid var(--c-brand-red);padding:.35rem 0 .35rem 1.2rem;font-size:clamp(1.05rem,1.6vw,1.25rem);line-height:1.45;color:var(--c-ink);font-weight:500}
+.callout.big{font-size:clamp(1.4rem,2.6vw,2rem);font-weight:600}
+
+/* code */
+.code{font-family:var(--mono);font-size:clamp(.78rem,1vw,.92rem);line-height:1.6;background:var(--c-ink);color:#f4f1ea;border-radius:16px;padding:1.2rem 1.4rem;white-space:pre;overflow:auto;box-shadow:0 24px 60px rgba(20,12,12,.18)}
+.code .k{color:#ff8aa0}.code .c{color:#8a8597}.code .g{color:#ffd363}
+
+/* stat */
+.stats{display:flex;flex-wrap:wrap;gap:clamp(1.8rem,5vw,4rem)}
+.stat .n{font-size:clamp(2.6rem,6.4vw,5rem);font-weight:700;line-height:1;letter-spacing:-.03em;background:var(--grad-brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .n.gold{background:var(--grad-icon);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .lab{margin-top:.55rem;font-size:.98rem;color:var(--c-body);max-width:26ch}
+
+/* bars */
+.bars{display:flex;flex-direction:column;gap:.9rem;width:100%}
+.bar{display:grid;grid-template-columns:13rem 1fr;align-items:center;gap:1rem}
+@media(max-width:680px){.bar{grid-template-columns:1fr}}
+.bar .blab{font-size:.96rem;color:var(--c-body)}
+.bar .blab b{color:var(--c-ink)}
+.bar .btrack{height:32px;background:#efe9e8;border-radius:8px;overflow:hidden;position:relative}
+.bar .bfill{height:100%;width:var(--w);border-radius:8px;background:var(--grad-brand);display:flex;align-items:center;justify-content:flex-end;padding-right:.7rem;color:#fff;font-family:var(--mono);font-size:.8rem;font-weight:600}
+.bar .bfill.gold{background:var(--grad-icon);color:#3a2600}
+.bar .bfill.muted{background:#c9c2c0}
+html.anim .bar .bfill{width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+html.anim .slide.in .bar .bfill{width:var(--w)}
+
+/* mini diagram (orchestrace) */
+.orch{display:flex;flex-direction:column;align-items:center;gap:.55rem;width:100%}
+.orch .node{border:1px solid var(--c-border);background:#fff;border-radius:14px;padding:.7rem 1.1rem;font-weight:600;box-shadow:0 10px 26px rgba(20,12,12,.06);text-align:center}
+.orch .node.lead{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.orch .arrows{font-family:var(--mono);font-size:.78rem;color:var(--c-muted);letter-spacing:.05em}
+.orch .workers{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;width:100%}
+.orch .node small{display:block;font-weight:400;font-size:.8rem;color:var(--c-muted);margin-top:.2rem}
+
+/* downward curve (víc kontextu) */
+.curvebox{background:#fff;border:1px solid var(--c-border);border-radius:16px;padding:1.1rem 1.2rem .8rem;box-shadow:0 12px 30px rgba(20,12,12,.05)}
+.curvebox .axl{font-family:var(--mono);font-size:.7rem;color:var(--c-muted);display:flex;justify-content:space-between;margin-top:.3rem}
+
+/* report mock */
+.report{border:1px solid var(--c-border);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 24px 60px rgba(20,12,12,.12)}
+.report .top{background:var(--c-ink);color:#fff;padding:.75rem 1.1rem;font-family:var(--mono);font-size:.8rem;display:flex;gap:.55rem;align-items:center}
+.report .top .dot{width:.58rem;height:.58rem;border-radius:999px;background:#ff5f57;flex:none}
+.report .top .dot.y{background:#febc2e}.report .top .dot.g{background:#28c840}
+.report .row{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.78rem 1.1rem;border-top:1px solid var(--c-border);font-size:clamp(.9rem,1.2vw,1rem)}
+.report .row:first-of-type{border-top:none}
+.report .row .lbl b{color:var(--c-ink)}.report .row .lbl span{color:var(--c-muted);font-size:.85rem}
+.badge{font-family:var(--mono);font-size:.72rem;font-weight:600;padding:.22rem .58rem;border-radius:6px;white-space:nowrap;flex:none}
+.badge.ok{background:#e7f6ec;color:#1a7f43}.badge.warn{background:#fdeede;color:#b56a07}.badge.bad{background:#fce8ec;color:#c8324a}
+
+/* table (2 sloupce – MCP vs API) */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+@media(max-width:820px){.vs{grid-template-columns:1fr}}
+.vs .col{background:#fff;border:1px solid var(--c-border);border-radius:18px;padding:1.3rem 1.35rem;box-shadow:0 12px 30px rgba(20,12,12,.05)}
+.vs .col h3{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem}
+.vs .col.alt{background:var(--c-ink);color:#fff;border-color:var(--c-ink)}
+.vs .col.alt p,.vs .col.alt li{color:rgba(255,255,255,.82)}
+.vs ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.vs li{position:relative;padding-left:1.2rem;font-size:.98rem;line-height:1.4;color:var(--c-body)}
+.vs li::before{content:"›";position:absolute;left:0;color:var(--c-brand-red);font-weight:700}
+.vs .col.alt li::before{color:var(--c-brand-red-light)}
+
+/* ============ Divider / grad slides ============ */
+.slide.divider{justify-content:center}
+.slide.divider::after{content:"";position:absolute;inset:0;background:var(--c-ink);z-index:0}
+.slide.divider .num{font-family:var(--mono);font-size:1rem;font-weight:600;letter-spacing:.24em;color:var(--c-brand-red-light);margin-bottom:1.4rem}
+.slide.divider h2{font-size:clamp(2.3rem,5.6vw,4.6rem);max-width:20ch;color:#fff}
+.slide.divider .kicker{color:var(--c-brand-red-light)}
+.slide.divider .kicker::before{background:var(--c-brand-red-light)}
+.slide.grad::after{content:"";position:absolute;inset:0;background:var(--grad-brand);z-index:0}
+.slide.grad h1,.slide.grad h2{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.28)}
+.slide.grad .lead{color:rgba(255,255,255,.94);text-shadow:0 1px 2px rgba(0,0,0,.25)}
+.slide.divider .lead{color:rgba(255,255,255,.9)}
+
+/* title slide */
+.slide.title .wm{width:clamp(10rem,24vw,16rem);margin-bottom:2.2rem}
+.slide.title .who{margin-top:2.4rem;font-size:1.05rem;color:var(--c-muted)}
+.slide.title .who b{color:var(--c-ink);font-weight:600}
+
+/* demo slide */
+.demo-box{border-radius:20px;padding:clamp(1.5rem,4vw,2.4rem);display:flex;align-items:center;gap:clamp(1.2rem,3vw,2rem)}
+.demo-box .meta{font-family:var(--mono);font-size:.88rem;color:rgba(255,255,255,.85);display:flex;flex-wrap:wrap;gap:1.2rem;margin-top:1rem}
+.play{width:4rem;height:4rem;border-radius:999px;background:#fff;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.play::after{content:"";border-style:solid;border-width:.8rem 0 .8rem 1.3rem;border-color:transparent transparent transparent var(--c-logo);margin-left:.3rem}
+
+/* QR */
+.qr{width:clamp(7rem,12vw,9.5rem);height:clamp(7rem,12vw,9.5rem);border-radius:14px;background:#fff;padding:.6rem;box-shadow:0 16px 40px rgba(0,0,0,.25)}
+.qr img{width:100%;height:100%}
+
+/* source + watermark */
+.source{position:absolute;left:clamp(1.6rem,7vw,7rem);bottom:1.4rem;z-index:2;font-family:var(--mono);font-size:.68rem;color:var(--c-disabled);max-width:62ch}
+.slide.divider .source,.slide.grad .source{color:rgba(255,255,255,.55)}
+.wmark{position:absolute;left:clamp(1.6rem,7vw,7rem);top:1.5rem;z-index:2}
+.wmark img{height:1.35rem;width:auto;display:block;opacity:.45}
+.slide.divider .wmark img,.slide.grad .wmark img{filter:brightness(0) invert(1);opacity:.65}
+
+/* ============ Reveal (fail-open) ============ */
+html.anim .r{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1)}
+html.anim .slide.in .r{opacity:1;transform:none}
+html.anim .slide.in .r:nth-child(2){transition-delay:.08s}
+html.anim .slide.in .r:nth-child(3){transition-delay:.16s}
+html.anim .slide.in .r:nth-child(4){transition-delay:.24s}
+html.anim .slide.in .r:nth-child(5){transition-delay:.32s}
+html.anim .slide.in .r:nth-child(6){transition-delay:.4s}
+html.anim .r-children>*{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.2,1)}
+html.anim .slide.in .r-children>*{opacity:1;transform:none}
+html.anim .slide.in .r-children>*:nth-child(2){transition-delay:.1s}
+html.anim .slide.in .r-children>*:nth-child(3){transition-delay:.2s}
+html.anim .slide.in .r-children>*:nth-child(4){transition-delay:.3s}
+html.anim .slide.in .r-children>*:nth-child(5){transition-delay:.4s}
+html.anim .slide.in .r-children>*:nth-child(6){transition-delay:.5s}
+@media(prefers-reduced-motion:reduce){html.anim .r,html.anim .r-children>*{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* ============ Nav ============ */
+.progress{position:fixed;top:0;left:0;height:3px;background:var(--grad-btn);width:0;z-index:60;transition:width .3s ease}
+.dots{position:fixed;right:1.05rem;top:50%;transform:translateY(-50%);z-index:60;display:flex;flex-direction:column;gap:.46rem}
+.dots button{width:9px;height:9px;border-radius:999px;border:none;background:#d3cbc9;cursor:pointer;padding:0;transition:transform .2s,background .2s}
+.dots button.active{background:var(--c-logo);transform:scale(1.5)}
+.counter{position:fixed;right:1.2rem;bottom:1rem;z-index:60;font-family:var(--mono);font-size:.74rem;color:var(--c-muted);background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:.26rem .6rem;border-radius:999px;border:1px solid rgba(255,255,255,.7);box-shadow:0 2px 8px rgba(20,12,12,.08)}
+.counter b{color:var(--c-ink)}
+.hint{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);z-index:60;font-family:var(--mono);font-size:.7rem;color:var(--c-disabled);transition:opacity .4s}
+@media(max-width:680px){.dots{display:none}}
+
+/* ============ Výškové breakpointy (viewport fit) ============ */
+@media(max-height:700px){
+  .stack>*+*{margin-top:1.1rem}
+  .cards{gap:.8rem}
+  .card{padding:1.1rem 1.1rem;border-radius:14px}
+}
+@media(max-height:680px){
+  /* nejhustší slide (S12) - zkraťme křivku a mezery, ať nikdy nesedí na 2px rezervě */
+  .curvebox svg{max-height:130px}
+  .curvebox{padding:.8rem 1rem .6rem}
+  .stats{gap:clamp(1.4rem,4vw,3rem)}
+}
+@media(max-height:600px){
+  .slide{padding:1.6rem clamp(1.4rem,6vw,5rem)}
+  .lead{font-size:1rem}
+  .card p{font-size:.9rem}
+  ul.bullets li{font-size:.98rem}
+  .curvebox svg{max-height:104px}
+  .stat .n{font-size:clamp(2.2rem,5vw,3.4rem)}
+}
+@media(max-height:500px){
+  .stack>*+*{margin-top:.7rem}
+  .source{display:none}
+  .slide{padding:1.1rem clamp(1.4rem,6vw,5rem)}
+  .slide.title,.slide.divider{justify-content:flex-start}
+  h1{font-size:clamp(2.2rem,6vw,3.4rem)}
+  .curvebox svg{max-height:88px}
+}
+
+/* ============ Referenční slidy ============ */
+/* Tlumené pozadí + značka v rohu. Neříká „přeskočit" — říká, že tenhle slide
+   je hustý a je na čtení, ne na promítání. Jestli se v sále ukáže, je na
+   lektorovi; podle času a podle toho, kdo v sále sedí. */
+.slide.reference{background:rgba(255,255,255,.62)}
+.slide.reference::before{
+  content:"k dohledání";
+  position:absolute;right:2.6rem;top:.45rem;z-index:3;
+  font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--c-muted);background:#f0eae9;
+  padding:.34rem .8rem;border-radius:999px;
+  border:1px solid var(--c-border);
+}
+.slide.reference h2{color:var(--c-body)}
+.slide.reference .kicker::before{background:var(--c-disabled)}
+@media(max-height:500px){.slide.reference::before{font-size:.6rem;padding:.3rem .7rem}}
+/* v navigaci má referenční slide dutou tečku, ať je na liště vidět rytmus dne */
+.dots button.ref{background:transparent;box-shadow:inset 0 0 0 2px #d3cbc9}
+.dots button.ref.active{background:var(--c-logo);box-shadow:none}
+
+/* ============ Cvičení (slide zůstává na plátně, když lidi pracují) ============ */
+.slide.task::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.7));z-index:0}
+.task-head{display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}
+.mins{font-family:var(--mono);font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--c-ink);padding:.3rem .72rem;border-radius:999px;flex:none}
+.task-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+@media(max-width:820px){.task-grid{grid-template-columns:1fr}}
+.task-grid .card.base{border-color:var(--c-brand-red);border-width:2px}
+.task-grid .card.brake{background:var(--c-surface-soft)}
+.task-grid .lb{font-family:var(--mono);font-size:.68rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted)}
+.task-grid .card.base .lb{color:var(--c-brand-red-text)}
+.cmd{font-family:var(--mono);font-size:clamp(.82rem,1.25vw,1.05rem);background:var(--c-ink);color:#ffd363;border-radius:12px;padding:.8rem 1.1rem;display:block;box-shadow:0 12px 30px rgba(20,12,12,.16);white-space:pre-wrap;word-break:break-word}
+
+/* ============ Tabulka ============ */
+.tbl{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--c-border);border-radius:16px;overflow:hidden;box-shadow:0 12px 30px rgba(20,12,12,.05);font-size:clamp(.84rem,1.12vw,1rem)}
+.tbl th,.tbl td{text-align:left;padding:.6rem .9rem;border-top:1px solid var(--c-border)}
+.tbl thead th{background:var(--c-ink);color:#fff;font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border-top:none}
+.tbl tbody tr:nth-child(even){background:var(--c-surface-soft)}
+.tbl td b{color:var(--c-ink)}
+.tbl td.mono,.tbl td.num{font-family:var(--mono);font-size:.9em}
+.tbl td.num{text-align:right}
+
+/* ============ Co už neplatí ============ */
+.dead{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--c-brand-red);color:var(--c-disabled)}
+
+/* ============ Gradientní slide: prvky spoléhající na tmavý text ============ */
+.slide.grad .kicker{color:#fff}
+.slide.grad .kicker::before{background:#fff}
+.slide.grad .orch .arrows{color:rgba(255,255,255,.9)}
+.slide.grad .callout{border-left-color:#fff;color:#fff}
+.slide.grad ul.bullets li{color:rgba(255,255,255,.92)}
+.slide.grad .dim{color:rgba(255,255,255,.78)}
+.slide.grad .stat .lab{color:rgba(255,255,255,.9)}
+
+/* ============ Hierarchie pojmů (převzato z Jakubova bloku 1) ============ */
+.hier{display:grid;gap:.85rem}
+.hier .lab{font-family:var(--mono);font-size:.8rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--c-muted)}
+.hier .box-cc{border:1.5px dashed var(--c-border-strong);border-radius:20px;padding:1.05rem 1.15rem;display:grid;gap:.75rem;background:rgba(255,255,255,.55)}
+.hier .cols{display:grid;grid-template-columns:2.4fr 1fr;gap:.8rem}
+.hier .box-plugin{background:var(--c-ink);border-radius:16px;padding:.95rem 1.05rem;display:grid;gap:.7rem;align-content:start}
+.hier .box-plugin .lab{color:var(--c-brand-red-light)}
+.hier .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:.55rem}
+.hier .tile{background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:.62rem .72rem}
+.hier .tile b{display:block;font-size:1rem;color:var(--c-ink)}
+.hier .tile span{display:block;font-size:.92rem;color:var(--c-muted);line-height:1.35;margin-top:.18rem}
+.hier .box-solo{border:1px solid var(--c-border);border-radius:16px;padding:.95rem 1.05rem;background:#fff;display:grid;gap:.55rem;align-content:start}
+.hier .plug{display:flex;align-items:center;justify-content:center;gap:.6rem;font-family:var(--mono);font-size:.82rem;color:var(--c-muted)}
+.hier .box-mcp{border:1.5px solid var(--c-border-strong);border-radius:20px;padding:.95rem 1.15rem;background:#fff;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.7rem 1rem}
+.hier .box-mcp .chips{margin:0}
+@media(max-width:820px){.hier .cols{grid-template-columns:1fr}.hier .tiles{grid-template-columns:1fr 1fr}}
+@media(max-height:680px){.hier{gap:.55rem}.hier .tile{padding:.45rem .6rem}.hier .box-cc,.hier .box-mcp,.hier .box-plugin,.hier .box-solo{padding:.7rem .9rem}}
+/* ============ Graf jako obrázek ============ */
+.figure{border-radius:16px;overflow:hidden;border:1px solid var(--c-border);box-shadow:0 24px 60px rgba(20,12,12,.12);background:#fff;width:min(100%,calc(56vh * 16 / 9))}
+.two .figure{width:100%}
+.figure img{width:100%;height:auto;display:block;max-height:56vh;object-fit:contain}
+@media(max-height:720px){.figure img{max-height:50vh}.figure{width:min(100%,calc(50vh * 16 / 9))}.two .figure{width:100%}}
+</style>
+</head>
+<body>
+
+<!-- gradient defs pro gold ikony + jiskřičky -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="giGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#ff7000"/><stop offset="1" stop-color="#ffd363"/>
+  </linearGradient>
+</defs></svg>
+
+<div class="progress" id="progress"></div>
+<div class="dots" id="dots"></div>
+<div class="counter"><b id="cur">1</b> / <span id="tot">127</span></div>
+<div class="hint" id="hint">↓ / mezerník pro další</div>
+
+<div class="deck" id="deck">
+
+<!-- ================= fragment 0 ================= -->
+<!-- S0-01 · titulní slide -->
+<section class="slide title">
+  <img class="ribbon hero" src="assets/ribbon-hero.webp" alt="">
+  <span class="spark" style="right:17%;top:25%;width:1.9rem;height:1.9rem"><svg viewBox="0 0 256 256"><path fill="url(#giGrad)" d="M128 12c10 70 36 96 116 116-80 20-106 46-116 116-10-70-36-96-116-116 80-20 106-46 116-116Z"/></svg></span>
+  <div class="inner stack">
+    <img class="wm r" src="assets/logo.svg" alt="re:LLMO">
+    <div class="kicker r">Praha · 15. 9. 2026</div>
+    <h1 class="r">Claude Code pro markeťáky</h1>
+    <p class="lead wide r">Od nuly k sadě fungujících automatizací.</p>
+    <p class="who r"><b>Lukáš Kostka</b> · re:LLMO a Effectix</p>
+  </div>
+</section>
+
+<!-- S0-02 · co si dnes odneseš -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · na konci se k tomu vrátíme</div>
+    <h2 class="r">Co si dnes odneseš</h2>
+    <p class="lead r dim">Na konci školení si seznam společně projdeme.</p>
+    <ol class="steps r-children">
+      <li><b>Přehled v pojmech</b> — MCP servery, skilly, subagenti, pluginy, firemní marketplace. Co je co a kdy se co hodí.</li>
+      <li><b>Postup, jak si navrhnout vlastní automatizaci</b> a zabalit ji tak, aby ji spustili i kolegové.</li>
+      <li><b>Jak jsme vytrénovali vlastní model</b> pro klasifikaci záměru klíčových slov, který běží zdarma.</li>
+      <li><b>Naše automatizace v akci</b> — crawl, Search Console, viditelnost v AI chatbotech, reporty.</li>
+      <li><b>Plugin školení</b> s návody a touhle prezentací, <b>jeden plugin z katalogu zdarma</b> a 10 % na ostatní.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- S0-03 · co jste si objednali -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · z přihlášek</div>
+    <h2 class="r">Co jste si objednali</h2>
+    <p class="lead wide r">Šest přání z přihlášek, bez jmen. Každé z nich dnes někde potkáš — u některých řekneme rovnou, kde.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Blok 1</div><h3>Analýza crawlu a Search Console</h3><p>Ukázka 2 a 3. Crawl projde pěti analytiky, Search Console dvěma automatizacemi.</p></div>
+      <div class="card"><div class="ic">Blok 3</div><h3>Agregované reporty z různých služeb</h3><p>Search Console, GA4, reklamní účty. Skript stáhne a sečte, model napíše výklad.</p></div>
+      <div class="card"><div class="ic">Blok 2</div><h3>Viditelnost v AI, AIO a AEO</h3><p>Audit viditelnosti v AI chatbotech rozebereme zevnitř.</p></div>
+      <div class="card"><div class="ic">Blok 2</div><h3>Zjednodušit opakované úkoly, naučit se skilly</h3><p>Celý druhý blok. Postup v osmi krocích a cvičení.</p></div>
+      <div class="card"><div class="ic">Blok 2</div><h3>Reporty pro klienty, hlídání obrázků od dodavatele</h3><p>Oboje je skill. Rozdíl je jen v tom, odkud si bere data.</p></div>
+      <div class="card"><div class="ic">Blok 2</div><h3>„Dělám prompty správně?"</h3><p>Otázka, na kterou má Blok 2 odpověď: prompt, který se má opakovat, patří do skillu.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S0-04 · program -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Program</div>
+    <h2 class="r">Co tě dnes čeká</h2>
+    <table class="tbl r">
+      <thead>
+        <tr><th>Čas</th><th>Blok</th><th>Co se děje</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">9:00</td><td>0 · Start</td><td>instalace pluginu školení, <code>/skoleni-start</code></td></tr>
+        <tr><td class="mono">9:25</td><td>1 · Jak to celé funguje</td><td>teorie a čtyři ukázky na plátně</td></tr>
+        <tr><td class="mono">10:25</td><td>Pauza</td><td>&mdash;</td></tr>
+        <tr><td class="mono">10:40</td><td>2 · Vlastní automatizace</td><td>postup v osmi krocích, cvičení, zabalení a sdílení</td></tr>
+        <tr><td class="mono">11:40</td><td>Pauza s občerstvením</td><td>&mdash;</td></tr>
+        <tr><td class="mono">12:05</td><td>3 · Vlastní model, více zdrojů, výhled</td><td>klasifikátor záměru, reporty, agenti</td></tr>
+        <tr><td class="mono">12:50</td><td>Závěr</td><td>co si odnášíš, první týden, zpětná vazba</td></tr>
+        <tr><td class="mono">13:30</td><td>Konec</td><td>&mdash;</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Když se zasekneš, zvedni ruku. Nečekej, až se problém zbytečně protáhne.</p>
+  </div>
+</section>
+
+<!-- S0-05 · jak dnes pracujeme -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · jak dnes pracujeme</div>
+    <h2 class="r">Čtyři věci, které se dnes hodí vědět.</h2>
+    <div class="cards c4 r-children">
+      <div class="card">
+        <div class="ic">01</div>
+        <h3>Ukázky běží na plátně</h3>
+        <p>Každý pojem uvidíš hned poté, co zazní. Nemusíš stíhat spouštět totéž u sebe.</p>
+      </div>
+      <div class="card">
+        <div class="ic">02</div>
+        <h3>Zkoušej si, když chceš</h3>
+        <p>Můžeš si to pouštět souběžně, nebo jen koukat a zkusit doma. Obojí je v pořádku.</p>
+      </div>
+      <div class="card">
+        <div class="ic">03</div>
+        <h3>Plugin školení tě vede</h3>
+        <p>Nastaví prostředí a provede tě stavbou vlastní automatizace. Zůstane ti i po školení.</p>
+      </div>
+      <div class="card">
+        <div class="ic">04</div>
+        <h3>Tahle prezentace je příručka</h3>
+        <p>Slidy se značkou <b>k dohledání</b> jsou hustší a na čtení. Některé projdeme, jiné ne — ale máš je všechny.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S0-06 · terminál -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · než na to sáhneš</div>
+    <h2 class="r">Terminál: čtyři příkazy, které potřebuješ.</h2>
+    <p class="lead wide r">Terminál vždy otevřeš v nějaké složce. Claude Code pracuje s tou, ve které ho spustíš. Nic mimo ni sám neotevře.</p>
+    <table class="tbl r">
+      <thead><tr><th>Příkaz</th><th>Co udělá</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">pwd</td><td>Vypíše, ve které složce zrovna jsi.</td></tr>
+        <tr><td class="mono">ls</td><td>Vypíše, co v ní je.</td></tr>
+        <tr><td class="mono">cd nazev</td><td>Přejde do složky. <code>cd ..</code> o úroveň výš, <code>cd ~</code> domů.</td></tr>
+        <tr><td class="mono">claude</td><td>Spustí Claude Code v aktuální složce.</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Cestu nemusíš psát. Napiš <code>cd</code>, mezeru, a přetáhni složku myší do okna terminálu.</p>
+  </div>
+</section>
+
+<!-- S0-07 · jedna složka -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · kde to celé bydlí</div>
+    <h2 class="r">Jedna složka na jeden web nebo jednoho klienta.</h2>
+    <p class="lead wide r">Ne plocha, ne Stažené soubory. Claude Code si do pracovní složky ukládá kontext i výstupy — a příště na ně naváže.</p>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="cmd">mkdir ~/automatizace-muj-web
+cd ~/automatizace-muj-web
+claude</div>
+        <p class="dim">Na Windows totéž, jen bez vlnovky: <code>cd $HOME\automatizace-muj-web</code>.</p>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Vznikne</th><th>Co to je</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">CLAUDE.md</td><td>Kontext, který se načte při každém startu.</td></tr>
+          <tr><td class="mono">.gitignore</td><td>Co se nikdy nemá dostat na GitHub.</td></tr>
+          <tr><td class="mono">.claude/skills/</td><td>Tvoje vlastní skilly pro tuhle složku.</td></tr>
+          <tr><td class="mono">.skoleni/</td><td>Stav dnešního průchodu.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="dim r">Složky začínající tečkou Finder skrývá. Zobrazíš je zkratkou Cmd+Shift+tečka.</p>
+  </div>
+</section>
+
+<!-- S0-08 · cvičení: instalace pluginu školení -->
+<section class="slide task">
+  <div class="inner stack">
+    <div class="task-head r">
+      <div class="kicker" style="margin:0">Cvičení</div>
+      <span class="mins">15 minut</span>
+    </div>
+    <h2 class="r">Nainstaluj si plugin školení a spusť ho.</h2>
+    <div class="cmd r">curl -fsSL "https://dist.rellmo.com/install/&lt;TVŮJ-KLÍČ&gt;?lang=cs" | sh</div>
+    <p class="lead r">Příkaz z e-mailu přidá marketplace re:LLMO a plugin školení. Pak restartuj Claude Code a napiš <code>/skoleni-start</code>.</p>
+    <div class="task-grid r">
+      <div class="card base"><div class="lb">Máš hotovo, když</div><p><code>/skoleni-start</code> doběhl a v pracovní složce máš <code>CLAUDE.md</code>.</p></div>
+      <div class="card"><div class="lb">Když ti zbude čas</div><p>Otevři <code>/plugin</code> a podívej se, co všechno se nainstalovalo.</p></div>
+      <div class="card brake"><div class="lb">Když se zasekneš</div><p>Zvedni ruku. Klíč najdeš v e-mailu i v tištěných podkladech.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- S0-09 · co právě proběhlo -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Jak instalace funguje</div>
+    <h2 class="r">Co právě proběhlo</h2>
+    <p class="lead r dim">Při instalaci ses setkal se třemi prvky Claude Code. Dopoledne je rozebereme.</p>
+    <div class="cards c3 r-children">
+      <div class="card">
+        <div class="ic">01</div>
+        <h3>Marketplace</h3>
+        <p>Katalog, ze kterého instaluješ pluginy. Instalace proběhne jedním příkazem bez klonování repozitářů.</p>
+      </div>
+      <div class="card">
+        <div class="ic">02</div>
+        <h3>Plugin</h3>
+        <p>Sdružuje skilly, subagenty a nastavení. Instaluje se a aktualizuje jako celek.</p>
+      </div>
+      <div class="card">
+        <div class="ic">03</div>
+        <h3>Slash command</h3>
+        <p>Slash command začíná lomítkem. Spouštíš ho přímo v Claude Code.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S0-10 · REF: totéž ručně -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · referenční</div>
+    <h2 class="r">Totéž ručně — a jak ověřit instalaci.</h2>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">Přidat marketplace a plugin</div>
+        <div class="cmd">claude plugin marketplace add &lt;org&gt;/&lt;repo&gt;
+claude plugin install &lt;nazev-pluginu&gt;</div>
+        <div class="ic">Ověřit</div>
+        <div class="cmd">claude plugin list
+claude plugin marketplace list</div>
+      </div>
+      <div class="stack-sm">
+        <ul class="bullets">
+          <li>Po instalaci <b>restartuj Claude Code.</b> Slash commandy z pluginu se objeví až potom.</li>
+          <li><code>/help</code> vypíše všechny dostupné příkazy včetně těch z pluginů.</li>
+          <li>Slash command vzniká z <b>názvu skillu</b>, ne z názvu pluginu.</li>
+        </ul>
+        <p class="callout">Když někde narazíš na <code class="dead">npx skills add</code>, je to zastaralý postup. Dnešní cesta je marketplace a <code>claude plugin install</code>.</p>
+      </div>
+    </div>
+    <div class="source">Zdroj: code.claude.com/docs · ověřeno 14. 9. 2026</div>
+  </div>
+</section>
+
+<!-- S0-11 · REF: instalace Claude Code -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · referenční</div>
+    <h2 class="r">Instalace Claude Code na další počítač.</h2>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">macOS a Linux</div>
+        <div class="cmd">curl -fsSL https://claude.ai/install.sh | bash</div>
+        <div class="ic">Windows · PowerShell</div>
+        <div class="cmd">irm https://claude.ai/install.ps1 | iex</div>
+      </div>
+      <div class="stack-sm">
+        <ul class="bullets">
+          <li>Potřebuješ předplatné Claude, jinak se po instalaci nepřihlásíš.</li>
+          <li>Po instalaci <b>zavři terminál a otevři nové okno.</b> Ne jen novou záložku — mění se <code>PATH</code>.</li>
+          <li>Spustíš napsáním <code>claude</code>.</li>
+          <li>Při prvním spuštění se v prohlížeči přihlásíš. Další spuštění už přihlášení obvykle nevyžaduje.</li>
+        </ul>
+        <p class="callout"><code>claude: command not found</code> po instalaci znamená staré okno terminálu, ne chybu instalace.</p>
+      </div>
+    </div>
+    <div class="source">Zdroj: claude.ai/install · ověřeno 14. 9. 2026, Claude Code 2.1.270</div>
+  </div>
+</section>
+
+<!-- S0-12 · režimy -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · kdo rozhoduje, co se smí</div>
+    <h2 class="r">Claude Code má režimy. Vyplatí se vědět, ve kterém jsi.</h2>
+    <p class="lead wide r">Na Pro a Max startuje v <b>auto režimu</b>: akce posuzuje druhý model, ne ty. Nečekej dotaz u každého příkazu — přijde jen tam, kde kontrola neprojde.</p>
+    <ul class="bullets r-children">
+      <li><b>Shift+Tab</b> přepíná režimy. Dole ve stavovém řádku vidíš, ve kterém právě jsi.</li>
+      <li><b>Plan mode</b> je ten, který se vyplatí znát. Claude si přečte, co potřebuje, a napíše, co chce udělat — ale nic nezmění, dokud to neschválíš.</li>
+      <li><b>Čti, co ti nabízí</b>, zvlášť u mazání a u čehokoli, co jde ven z počítače.</li>
+      <li><b>Klíče a hesla</b> patří do proměnných prostředí, ne do promptu a ne do souboru v repozitáři.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S0-13 · REF: režimy a odpovědi -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · referenční</div>
+    <h2 class="r">Režimy a co která odpověď znamená.</h2>
+    <div class="two top r">
+      <table class="tbl">
+        <thead><tr><th>Režim</th><th>Co běží bez ptaní</th></tr></thead>
+        <tbody>
+          <tr><td><b>auto</b><br><span class="mono">⏵⏵ auto mode on</span></td><td>Akce posuzuje druhý model. Na Pro a Max výchozí.</td></tr>
+          <tr><td><b>plan</b><br><span class="mono">⏸ plan mode on</span></td><td>Jen čtení a průzkum. Nic nezmění, dokud plán neschválíš.</td></tr>
+          <tr><td><b>manual</b><br><span class="mono">⏸ manual mode on</span></td><td>Nic. Ptá se na úpravy, příkazy i síť.</td></tr>
+          <tr><td><b>accept edits</b><br><span class="mono">⏵⏵ accept edits on</span></td><td>Úpravy souborů. Na příkazy se ptá.</td></tr>
+        </tbody>
+      </table>
+      <table class="tbl">
+        <thead><tr><th>Odpověď</th><th>Platí pro</th></tr></thead>
+        <tbody>
+          <tr><td><b>Ano</b></td><td>jednu tuhle akci. Když si nejsi jistý, tohle.</td></tr>
+          <tr><td><b>Ano, a příště se neptej</b></td><td>tenhle typ akce v téhle složce</td></tr>
+          <tr><td><b>Ne</b></td><td>tuhle akci. Claude to zkusí jinak.</td></tr>
+          <tr><td><b>Ne, a řekni proč</b></td><td>tuhle akci. Nasměruješ ho.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="callout r">Do plan mode se dostaneš přes <b>Shift+Tab</b>, nebo jednorázově tím, že prompt začneš <code>/plan</code>. Povolení se ukládá do složky; odebereš je přes <code>/permissions</code>.</p>
+  </div>
+</section>
+
+<!-- S0-14 · co udělal /skoleni-start -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · co se právě stalo</div>
+    <h2 class="r">Pět kroků, které za tebe proběhly.</h2>
+    <ol class="steps r-children">
+      <li><b>Prostředí</b> — Python, Git, gh a Node.js. Kontrola ukázala, co chybí, a doinstalovala, co šlo.</li>
+      <li><b>Pluginy na stavbu skillů</b> — superpowers a skill-creator. Odpoledne s nimi budeš pracovat.</li>
+      <li><b>Pracovní složka</b> — ta, ve které jsi Claude Code spustil. Sem se ukládá všechno dnešní.</li>
+      <li><b>CLAUDE.md</b> — krátký kontext složky, který se načte při každém startu.</li>
+      <li><b>.gitignore</b> — aby se žádný klíč ani export nedostal do Gitu.</li>
+    </ol>
+    <p class="callout r">Žádné přihlašování, žádné účty. Všechno, co dnes uvidíš na plátně, si můžeš pustit doma, až budeš mít přístupy po ruce.</p>
+  </div>
+</section>
+
+<!-- S0-15 · CLAUDE.md -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · kontext složky</div>
+    <h2 class="r">CLAUDE.md se načte pokaždé, když Claude Code spustíš.</h2>
+    <div class="two lean top r">
+      <div class="code">
+<span class="c"># Pracovní složka — školení</span>
+
+<span class="k">## Stav průchodu</span>
+Stav je v <span class="g">.skoleni/stav.json</span> —
+nesahej do něj ručně.
+
+<span class="k">## Bezpečnost</span>
+Klíče, tokeny a exporty jsou
+v <span class="g">.gitignore</span>.
+
+<span class="k">## Web nebo klient</span>
+Pracujeme s <span class="g">tvujweb.cz</span>.
+      </div>
+      <ul class="bullets">
+        <li><b>Vzniká hned teď</b>, aby si Claude Code pamatoval, s čím dneska pracuješ. Nebudeš to opakovat pokaždé.</li>
+        <li><b>Je krátký a psaný ručně.</b> Tenhle má patnáct řádků a víc jich potřebovat nebude.</li>
+        <li>Jak se takový soubor píše, aby k něčemu byl, si projdeme <b>v Bloku 2</b> — je to tentýž typ kontextu, jaký budeš dodávat vlastnímu skillu.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- S0-16 · REF: hlášky v Bloku 0 -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 0 · referenční</div>
+    <h2 class="r">Pět hlášek, na které v Bloku 0 narazíš.</h2>
+    <table class="tbl r">
+      <thead><tr><th>Hláška</th><th>Co to je</th><th>Co udělat</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">claude: command not found</td><td>Staré okno terminálu.</td><td>Zavři okno, otevři nové.</td></tr>
+        <tr><td class="mono">brew: command not found</td><td>Chybí dva řádky v <code>~/.zprofile</code>.</td><td>Doplň je, viz referenční slide o instalaci gh.</td></tr>
+        <tr><td class="mono">Permission denied</td><td>Firemní notebook bez práv.</td><td>Nezkoušej znovu. Napiš IT a pokračuj.</td></tr>
+        <tr><td>Příkaz <code>/skoleni-start</code> se nenabízí</td><td>Plugin se načte až po restartu.</td><td>Ukonči Claude Code a spusť ho znovu.</td></tr>
+        <tr><td>superpowers se nenainstaloval</td><td>Firemní síť blokuje GitHub.</td><td>Zkus z mobilního hotspotu. Cvičení jde i bez něj, pomaleji.</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Podrobněji v <code>/skoleni-napoveda</code> — funguje i za tři týdny.</p>
+  </div>
+</section>
+
+<!-- ================= fragment 1 ================= -->
+<!-- S1-01 · divider Blok 1 -->
+<section class="slide divider">
+  <div class="inner stack">
+    <div class="num r">Blok 1</div>
+    <h2 class="r">Jak to celé funguje</h2>
+    <p class="lead r">Slovník a čtyři ukázky. Každý pojem uvidíš běžet hned poté, co zazní.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-02 · chat nebo Claude Code -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · slovník</div>
+    <h2 class="r">Chat, nebo Claude Code</h2>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Chat</h3>
+        <ul>
+          <li>Model nevidí tvoje soubory.</li>
+          <li>Data kopíruješ do chatu a výsledky zase ven.</li>
+          <li>Do nástrojů klikáš ty.</li>
+          <li>Každé spuštění začíná od nuly.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Claude Code</h3>
+        <ul>
+          <li>Pracuje přímo ve tvých souborech.</li>
+          <li>Výsledek uloží na disk.</li>
+          <li>Pracuje s nástroji, když mu to dovolíš.</li>
+          <li>Postupy a pravidla zůstávají v projektu. Příště na ně naváže.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Rozdíl není v inteligenci modelu. Je v tom, kolik práce musíš odklikat ty.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-03 · jedna smyčka -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · jak to běží</div>
+    <h2 class="r">Jedna smyčka pořád dokola</h2>
+    <p class="lead wide r">Claude Code nepracuje jako chat — jedna otázka, jedna odpověď. Běží ve smyčce, dokud úkol není hotový.</p>
+    <div class="cards c4 r-children">
+      <div class="card"><div class="ic">01</div><h3>Přečte</h3><p>Zadání a kontext: soubory, pravidla, dosavadní postup.</p></div>
+      <div class="card"><div class="ic">02</div><h3>Rozhodne</h3><p>Co je další krok. Plán průběžně upravuje podle výsledků.</p></div>
+      <div class="card"><div class="ic">03</div><h3>Provede</h3><p>Zavolá nástroj, spustí skript, upraví soubor. Když si není jistý, zeptá se tě.</p></div>
+      <div class="card"><div class="ic">04</div><h3>Vyhodnotí</h3><p>Přečte výsledek a vrací se ke kroku 02. Dokud není hotovo.</p></div>
+    </div>
+    <p class="callout r">Proto běh trvá minuty, ne vteřiny. A proto každé kolo spotřebuje tokeny — smyčka pokaždé znovu čte, co se stalo.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-04 · Ukázka 1: kontrola AI robotů -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Ukázka · na plátně</div>
+    <h2 class="r">Kontrola přístupu AI robotů na doméně</h2>
+    <p class="lead wide r">Jedna věta, žádný účet, žádný klíč. Sleduj smyčku z minulého slidu v praxi.</p>
+    <ul class="bullets r-children">
+      <li><b>Čte, rozhoduje, provádí, vyhodnocuje.</b> V terminálu je vidět, který krok právě běží a co si k němu model načetl.</li>
+      <li><b>Dotazy na oprávnění.</b> Kde se zeptá a kde ne — a co znamená „ano, a příště se neptej".</li>
+      <li><b>Minuty, ne vteřiny.</b> Po dobu běhu pokračuje výklad. Výsledek je HTML report na disku.</li>
+    </ul>
+  </div>
+  <div class="source">plugin rellmo-ai-bot-crawlability · zdarma v katalogu</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-05 · co je v reportu o čitelnosti -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · co z ukázky vzniklo</div>
+    <h2 class="r">Co je v reportu o čitelnosti pro AI boty.</h2>
+    <div class="report r">
+      <div class="top"><span class="dot"></span><span class="dot y"></span><span class="dot g"></span><span>report — čitelnost pro AI boty</span></div>
+      <div class="row"><div class="lbl"><b>robots.txt po jednotlivých botech</b><br><span>GPTBot, ClaudeBot, PerplexityBot, Google-Extended, bingbot a další</span></div><span class="badge ok">projito</span></div>
+      <div class="row"><div class="lbl"><b>HTTP přístup za každého bota</b><br><span>porovnáno s kontrolním prohlížečem</span></div><span class="badge ok">projito</span></div>
+      <div class="row"><div class="lbl"><b>Blokace na CDN nebo firewallu</b><br><span>může bránit přístupu k obsahu</span></div><span class="badge warn">nález</span></div>
+      <div class="row"><div class="lbl"><b>Obsah dostupný až po vykreslení</b><br><span>porovnání syrového a vykresleného HTML</span></div><span class="badge warn">nález</span></div>
+      <div class="row"><div class="lbl"><b>Direktivy v indexu</b><br><span>noindex, nosnippet, max-snippet a spol.</span></div><span class="badge ok">projito</span></div>
+    </div>
+    <p class="callout r">Potřebuje jen doménu, žádný účet. Koho pustit dovnitř, má někdo rozhodnout vědomě.</p>
+  </div>
+</section>
+
+<!-- S1-06 · server odpoví 200 -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · proč to není jen formalita</div>
+    <h2 class="r">Server odpoví 200. Bot stejně nevidí skoro nic.</h2>
+    <p class="lead r">Rohlik.cz: robots.txt v pořádku, HTTP odpověď v pořádku. A přesto:</p>
+    <div class="stats r">
+      <div class="stat"><div class="n">85 %</div><div class="lab">obsahu domovské stránky se načte až JavaScriptem</div></div>
+    </div>
+    <p class="callout r">Bot, který nevykresluje JavaScript, tohle nevidí. A z kontroly robots.txt to nevyleze.</p>
+  </div>
+  <div class="source">Vlastní audit rohlik.cz, 12. 6. 2026</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-07 · skill -->
+<section class="slide">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 1 · slovník</div>
+      <h2>Skill</h2>
+      <p class="lead">Recept v Markdownu. Říká, co udělat, kdy a v jakém pořadí. Model dědí z konverzace.</p>
+      <p class="dim">Jeden skill = jedna dovednost. Třeba měsíční report ze Search Console. Data ale skill nedodává — na to je MCP server.</p>
+    </div>
+    <div class="code r">nazev-skillu/
+├── <span class="k">SKILL.md</span>        <span class="c"># název a popis, kdy sáhnout</span>
+├── scripts/         <span class="c"># pomocné skripty</span>
+└── references/      <span class="c"># delší podklady</span></div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-08 · MCP server -->
+<section class="slide soft">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 1 · slovník</div>
+      <h2>MCP server</h2>
+      <p class="lead">Dodavatel surovin. Skill je recept, MCP server nosí data a nástroje, ze kterých se vaří.</p>
+    </div>
+    <div class="stack-sm r">
+      <div class="chips">
+        <span class="tag">Search Console</span>
+        <span class="tag">GA4</span>
+        <span class="tag">Marketing Miner</span>
+        <span class="tag">DataForSEO</span>
+        <span class="tag">GitHub</span>
+      </div>
+      <p class="dim">Search Console ti dá dotazy, DataForSEO pozice v SERPu, GA4 chování na webu. Pokud má nástroj API, jde nad ním MCP server postavit.</p>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-09 · plugin -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="two top">
+      <div class="stack r">
+        <div class="kicker">Blok 1 · slovník</div>
+        <h2>Plugin</h2>
+        <p class="lead">Kuchařka. Zabalí skilly, subagenty, příkazy a napojení na MCP servery. Instaluje a aktualizuje se jako celek.</p>
+        <p class="dim">Plugin školení, který máš od rána, je přesně tohle.</p>
+      </div>
+      <div class="code r">muj-plugin/
+├── <span class="k">.claude-plugin/plugin.json</span>  <span class="c"># název a verze</span>
+├── skills/       <span class="c"># recepty</span>
+├── agents/       <span class="c"># subagenti — tady je ta síla</span>
+├── commands/     <span class="c"># příkazy s lomítkem</span>
+├── hooks/        <span class="c"># automatické reakce na události</span>
+└── .mcp.json     <span class="c"># MCP servery</span></div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-10 · subagent -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · slovník</div>
+    <h2 class="r">Subagent</h2>
+    <p class="lead wide r">Kolega s vlastním, čistým kontextem. Dostane zadání, odpracuje ho a vrátí výsledek.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Hlavní agent</div><h3>Řídí a deleguje</h3><p>Drží postup a rozděluje práci. Dřinu nedělá sám.</p></div>
+      <div class="card"><div class="ic">Subagent</div><h3>Odpracuje úkol</h3><p>Vlastní zadání, omezené nástroje, čistý kontext. Nezahltí hlavní vlákno.</p></div>
+      <div class="card"><div class="ic">Zpátky</div><h3>Jen výsledek</h3><p>Vrátí shrnutí, ne celý myšlenkový pochod. Hlavní kontext zůstane čistý.</p></div>
+    </div>
+    <p class="callout r">Skill si vlastní subagenty nadefinovat neumí. Plugin ano — složka <code>agents/</code> z minulého slidu.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-11 · levný model na dřinu -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · slovník</div>
+    <h2 class="r">Levný model na dřinu, drahý na úsudek</h2>
+    <p class="lead wide r">Každý subagent může běžet na jiném modelu. Platíš jen za to, co dává smysl.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Mechanická práce</div><h3>Haiku</h3><p>Sběr a parsování dat. Běží jich několik naráz, jeden na URL nebo dotaz. Levné a rychlé.</p></div>
+      <div class="card"><div class="ic">Běžná analýza</div><h3>Sonnet</h3><p>Klasifikace, posouzení, příprava podkladů. Rozumný poměr ceny a kvality.</p></div>
+      <div class="card"><div class="ic">Klíčové kroky</div><h3>Opus</h3><p>Úsudek, syntéza, finální doporučení. Tady se nešetří.</p></div>
+    </div>
+    <p class="callout r">V našem pluginu content-decay sbírá data Haiku, analýzu dělá Sonnet a finální doporučení píše Opus — to jde ke klientovi.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-12 · Ukázka 2: sf-analysis -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Ukázka · na plátně</div>
+    <h2 class="r">Analýza crawlu: pět analytiků naráz</h2>
+    <p class="lead wide r">Hotový crawl ze Screaming Frogu projde pluginem sf-analysis. Nejdřív otevřeme složku pluginu, pak ho pustíme.</p>
+    <ul class="bullets r-children">
+      <li><b>Složka <code>agents/</code>.</b> U každého subagenta je napsané, co dělá a na jakém modelu běží. Tohle je ta dělba práce z minulého slidu.</li>
+      <li><b>Složka <code>scripts/</code>.</b> Crawl se načte do lokální databáze skriptem. Model surová data nikdy nevidí.</li>
+      <li><b>Pět analytiků souběžně.</b> V terminálu je vidět, jak se rozjedou a jak se výsledky skládají do jednoho reportu.</li>
+    </ul>
+  </div>
+  <div class="source">plugin rellmo-sf-analysis</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-13 · sf-analysis co to je -->
+<section class="slide">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 1 · co jsi právě viděl</div>
+      <h2>sf-analysis: crawl projde pěti analytiky naráz</h2>
+      <p class="lead">Export ze Screaming Frogu se rozdělí mezi specializované subagenty. Každý se dívá z jiného úhlu, výsledky se skládají do jednoho reportu.</p>
+      <p class="dim">Na vstupu stačí CSV exporty z crawlu — na ty licenci na Screaming Frog nepotřebuješ. Umí i porovnání dvou crawlů, třeba jako kontrolu po migraci.</p>
+    </div>
+    <div class="stack-sm r">
+      <div class="kicker" style="margin:0">Dnes uvidíš jen na plátně</div>
+      <div class="card"><div class="ic">Off-page</div><h3>Odkazové příležitosti</h3><p>Stojí na placených datech. Ukážeme, jak je postavené.</p></div>
+      <div class="card"><div class="ic">AI viditelnost</div><h3>Audit viditelnosti v AI chatbotech</h3><p>Rozebereme ho v Bloku 2 zevnitř — jako příklad, jak se automatizace staví.</p></div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-14 · jak číst technický audit -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · jak číst report</div>
+    <h2 class="r">V technickém auditu čti odshora dolů.</h2>
+    <table class="tbl r">
+      <thead><tr><th>Pořadí</th><th>Co</th><th>Proč zrovna tohle</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td>Stránky, které nejdou indexovat</td><td>Cokoli dalšího je zbytečné, když stránka není v indexu.</td></tr>
+        <tr><td class="num">2</td><td>Řetězce a smyčky přesměrování</td><td>Nejčastější škoda po migraci. Bývá jich hodně naráz.</td></tr>
+        <tr><td class="num">3</td><td>Kanonické odkazy, které nesedí</td><td>Tiše ruší práci na stránkách, které jinak vypadají dobře.</td></tr>
+        <tr><td class="num">4</td><td>Duplicitní titulky a popisky</td><td>Levná oprava, viditelný dopad.</td></tr>
+        <tr><td class="num">5</td><td>Zbytek</td><td>Rychlost, obrázky, přístupnost. Důležité, ale ne první.</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Report tříděný podle závažnosti nepomůže, když ho čteš od konce. Začni tím, co zobrazení brání.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-15 · skill sám nebo plugin -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · slovník</div>
+    <h2 class="r">Skill sám, nebo plugin</h2>
+    <table class="tbl r">
+      <thead><tr><th>Vlastnost</th><th>Skill samotný</th><th>Plugin</th></tr></thead>
+      <tbody>
+        <tr><td>Co to je</td><td>Jeden recept (<code>SKILL.md</code>)</td><td>Kuchařka: skilly, subagenti, příkazy</td></tr>
+        <tr><td>Vlastní subagenti</td><td>ne</td><td>ano, každý s vlastním modelem</td></tr>
+        <tr><td>Volba modelů</td><td>jeden kontext, jeden model</td><td>Haiku, Sonnet nebo Opus podle úkolu</td></tr>
+        <tr><td>Volání</td><td><code>/muj-report</code></td><td><code>/content-decay:run</code></td></tr>
+        <tr><td>Ladění</td><td>přepíšeš instrukce</td><td>A/B test promptů i modelů subagentů</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Sdílení s kolegy zvládne i skill. Důvod pro plugin jsou subagenti a ladění procesu.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-16 · jak to do sebe zapadá -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · slovník</div>
+    <h2 class="r">Jak to do sebe zapadá</h2>
+    <div class="hier r">
+      <div class="box-cc">
+        <div class="lab">Claude Code — agent v terminálu</div>
+        <div class="cols">
+          <div class="box-plugin">
+            <div class="lab">Plugin — instaluje a verzuje se jako celek</div>
+            <div class="tiles">
+              <div class="tile"><b>Skilly</b><span>recepty s postupem</span></div>
+              <div class="tile"><b>Subagenti</b><span>kolegové s čistým kontextem</span></div>
+              <div class="tile"><b>Příkazy</b><span>/plugin:příkaz</span></div>
+              <div class="tile"><b>Hooky</b><span>automatické reakce</span></div>
+            </div>
+          </div>
+          <div class="box-solo">
+            <div class="lab">Mimo plugin</div>
+            <div class="tile"><b>Samostatný skill</b><span>jeden recept, funguje i bez pluginu</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="plug">↕ <code>.mcp.json</code> — napojení na servery</div>
+      <div class="box-mcp">
+        <div class="lab">MCP servery — dodavatelé dat a nástrojů</div>
+        <div class="chips">
+          <span class="tag">Search Console</span>
+          <span class="tag">GA4</span>
+          <span class="tag">Marketing Miner</span>
+          <span class="tag">DataForSEO</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-17 · Codex a ostatní -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · a Codex?</div>
+    <h2 class="r">Kde jsou Codex a ostatní</h2>
+    <p class="lead wide r">Konkurenční nástroje umí v principu totéž. Liší se ekosystémem a tím, jak se to rozšiřuje. Tři věci, které se dnes naučíš, si vezmeš do kteréhokoli z nich.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">01</div><h3>Rozložit postup</h3><p>Popsat práci v krocích, které jde předat dál. Tohle je jádro celého dne.</p></div>
+      <div class="card"><div class="ic">02</div><h3>Dodat kontext</h3><p>Dát modelu data a pravidla, ne jen zadání. A pohlídat, kolik toho spolkne.</p></div>
+      <div class="card"><div class="ic">03</div><h3>Publikovat pro tým</h3><p>Z jednorázové práce udělat věc, kterou spustí i kolega.</p></div>
+    </div>
+    <p class="dim r">Mění se názvy a příkazy. Způsob přemýšlení zůstává.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-18 · orchestrace -->
+<section class="slide grad">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · orchestrace</div>
+    <h2 class="r">Orchestrace: dispečer a dělníci</h2>
+    <div class="orch r">
+      <div class="node lead">Dispečer<br><small>hlavní agent</small></div>
+      <div class="arrows">↓ zadání &nbsp;&nbsp; ↑ jen výsledek</div>
+      <div class="workers">
+        <div class="node">Dělník<br><small>čistý kontext</small></div>
+        <div class="node">Dělník<br><small>čistý kontext</small></div>
+        <div class="node">Dělník<br><small>čistý kontext</small></div>
+      </div>
+    </div>
+    <p class="lead r">Dispečer drží minimum kontextu a náročnou práci posílá dál.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-19 · orchestrace má režii -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · cena orchestrace</div>
+    <h2 class="r">Orchestrace má režii</h2>
+    <p class="lead r">Orchestrace spotřebuje víc tokenů celkem — každý subagent dostane instrukce a kontext znovu. Většinu tokenů ale spotřebují levné modely, takže celý běh vyjde levněji.</p>
+    <ul class="bullets r-children">
+      <li><b>Vyplatí se</b>, když se dá práce rozdělit na kusy, které na sobě nezávisí — deset stránek, pět okruhů auditu.</li>
+      <li><b>Nevyplatí se</b> na jeden krátký dotaz. Režie převáží.</li>
+      <li>Třetí přínos je <b>čistý kontext</b>: hlavní agent nikdy nevidí deset stránek surových dat.</li>
+    </ul>
+    <p class="callout r">Neodhadujeme — změřili jsme to na reálném běhu. Čísla na dalším slidu.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-20 · skill vs plugin v číslech -->
+<section class="slide grad">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · cena orchestrace</div>
+    <h2 class="r">Skill vs. plugin v číslech</h2>
+    <p class="lead wide r">Stejnou analýzu jsme pustili dvakrát se stejnými vstupy. Nejdřív jako skill — celý běh v jednom kontextu na Opusu. Pak jako plugin, který práci rozdělil mezi subagenty.</p>
+    <div class="stats r-children">
+      <div class="stat"><div class="n">−45&nbsp;%</div><div class="lab">cena celého běhu</div></div>
+      <div class="stat"><div class="n">2,5×</div><div class="lab">rychlejší běh (20 → 8 minut)</div></div>
+      <div class="stat"><div class="n">81&nbsp;%</div><div class="lab">tokenů odvedly levné modely</div></div>
+    </div>
+    <p class="lead wide r">Rozdělení tokenů: Haiku 59 % · Sonnet 23 % · Opus 19 %. Celkem jich padlo víc než u skillu.</p>
+    <p class="callout r">Stejné vstupy, stejně kvalitní výstup.</p>
+  </div>
+  <div class="source">interní eval pluginu content-decay · červen 2026</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-21 · čísla počítá skript -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · princip re:LLMO</div>
+    <h2 class="r">Čísla počítá skript, model je vykládá</h2>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Skript</h3>
+        <ul>
+          <li>Sečte, seřadí, porovná období.</li>
+          <li>Stejný vstup, vždy stejný výstup.</li>
+          <li>Deset tisíc řádků ho nerozhodí.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Model</h3>
+        <ul>
+          <li>Hledá příčiny a souvislosti.</li>
+          <li>Píše závěry a doporučení.</li>
+          <li>Aritmetiku odhaduje — u čísel to nestačí.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Proto mají pluginy re:LLMO složku <code>scripts/</code>. Výpočty jedou v Pythonu, model dostane hotová čísla.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-22 · Ukázka 3: Search Console -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Ukázka · na plátně</div>
+    <h2 class="r">Příležitosti a kanibalizace ze Search Console</h2>
+    <p class="lead wide r">Dvě automatizace nad daty z vlastní Search Console. Přihlášení jedním kliknutím, bez Cloud Console.</p>
+    <ul class="bullets r-children">
+      <li><b>Skript stáhne a spočítá.</b> Denní data, křivka prokliků z vlastních dat, porovnání stránek den po dni. Ve složce <code>scripts/</code> je vidět, co přesně.</li>
+      <li><b>Model dostane čísla, ne tabulku.</b> Do kontextu jde pár desítek řádků výsledku, ne tisíce řádků exportu.</li>
+      <li><b>Výklad píše model.</b> Co s nálezem udělat a proč — to je ta část, kde má úsudek cenu.</li>
+    </ul>
+  </div>
+  <div class="source">pluginy rellmo-keyword-opportunity a rellmo-keyword-cannibalization</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-23 · kanibalizace -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · jak číst report</div>
+    <h2 class="r">Kanibalizace klíčových slov</h2>
+    <p class="lead r">Dvě nebo více stránek soupeří o stejný dotaz. Vyber si jednu cestu:</p>
+    <ul class="bullets r-children">
+      <li>Sloučit obě stránky do jedné.</li>
+      <li>Nastavit silnější stránku jako kanonickou.</li>
+      <li>Rozdělit záměr — každé stránce přiřadit jiný dotaz.</li>
+      <li>Nechat to být.</li>
+    </ul>
+    <p class="callout r">Nejčastější chyba: ne každá dvojice stránek na jeden dotaz je problém.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-24 · falešný poplach -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · proč tomu můžeš věřit</div>
+    <h2 class="r">Jak se pozná falešný poplach.</h2>
+    <p class="lead wide r">Kdyby stačilo „dvě stránky na jeden dotaz", byl by report plný nesmyslů. Proto se porovnává den po dni.</p>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Není kanibalizace klíčových slov</h3>
+        <ul>
+          <li>Google jednou vystřídal stránky a pak se ustálil.</li>
+          <li>Jedna stránka dotaz drží a druhá se mihla dvakrát.</li>
+          <li>Dotaz má málo zobrazení celkem.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Je kanibalizace klíčových slov</h3>
+        <ul>
+          <li>Stránky se střídají opakovaně po celé období.</li>
+          <li>Ani jedna stránka dotaz nedrží — obě jsou pod svým maximem.</li>
+          <li>Dotaz má objem, který stojí za zásah.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="dim r">Report proto porovnává denní maximum dotazu s pokrytím po jednotlivých stránkách, ne součty za celé období.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-25 · příležitosti -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · jak číst report</div>
+    <h2 class="r">Příležitosti ze Search Console</h2>
+    <p class="lead r">Stránky, které se už někde umísťují a mají největší prostor ke zlepšení. Žádná rešerše nových klíčových slov.</p>
+    <div class="report r">
+      <div class="top"><span class="dot"></span><span class="dot y"></span><span class="dot g"></span>opportunities</div>
+      <div class="row"><div class="lbl"><b>Propad prokliku</b><span>hodně zobrazení, málo prokliků oproti tvé vlastní křivce</span></div><span class="badge warn">CTR_GAP</span></div>
+      <div class="row"><div class="lbl"><b>Těsně za hranicí</b><span>dotaz na pozici, ze které je blízko nahoru</span></div><span class="badge ok">STRIKING_DISTANCE</span></div>
+      <div class="row"><div class="lbl"><b>Podezřele vysoké CTR</b><span>skoro vždy dotaz na značku, který se má vyloučit</span></div><span class="badge bad">brand</span></div>
+    </div>
+    <p class="callout r">Praktická cesta k výsledku — nic nového nemusíš vytvářet.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-26 · odhad je dolní mez -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · proč jsou čísla opatrná</div>
+    <h2 class="r">Odhad je dolní mez, ne slib.</h2>
+    <div class="two lean top r">
+      <ul class="bullets">
+        <li><b>Křivku počítáme z tvých dat, ne z průmyslových průměrů.</b> Nejprve vyloučíme dotazy na značku.</li>
+        <li><b>Search Console část dotazů skrývá.</b> Anonymizované dotazy v datech nejsou, takže skutečný objem je vyšší než ten, se kterým se počítá.</li>
+        <li><b>Proto se uvádí rozpětí</b>, ne jedno číslo. Spodní hranice je to, co se dá obhájit.</li>
+      </ul>
+      <div class="stack-sm">
+        <div class="card">
+          <div class="ic">Co s tím v praxi</div>
+          <h3>Řaď, neplánuj podle absolutních čísel</h3>
+          <p>Odhad slouží k pořadí, co dělat první. Ne k tomu, aby ses zavázal k počtu prokliků.</p>
+        </div>
+        <p class="callout">Když ti nějaký nástroj slíbí přesný počet prokliků po optimalizaci, počítá s čísly, která nemá.</p>
+      </div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-27 · MCP nebo skript -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · kdy co použít</div>
+    <h2 class="r">MCP, nebo skript přes API</h2>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>MCP</h3>
+        <ul>
+          <li>Model se rozhoduje za běhu, co udělá dál.</li>
+          <li>Hodí se na průzkum, když ještě nevíš, co hledáš.</li>
+          <li>Výsledek prochází rozhovorem — model ho vidí celý.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Skript přes API nebo CLI</h3>
+        <ul>
+          <li>Používej, když postup znáš a stahuješ velký objem.</li>
+          <li>Deterministické, dávkové, opakovatelné.</li>
+          <li>Skript běží mimo model. Vrátí mu výsledek, ne celý objem dat.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Obvyklý vývoj: prozkoumáš přes MCP, postup se ustálí, převedeš ho na skript. Stejný výsledek, zlomek kontextu.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-28 · Ukázka 4: Marketing Miner MCP vs skript -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Ukázka · na plátně</div>
+    <h2 class="r">Stejná data dvakrát: přes MCP a přes skript</h2>
+    <p class="lead wide r">Marketing Miner má MCP server. Nejdřív se ho zeptáme na pár věcí volně, pak stejná data stáhne skript z předchozí ukázky.</p>
+    <ul class="bullets r-children">
+      <li><b>Průzkum přes MCP.</b> Otázka, odpověď, další otázka. Model rozhoduje za běhu, co si vyžádá. Sleduj, kolik toho přijde do kontextu.</li>
+      <li><b>Známý postup přes skript.</b> Stejná data pro celý web najednou, uložená na disk, do modelu jen souhrn.</li>
+      <li><b><code>/context</code> po obou.</b> Rozdíl v zaplnění okna je celý argument z minulého slidu.</li>
+    </ul>
+  </div>
+  <div class="source">MCP server Marketing Miner · skripty pluginů re:LLMO</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-29 · MCP servery pro marketing -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · co je k dispozici</div>
+    <h2 class="r">MCP servery pro marketing</h2>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Data o vyhledávání</div><h3>Hotové servery</h3><p>Search Console, Marketing Miner, DataForSEO. Dotazy, pozice, objemy klíčových slov.</p></div>
+      <div class="card"><div class="ic">Web, analytika, reklama</div><h3>Hotové servery</h3><p>GA4 na chování uživatelů, Google Ads a Meta Ads na kampaně, Mergado na feedy, GitHub na spolupráci.</p></div>
+      <div class="card"><div class="ic">Postavené u nás</div><h3>Vlastní servery</h3><p>Sklik a interní Allfred. Když hotový server neexistuje, postavíme si ho.</p></div>
+    </div>
+    <p class="dim r">Hotových serverů přibývá každý měsíc. A co server nemá, má skoro vždycky API — o tom v Bloku 3.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-30 · co už neplatí -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · co už neplatí</div>
+    <h2 class="r">Co se na tomhle změnilo</h2>
+    <p class="lead r dead">MCP servery ti sežerou desítky tisíc tokenů, ještě než napíšeš první prompt.</p>
+    <p class="lead r">Dnes se definice nástrojů odkládají. Na začátku spuštění se načtou jen jména nástrojů a instrukce serveru. Další MCP server dnes kontextové okno prakticky nezatíží.</p>
+    <p class="dim r">Proto se tohle učíme z dokumentace, ne z loňské prezentace.</p>
+  </div>
+  <div class="source">code.claude.com/docs/en/mcp</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-31 · model si umí vymyslet nález -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · důvěra</div>
+    <h2 class="r">Model si umí vymyslet i nález v auditu</h2>
+    <p class="lead wide r">Model doplňuje nejpravděpodobnější pokračování textu. Když mu chybí data, doplní je — a zní přitom naprosto jistě.</p>
+    <ul class="bullets r-children">
+      <li>Každé tvrzení v reportu musí mít <b>zdroj v datech</b>. Tvrzení bez zdroje škrtni.</li>
+      <li>Čísla nech <b>počítat skriptu</b> — viz předchozí slidy.</li>
+      <li>Postupy re:LLMO proto měříme <b>evalem</b>: výstup se kontroluje proti surovým datům.</li>
+    </ul>
+    <p class="callout r">„Používat Claude Code správně a nevymýšlet vymyšlené." Přesně tohle napsal jeden účastník do přihlášky na srpnové školení.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-32 · co je token -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · než začneme počítat</div>
+    <h2 class="r">Co je vlastně token</h2>
+    <p class="lead wide r">Model nečte slova, ale tokeny — kousky textu. Všechno, co dnes počítáme (limity, cena, kontext), se počítá v nich.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Kousek textu</div><h3>≈ 4 znaky</h3><p>Běžné slovo je jeden až tři tokeny. Tahle věta má zhruba 12 tokenů.</p></div>
+      <div class="card"><div class="ic">Platí se oboje</div><h3>Vstup i výstup</h3><p>Model platí za to, co čte, i za to, co píše. Dlouhý kontext prodražuje každé další kolo.</p></div>
+      <div class="card"><div class="ic">Čeština</div><h3>Je dražší</h3><p>Diakritika a skloňování spotřebují víc tokenů než angličtina.</p></div>
+    </div>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-33 · limit výstupu -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · kde kontext bolí</div>
+    <h2 class="r">Kde kontext naráží na limit: výstup</h2>
+    <table class="tbl r">
+      <thead><tr><th>Co</th><th>Limit</th></tr></thead>
+      <tbody>
+        <tr><td>Varování</td><td>nad 10 000 tokeny, pevná hranice</td></tr>
+        <tr><td>Výchozí strop</td><td>25 000 tokenů</td></tr>
+        <tr><td>Zvýšení stropu</td><td>proměnná <code>MAX_MCP_OUTPUT_TOKENS</code></td></tr>
+        <tr><td>Jeden nástroj</td><td>až 500 000 znaků přes <code>anthropic/maxResultSizeChars</code></td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Filtruj ve skriptu. Mezivýsledek ulož na disk. Modelu vrať pět řádků, ne deset tisíc.</p>
+  </div>
+  <div class="source">code.claude.com/docs/en/mcp</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-34 · co plní kontext -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · řízení kontextu</div>
+    <h2 class="r">Co ti kontextové okno plní</h2>
+    <div class="bars r">
+      <div class="bar"><div class="blab"><b>Výstupy nástrojů</b></div><div class="btrack"><div class="bfill" style="--w:78%"></div></div></div>
+      <div class="bar"><div class="blab"><b>Načtené soubory</b></div><div class="btrack"><div class="bfill" style="--w:52%"></div></div></div>
+      <div class="bar"><div class="blab"><b>Historie konverzace</b></div><div class="btrack"><div class="bfill gold" style="--w:34%"></div></div></div>
+      <div class="bar"><div class="blab"><b>Popisy skillů a nástrojů</b></div><div class="btrack"><div class="bfill muted" style="--w:8%"></div></div></div>
+    </div>
+    <p class="lead wide r">Pořadí platí, poměry jsou ilustrativní — u každé práce vypadají jinak. Podstatné je, na co se to nejčastěji svádí: popisy skillů a nástrojů jsou až poslední.</p>
+    <p class="callout r">Jeden nástroj, který vrátí deset tisíc řádků, spolkne víc než hodina povídání.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-35 · REF: /context -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · referenční</div>
+    <h2 class="r">Jak číst výpis z <code>/context</code>.</h2>
+    <table class="tbl r">
+      <thead><tr><th>Položka</th><th>Co znamená</th><th>Co s tím</th></tr></thead>
+      <tbody>
+        <tr><td>System prompt, nástroje</td><td>Základ, který je tam vždy.</td><td>Neřeš. Nejde ovlivnit.</td></tr>
+        <tr><td>Messages</td><td>Historie tvého rozhovoru.</td><td>Roste sama. <code>/compact</code> nebo <code>/clear</code>.</td></tr>
+        <tr><td>MCP tools</td><td>Nástroje z připojených serverů.</td><td>Dnes mají malý podíl. Definice se dotahují až při použití.</td></tr>
+        <tr><td>Memory files</td><td><code>CLAUDE.md</code> a paměť.</td><td>Když je to hodně, je <code>CLAUDE.md</code> moc dlouhý.</td></tr>
+        <tr><td>Free space</td><td>Kolik zbývá.</td><td>Když volného místa ubývá, začni uklízet včas.</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Když se model začne ptát na věci, které jsi mu už řekl, je to skoro vždycky plné okno — ne hloupost modelu.</p>
+  </div>
+</section>
+
+<!-- S1-36 · čtyři příkazy -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · úklid kontextu</div>
+    <h2 class="r">Čtyři příkazy, které si zapamatuj</h2>
+    <div class="cards c4 r-children">
+      <div class="card"><div class="ic">01</div><h3>/usage</h3><p>Kolik tokenů jsi spotřeboval a jak se využití vyvíjí.</p></div>
+      <div class="card"><div class="ic">02</div><h3>/context</h3><p>Co ti zabírá kontext a co s tím.</p></div>
+      <div class="card"><div class="ic">03</div><h3>/compact</h3><p>Sbalí konverzaci, jede se dál.</p></div>
+      <div class="card"><div class="ic">04</div><h3>/clear</h3><p>Čistý stůl mezi nesouvisejícími úkoly.</p></div>
+    </div>
+    <p class="dim r"><code>/rewind</code> je záchrana, když Claude odbočí jinam, než jsi chtěl.</p>
+    <p class="callout r">Pravidlo: <code>/clear</code> spouštěj mezi úkoly, které spolu nesouvisí.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-37 · REF: compact/clear/rewind -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · referenční</div>
+    <h2 class="r">Kdy <code>/compact</code>, kdy <code>/clear</code>, kdy <code>/rewind</code>.</h2>
+    <div class="cards c3 r-children">
+      <div class="card">
+        <div class="ic">/compact</div>
+        <h3>Pokračuješ ve stejné práci</h3>
+        <p>Konverzace je dlouhá, ale kontext z ní ještě potřebuješ. Shrne, co bylo, a jede dál.</p>
+      </div>
+      <div class="card">
+        <div class="ic">/clear</div>
+        <h3>Začínáš něco jiného</h3>
+        <p>Předchozí práce už nesouvisí. Držet ji je jen zátěž — a model se podle ní chybně rozhoduje.</p>
+      </div>
+      <div class="card">
+        <div class="ic">/rewind</div>
+        <h3>Odbočil špatným směrem</h3>
+        <p>Vrátí konverzaci o kus zpátky. Rychlejší než vysvětlovat, co udělal špatně.</p>
+      </div>
+    </div>
+    <p class="callout r">Nejčastější chyba: nechat jeden rozhovor běžet celý den. Odpoledne v něm pořád zůstává ranní kontext.</p>
+  </div>
+</section>
+
+<!-- S1-38 · limity -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · proč mi mizí limity</div>
+    <h2 class="r">Limit se nepočítá na dotazy, ale na tokeny</h2>
+    <p class="lead wide r">Jedna velká analýza spotřebuje víc než mnoho krátkých otázek. Dlouhá konverzace proto stojí při <b>každé</b> další odpovědi — posílá se celá.</p>
+    <ul class="bullets r-children">
+      <li><code>/usage</code> ukáže, kolik zbývá a kdy se okno obnoví.</li>
+      <li><b>Nejlevnější úspora je <code>/clear</code></b> mezi úkoly. Nic tě nestojí a bere největší položku.</li>
+      <li>U velkých analýz vynech kroky, které jsou druhým průchodem přes stejná data.</li>
+      <li>Mechanickou práci pusť na levnějším modelu. Drahý model má cenu tam, kde se rozhoduje.</li>
+    </ul>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-39 · bezpečnost -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · bezpečnost</div>
+    <h2 class="r">Co nikdy neposílat ven a co nikdy neukládat do commitu</h2>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">Nikdy do promptu</div>
+        <ul class="bullets">
+          <li>Hesla a API klíče. Patří do proměnných prostředí.</li>
+          <li>Osobní údaje zákazníků. Do analýzy je nepotřebuješ.</li>
+        </ul>
+      </div>
+      <div class="stack-sm">
+        <div class="ic">Nikdy do repozitáře</div>
+        <ul class="bullets">
+          <li><code>.env</code>, <code>*.key</code>, soubory s <code>token</code> v názvu.</li>
+          <li><code>.mcp.json</code> — bývají v něm přihlašovací údaje.</li>
+          <li>Datové exporty. <code>*.csv</code>, <code>*.duckdb</code>, crawly.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Klíč uložený v commitu zůstane v historii repozitáře i po smazání souboru. Proto <code>/skoleni-start</code> zakládá <code>.gitignore</code> jako první krok dne.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S1-40 · REF: kam s klíči -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · referenční</div>
+    <h2 class="r">Kam s klíči — tři místa, žádné čtvrté.</h2>
+    <table class="tbl r">
+      <thead><tr><th>Kde</th><th>Kdy</th><th>Jak</th></tr></thead>
+      <tbody>
+        <tr><td><b>Při přidání MCP serveru</b></td><td>Server potřebuje přihlášení.</td><td class="mono">claude mcp add … -e KLIC=hodnota</td></tr>
+        <tr><td><b>userConfig v pluginu</b></td><td>Píšeš plugin pro ostatní.</td><td>Claude Code se zeptá při instalaci; <code>sensitive: true</code> uloží do klíčenky.</td></tr>
+        <tr><td><b>Soubor <code>.env</code></b></td><td>Vlastní skript v pracovní složce.</td><td>Plus řádek <code>.env</code> v <code>.gitignore</code>.</td></tr>
+      </tbody>
+    </table>
+    <p class="lead wide r">Skript pak klíč čte z proměnné prostředí, ne z textu skillu:</p>
+    <div class="cmd r">os.environ["CLAUDE_PLUGIN_OPTION_DATAFORSEO_PASSWORD"]</div>
+    <p class="callout r">Než někam zkopíruješ chybovou hlášku, přečti si ji. Bývají v nich celé adresy i s tokenem.</p>
+  </div>
+</section>
+
+<!-- S1-41 · REF: Search Console bez Cloud Console -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · referenční</div>
+    <h2 class="r">Napojení Search Console bez Cloud Console.</h2>
+    <p class="lead wide r">Pluginy re:LLMO si nesou vlastní přihlášení. Jedno kliknutí v prohlížeči, čtecí oprávnění, žádný servisní účet.</p>
+    <ol class="steps r-children">
+      <li>Řekni, že chceš spustit kanibalizaci nebo příležitosti nad svou doménou. Přihlášení proběhne v prvním kroku.</li>
+      <li><b>Odkaz z terminálu otevři v libovolném prohlížeči.</b> Nemusí to být ten, co se sám otevřel.</li>
+      <li><b>Nekopíruj URL z adresního řádku</b> otevřeného prohlížeče jinam. Google ji přepíše na adresu vázanou na jednu relaci a jinde nebude fungovat.</li>
+      <li>Vyber property. Doménová (<code>sc-domain:</code>) má přednost před URL variantou.</li>
+      <li>Token se uloží do domovské složky. Při dalším běhu ho obvykle nemusíš zadávat znovu.</li>
+    </ol>
+    <p class="callout r">Property s oprávněním <b>siteUnverifiedUser</b> je v seznamu vidět, ale každý dotaz na ni vrátí 403. Vyber jinou.</p>
+  </div>
+</section>
+
+<!-- S1-42 · REF: napojení MCP serveru -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · referenční</div>
+    <h2 class="r">Napojení MCP serveru krok za krokem.</h2>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">01 · co už máš</div>
+        <div class="cmd">claude mcp list</div>
+        <div class="ic">02 · přidat server přes npx</div>
+        <div class="cmd">claude mcp add &lt;nazev&gt; \
+  -e KLIC=hodnota \
+  -- npx -y &lt;balicek&gt;</div>
+        <div class="ic">03 · přidat server přes HTTP</div>
+        <div class="cmd">claude mcp add --transport http \
+  &lt;nazev&gt; --scope user &lt;url&gt;</div>
+      </div>
+      <div class="stack-sm">
+        <ul class="bullets">
+          <li><b>Po přidání restartuj Claude Code.</b> Server se objeví mezi nástroji až potom.</li>
+          <li>Většina serverů má hotový příkaz na svém webu. Nevymýšlej ho.</li>
+          <li><code>claude mcp list</code> ukazuje i stav: připojeno, čeká na přihlášení, selhalo.</li>
+          <li>Před přidáním ověř, zda server už není připojený. Duplicitní záznam může způsobit problém.</li>
+        </ul>
+        <p class="callout">Servery, které chtějí servisní účet v Google Cloud Console, si nech na později. Pro Search Console je jednodušší cesta na předchozím slidu.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S1-43 · shrnutí teorie -->
+<section class="slide grad">
+  <div class="inner stack">
+    <div class="kicker r">Blok 1 · shrnutí</div>
+    <h2 class="r">Co si z teorie odnést</h2>
+    <div class="cards c4 r-children">
+      <div class="card"><div class="ic">Slovník</div><h3>Čtyři součástky</h3><p>Skill je recept, MCP server dodává data, plugin to balí do celku, subagent odpracuje dílčí úkol.</p></div>
+      <div class="card"><div class="ic">Dělba práce</div><h3>Levné modely na dřinu</h3><p>Dílčí úkoly deleguj subagentům. Změřeno: levnější i rychlejší, stejná kvalita.</p></div>
+      <div class="card"><div class="ic">Důvěra</div><h3>Matiku nech na skriptech</h3><p>Model počty jen odhaduje. Počítá skript a každé tvrzení v reportu má zdroj v datech.</p></div>
+      <div class="card"><div class="ic">Kontext</div><h3>Hlídej si kontext</h3><p>Okno plní hlavně výstupy nástrojů. <code>/clear</code> mezi úkoly je nejlevnější úspora.</p></div>
+    </div>
+    <p class="callout r">Tolik teorie. Po pauze si postavíš vlastní automatizaci.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- ================= fragment 2 ================= -->
+<!-- S2-01 · divider Blok 2 -->
+<section class="slide divider">
+  <div class="inner stack">
+    <div class="num r">Blok 2</div>
+    <h2 class="r">Postav si vlastní automatizaci</h2>
+    <p class="lead wide r">Osm kroků, které dnes projdeš jednou s vodítky. Doma je zopakuješ na čemkoli dalším.</p>
+  </div>
+</section>
+
+<!-- S2-02 · postup v osmi krocích -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · postup</div>
+    <h2 class="r">Postup v osmi krocích</h2>
+    <p class="lead r dim">Stejný postup vede <code>/skoleni-automatizace</code> a stejný je v návodu v pluginu.</p>
+    <ol class="steps r-children">
+      <li><b>Pojmenuj opakovaný úkol.</b> Co děláš každý týden ručně a umíš popsat.</li>
+      <li><b>Zadání.</b> Brainstorming, dokud není jasný vstup, výstup a „hotovo, když".</li>
+      <li><b>Zúžení zadání.</b> Jeden vstup, jeden výstup. „A" mezi dvěma úkoly znamená dva skilly.</li>
+      <li><b>Data.</b> MCP na průzkum, skript na známý postup a objem, nebo žádná data.</li>
+      <li><b>Kostra.</b> Skill nepíšeš od nuly — píšou ho hotové skilly.</li>
+      <li><b>Popis jako rozhodovací věta.</b> Kdy se má spustit, ne co dělá.</li>
+      <li><b>Zkouška naostro</b> na malém vstupu. Když selže, zúžit, ne opakovat.</li>
+      <li><b>Zabalení a sdílení.</b> Plugin, verze, repozitář nebo marketplace.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- S2-03 · daň za špatné zadání -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 2 · než začneš psát</div>
+    <h2 class="r">Daň za špatné zadání</h2>
+    <p class="lead r dim">Čas ušetřený na zadání strávíš později opravami.</p>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Bez jasného zadání</h3>
+        <ul>
+          <li>Zadání sepíšeš narychlo a hned začneš pracovat.</li>
+          <li>Model hádá, co jsi měl na mysli.</li>
+          <li>Opravy pak trvají celé hodiny.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Se zadáním</h3>
+        <ul>
+          <li>Čas věnuješ tomu, co skill má a nemá dělat.</li>
+          <li>Model se nejdřív ptá a ty odpovídáš.</li>
+          <li>Oprav je potom méně.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2-04 · nejdřív plánuj -->
+<section class="slide">
+  <div class="inner two top lean">
+    <div class="stack r">
+      <div class="kicker">Blok 2 · krok 2 · plánování</div>
+      <h2>Nejdřív plánuj,<br>potom pracuj</h2>
+      <p class="lead">Nepiš celé zadání sám. Nech Clauda, aby se nejdřív ptal.</p>
+      <p class="dim">Ve vlastním zadání snadno přehlédneš chyby a mezery. Postupné otázky je odhalí rychleji než kontrola hotového textu.</p>
+      <p class="callout">Claude Code na to má vlastní režim: <b>plan mode</b>. Nejdřív si přečte, co potřebuje, a napíše, co chce udělat — a nesáhne na nic, dokud to neschválíš. <b>Shift+Tab</b>, nebo prompt začni <code>/plan</code>.</p>
+    </div>
+    <div class="code r">Mám nápad: [dvě věty o tom,
+co má skill umět].
+Potřebuju z toho udělat skill.
+
+Začni tím, že se mě budeš
+postupně vyptávat, ne všechno
+naráz.</div>
+  </div>
+</section>
+
+<!-- S2-05 · superpowers: proč nejdřív plánovat -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 2 · superpowers</div>
+    <h2 class="r">Proč nejdřív plánovat</h2>
+    <p class="lead wide r">Zadáš stavbu rovnou a dostaneš první nápad, co model napadl. Skilly ze sady superpowers ho nutí nejdřív přemýšlet. <code>/skoleni-start</code> ti je ráno nainstaloval.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">brainstorming</div><h3>Ujasní zadání</h3><p>Ptá se, dokud nezná záměr. Co má vzniknout, pro koho a kdy je hotovo.</p></div>
+      <div class="card"><div class="ic">writing-plans</div><h3>Sepíše plán</h3><p>Plán je soubor: kroky, dotčené soubory, kritéria hotového. Před stavbou ho schválíš.</p></div>
+      <div class="card"><div class="ic">executing-plans</div><h3>Plní krok za krokem</h3><p>Postupuje podle plánu a po každém kroku se zastaví na kontrolu.</p></div>
+    </div>
+    <p class="callout r">Plán přežije konverzaci. Zítra na něj navážeš v čistém kontextu, bez vysvětlování od začátku.</p>
+  </div>
+  <div class="source">github.com/obra/superpowers</div>
+</section>
+
+<!-- S2-06 · tvorba vlastního skillu -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 5 · čím to napsat</div>
+    <h2 class="r">Skill nemusíš psát ručně od nuly</h2>
+    <p class="lead wide r">Skill je taky nová věc. A na psaní skillů existují hotové skilly — vedou tě strukturou, popisem i testem.</p>
+    <div class="cards c2 r-children">
+      <div class="card"><div class="ic">01 · výchozí cesta</div><h3>writing-skills</h3><p>Ze sady superpowers. Hlídá, aby model skill našel a instrukce dodržel. Součástí je test, že skill funguje. Navazuje na brainstorming a plán ze stejné sady.</p></div>
+      <div class="card"><div class="ic">02 · druhá možnost</div><h3>skill-creator</h3><p>Oficiální skill od Anthropicu. Provede tě od nápadu po hotovou složku se <code>SKILL.md</code>. Hodí se, když chceš průvodce bez celé sady superpowers.</p></div>
+    </div>
+    <p class="callout r">Stejný postup jako u čehokoli nového: nejdřív brainstorming a plán, pak stavba, nakonec test.</p>
+  </div>
+</section>
+
+<!-- S2-07 · z čeho se skill skládá -->
+<section class="slide soft">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 2 · krok 5 · stavba</div>
+      <h2>Z čeho se skill skládá</h2>
+      <div class="code">muj-skill/
+<span class="c">├── SKILL.md</span>
+<span class="c">├── references/</span>
+<span class="c">├── scripts/</span>
+<span class="c">└── assets/</span></div>
+    </div>
+    <ol class="steps r-children">
+      <li><b>SKILL.md</b> obsahuje samotný postup krok za krokem.</li>
+      <li>Do <b>references/</b> patří delší podklady. Načtou se jen v případě potřeby.</li>
+      <li>V <b>scripts/</b> jsou skripty pro úlohy, které mají pokaždé proběhnout stejně.</li>
+      <li>Do <b>assets/</b> patří obrázky, fonty a šablony, které skill používá.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- S2-08 · REF: frontmatter -->
+<section class="slide reference">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 2 · referenční</div>
+      <h2>Frontmatter řádek po řádku</h2>
+      <div class="code"><span class="c">---</span>
+<span class="k">name</span>: mesicni-report
+<span class="k">description</span>: Sestaví měsíční…
+<span class="k">license</span>: LicenseRef-Firma
+<span class="k">allowed-tools</span>: Read, Write, Edit
+<span class="k">metadata</span>:
+  author: Jméno
+  version: 1.0.0
+  category: reporting
+<span class="c">---</span></div>
+    </div>
+    <table class="tbl r">
+      <thead><tr><th>Klíč</th><th>Co s ním</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">name</td><td>Povinný. Kebab-case, musí sedět s názvem složky. Z něj vzniká <code>/příkaz</code>.</td></tr>
+        <tr><td class="mono">description</td><td>Povinný. Je to hlavní podklad pro rozhodnutí modelu. Má omezenou délku a ve výpisech se zobrazuje jeho začátek.</td></tr>
+        <tr><td class="mono">license</td><td>Volitelný. Vyplň, když skill dáváš dál.</td></tr>
+        <tr><td class="mono">allowed-tools</td><td>Volitelný. Co se nemusí odklikávat. <b>Není to bezpečnostní omezení.</b></td></tr>
+        <tr><td class="mono">metadata</td><td>Volitelný. Autor, verze, kategorie.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S2-09 · description rozhoduje -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 6 · klíčový slide</div>
+    <h2 class="r">O spuštění rozhoduje description</h2>
+    <p class="lead r">Když model vybírá skill, vidí jen tuto větu. Podle ní pozná, zda má skill použít.</p>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Příliš obecný popis</h3>
+        <ul>
+          <li>„Skill pro reporting."</li>
+          <li>Říká, co skill je, ale ne kdy ho použít.</li>
+          <li>Model nepozná, zda se pro daný dotaz hodí.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Rozhodovací věta</h3>
+        <ul>
+          <li>Sestaví měsíční report ze Search Console a GA4 v naší značce.</li>
+          <li>Použij, když někdo řekne „měsíční report", „report pro klienta" nebo „shrň minulý měsíc".</li>
+          <li>Nepoužívej na jednorázový dotaz na jedno číslo.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">V rozhodovací větě popiš, kdy se má skill spustit a kdy ne. Přidej konkrétní formulace, které ho mají spustit.</p>
+  </div>
+</section>
+
+<!-- S2-10 · popis piš slovy -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 6 · jak to napsat</div>
+    <h2 class="r">Popis piš slovy, kterými o té práci mluvíš.</h2>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">Před</div>
+        <div class="code">description: Nástroj pro
+tvorbu prezentací
+ve firemním designu.</div>
+        <p class="dim">Popisuje, co skill je. Model z toho nepozná, kdy ho spustit.</p>
+      </div>
+      <div class="stack-sm">
+        <div class="ic">Po</div>
+        <div class="code">description: Vyrobí prezentaci
+nebo report ve firemních barvách,
+s naším logem a fontem. Použij,
+když uživatel řekne "udělej
+prezentaci", "hoď to do našeho
+designu" nebo "potřebuju to pro
+klienta". Nepoužívej na
+jednorázový obrázek.</div>
+      </div>
+    </div>
+    <p class="callout r">Tři věci, které v popisu musí být: <b>co to dělá</b>, <b>kdy to použít</b>, <b>kdy to nepoužít</b>.</p>
+  </div>
+</section>
+
+<!-- S2-11 · REF: jestli se skill spustí -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · referenční</div>
+    <h2 class="r">Jak zjistit, jestli se skill spustí.</h2>
+    <ol class="steps r-children">
+      <li><b>Zeptej se přímo.</b> „Kdy bys použil skill <i>jméno</i>?" Z odpovědi poznáš, na co ten popis reálně zabírá.</li>
+      <li><b>Otevři čisté okno.</b> <code>/clear</code> nebo nový terminál. Ve stejném rozhovoru, kde jsi skill psal, model doplní z paměti, co v popisu chybí.</li>
+      <li><b>Zadej úkol tak, jak by ho zadal kolega.</b> Ne podle názvu skillu, který znáš.</li>
+      <li><b>Napiš věty, na které má zabrat, a věty, na které nemá.</b> Projdi je jednu po druhé.</li>
+    </ol>
+    <table class="tbl r">
+      <thead><tr><th>Co se děje</th><th>Kde je příčina</th></tr></thead>
+      <tbody>
+        <tr><td>Nespustí se nikdy</td><td>Popis. Chybí v něm věty, kterými o té práci mluvíš.</td></tr>
+        <tr><td>Spouští se i tam, kde nemá</td><td>Popis. Chybí vylučovací věta.</td></tr>
+        <tr><td>Spustí se, ale udělá něco jiného</td><td>Tělo. Popis je v pořádku.</td></tr>
+        <tr><td>Nenabízí se v <code>/help</code></td><td>Instalace. Chybí restart nebo je špatně <code>name</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- S2-12 · tři vrstvy načítání -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · úspora kontextu</div>
+    <h2 class="r">Tři vrstvy načítání</h2>
+    <div class="cards c3 r-children">
+      <div class="card">
+        <div class="ic">Vrstva 1</div>
+        <h3>Název a popis</h3>
+        <p>Krátký záznam, který zůstává v kontextu u každého nainstalovaného skillu.</p>
+      </div>
+      <div class="card">
+        <div class="ic">Vrstva 2</div>
+        <h3>Tělo postupu</h3>
+        <p>Načte se až ve chvíli, kdy se skill spustí.</p>
+      </div>
+      <div class="card">
+        <div class="ic">Vrstva 3</div>
+        <h3>Soubory a skripty</h3>
+        <p>Načtou se podle potřeby. Skript se spouští mimo model a do kontextu se vrátí jeho výstup.</p>
+      </div>
+    </div>
+    <p class="callout r">Díky tomu se do kontextového okna nenačítá celý obsah všech nainstalovaných skillů.</p>
+  </div>
+</section>
+
+<!-- S2-13 · co patří kam -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · učební cíl bloku</div>
+    <h2 class="r">Co patří kam.</h2>
+    <p class="lead wide r">Tohle si z dnešního cvičení odnes, ať stavíš cokoli.</p>
+    <table class="tbl r">
+      <thead><tr><th>Kus kontextu</th><th>Kam</th><th>Proč</th></tr></thead>
+      <tbody>
+        <tr><td>Postup krok za krokem</td><td class="mono">SKILL.md</td><td>Načte se pokaždé, když skill běží.</td></tr>
+        <tr><td>Pravidla značky, dlouhé tabulky</td><td class="mono">references/</td><td>Načte se, až si o to tělo řekne.</td></tr>
+        <tr><td>Logo, font, šablona</td><td class="mono">assets/</td><td>Není to text ke čtení, je to soubor k použití.</td></tr>
+        <tr><td>Mechanická práce s daty</td><td class="mono">scripts/</td><td>Do modelu se nenačte vůbec. Vidí jen výsledek.</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Rozhodovací otázka: <b>potřebuje to model přečíst pokaždé?</b> Když ne, do <code>SKILL.md</code> to nepatří.</p>
+  </div>
+</section>
+
+<!-- S2-14 · skill a slash command -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · doplnění</div>
+    <h2 class="r">Skill a slash command dnes fungují stejně</h2>
+    <p class="lead r">Soubor v <code>.claude/commands/nazev.md</code> a skill v <code>.claude/skills/nazev/SKILL.md</code> fungují stejně. Oba spustíš přes <code>/nazev</code>. Dosavadní slash commandy fungují beze změny.</p>
+    <p class="callout r">Skill navíc může obsahovat celou složku s podklady. Model ho může spustit sám podle popisu.</p>
+    <p class="dim r">Starší materiály je popisují jako nahrazené, ale to už neplatí. Byly sloučené, ne nahrazené.</p>
+  </div>
+</section>
+
+<!-- S2-15 · REF: pojmenování a umístění -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · referenční</div>
+    <h2 class="r">Pojmenování a kam skill uložit.</h2>
+    <table class="tbl r">
+      <thead><tr><th>Správně</th><th>Nedělej</th><th>Proč</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">mesicni-report/</td><td class="mono">Měsíční Report/</td><td>Kebab-case, bez mezer a bez diakritiky.</td></tr>
+        <tr><td class="mono">SKILL.md</td><td class="mono">skill.md, SKILL.MD</td><td>Rozlišuje se velikost písmen.</td></tr>
+        <tr><td class="mono">muj-audit/</td><td class="mono">claude-audit/</td><td>Prefixy <code>claude-</code> a <code>anthropic-</code> jsou rezervované.</td></tr>
+      </tbody>
+    </table>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">Jen pro tuhle složku</div>
+        <div class="cmd">.claude/skills/muj-skill/SKILL.md</div>
+        <p class="dim">Platí v jednom projektu. Hodí se na skilly svázané s konkrétním webem nebo klientem.</p>
+      </div>
+      <div class="stack-sm">
+        <div class="ic">Všude</div>
+        <div class="cmd">~/.claude/skills/muj-skill/SKILL.md</div>
+        <p class="dim">Platí pro všechny složky. Vlastní skilly, které chceš mít všude, patří sem.</p>
+      </div>
+    </div>
+    <p class="callout r">Nová složka <code>.claude/skills/</code> se načte až po restartu. Existující složka ne — do té můžeš přidávat skilly za běhu.</p>
+  </div>
+</section>
+
+<!-- S2-16 · zúžení zadání -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 3</div>
+    <h2 class="r">Zúžení zadání: jeden vstup, jeden výstup</h2>
+    <p class="lead wide r">Rozsah je to, na čem skilly nejčastěji selhávají. Ne chybějící znalost nástroje.</p>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Široké zadání</h3>
+        <ul>
+          <li>„Udělá audit, napíše plán <b>a</b> rozešle ho týmu."</li>
+          <li>Nemá jeden jasný vstup ani jeden jasný výstup.</li>
+          <li>Selže uprostřed a nepoznáš kde.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Zúžené zadání</h3>
+        <ul>
+          <li>„Z exportu ze Search Console udělá seznam stránek k opravě."</li>
+          <li>Vstup: jeden soubor. Výstup: jedna tabulka.</li>
+          <li>Zbytek je nápad na příště, ne škrtnutá práce.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Otázka, která zužuje sama: „Kdybys to pustil hned teď, na jeden vstup, co by z toho vzniklo jako první?"</p>
+  </div>
+</section>
+
+<!-- S2-17 · odkud si skill vezme data -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 4</div>
+    <h2 class="r">Odkud si skill vezme data</h2>
+    <p class="lead wide r">Tahle otázka padá jen tam, kde skill s daty pracuje. Text nebo dokument bez datového zdroje ji přeskočí.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">MCP server</div><h3>Průzkum</h3><p>Ještě nevíš přesně, co hledáš. Model se ptá za běhu a rozhoduje nad každým výsledkem. Výsledek jde celý do kontextu.</p></div>
+      <div class="card"><div class="ic">Skript</div><h3>Známý postup, velký objem</h3><p>Stáhni, sečti, ulož na disk. Model vidí jen souhrn. Sem patří všechno mechanické a opakované.</p></div>
+      <div class="card"><div class="ic">Žádná data</div><h3>Text a dokument</h3><p>Prezentace ve značce, přepis podkladů, kontrola textu. Kontext dodáš v <code>references/</code> a <code>assets/</code>.</p></div>
+    </div>
+    <p class="callout r">Obvyklá cesta: začneš přes MCP, postup se ustálí, mechanickou část přesuneš do skriptu.</p>
+  </div>
+</section>
+
+<!-- S2-18 · kolik volnosti -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · jak podrobně psát postup</div>
+    <h2 class="r">Kolik volnosti skillu dát</h2>
+    <div class="cards c3 r-children">
+      <div class="card">
+        <div class="ic">Úzký most</div>
+        <h3>Přesné kroky</h3>
+        <p>U křehkého úkolu může i malá odchylka pokazit výsledek. Popiš postup krok za krokem.</p>
+      </div>
+      <div class="card">
+        <div class="ic">Široká cesta</div>
+        <h3>Rámec a pravidla</h3>
+        <p>Základní postup znáš, ale detaily se mohou lišit. Popiš rámec, ne přesný scénář.</p>
+      </div>
+      <div class="card">
+        <div class="ic">Otevřené pole</div>
+        <h3>Cíl a omezení</h3>
+        <p>U tvůrčí nebo průzkumné práce popiš cíl a omezení. Neurčuj každý krok.</p>
+      </div>
+    </div>
+    <p class="callout r">Míru volnosti určuje křehkost úkolu, ne tvůj pocit.</p>
+  </div>
+</section>
+
+<!-- S2-19 · piš pokyny -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · jak psát tělo</div>
+    <h2 class="r">Piš pokyny, ne popis role.</h2>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Nefunguje</h3>
+        <ul>
+          <li>„Jsi zkušený marketingový konzultant s dvacetiletou praxí."</li>
+          <li>„Měl bys nejdřív načíst data."</li>
+          <li>„Snaž se být důkladný."</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Funguje</h3>
+        <ul>
+          <li>„Projdi dotazy po jednom a vyřaď dotazy na značku."</li>
+          <li>„Nejdřív načti data."</li>
+          <li>„U každé stránky uveď, ze kterého řádku dat to plyne."</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Popis role spustí hraní role. Rozkaz spustí postup.</p>
+  </div>
+</section>
+
+<!-- S2-20 · špatný skill -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · rizika</div>
+    <h2 class="r">Špatný skill práci komplikuje</h2>
+    <ul class="bullets r-children">
+      <li>Spouští se i u dotazů, pro které není určený.</li>
+      <li>Selže uprostřed práce a nechá ji rozdělanou.</li>
+      <li>Zabírá pozornost, která pak chybí jinde.</li>
+    </ul>
+    <p class="callout r">Je lepší nemít žádný skill než používat takový, který není spolehlivý.</p>
+    <p class="lead r dim">Nejdřív sleduj, při kterých úlohách model bez návodu chybuje. Pak přesně popiš daný problém. Jinak můžeš vytvořit návod pro situaci, která nenastává.</p>
+  </div>
+</section>
+
+<!-- S2-21 · CLAUDE.md krátký -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · paměť projektu</div>
+    <h2 class="r">CLAUDE.md: udržuj ho krátký</h2>
+    <p class="lead r">Piš ho ručně. Patří do něj informace, které z projektu samy nevyplynou.</p>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Patří tam</h3>
+        <ul>
+          <li>Kde co leží a co se kam zapisuje.</li>
+          <li>Rozhodnutí, která se z výsledku nepoznají, a jejich důvod.</li>
+          <li>Záludnosti, které už jednou zdržely.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Nepatří tam</h3>
+        <ul>
+          <li>Zřejmé informace.</li>
+          <li>Dlouhý text vytvořený najednou.</li>
+          <li>Obsah, který se dá přečíst v souboru vedle.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Říkej <b>kde</b>, ne <b>co</b>. A po každé opravě řekni Claudovi, ať si tam zapíše, jak se stejné chybě příště vyhnout.</p>
+  </div>
+</section>
+
+<!-- S2-22 · REF: vzor CLAUDE.md -->
+<section class="slide reference">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 2 · referenční</div>
+      <h2>Vzor, který se vejde na obrazovku</h2>
+      <p class="lead">Takhle vypadá <code>CLAUDE.md</code>, který ti <code>/skoleni-start</code> založil ráno. Rozšiřuj ho o řádky, ne o odstavce.</p>
+      <p class="dim">Když ho necháš vytvořit pomocí <code>/init</code>, vznikne dvě stě řádků popisu, který stejně nikdo nečte. Ručně psaných čtyřicet je užitečnějších.</p>
+    </div>
+    <div class="code r"><span class="c"># Pracovní složka — klient-x.cz</span>
+
+<span class="k">## Kde co je</span>
+Reporty: <span class="g">vystupy/</span>
+Exporty ze Search Console: <span class="g">data/</span>
+Vlastní skilly: <span class="g">.claude/skills/</span>
+
+<span class="k">## Klient</span>
+Pracujeme s <span class="g">klient-x.cz</span>,
+property <span class="g">sc-domain:klient-x.cz</span>.
+
+<span class="k">## Bezpečnost</span>
+Klíče a exporty jsou v <span class="g">.gitignore</span>.
+Nic z <span class="g">data/</span> nejde ven.
+
+<span class="k">## Na co si dát pozor</span>
+Blog má vlastní subdoménu — do
+reportu ji zahrň zvlášť.</div>
+  </div>
+</section>
+
+<!-- S2-23 · rozebereme hotový plugin -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · jak vypadá hotová automatizace</div>
+    <h2 class="r">Rozebereme hotový plugin, než si postavíš vlastní</h2>
+    <p class="lead r">Vezmeme náš audit viditelnosti v AI chatbotech. Na plátně otevřeme jeho složku — je na něm vidět, z čeho se taková automatizace skládá.</p>
+    <div class="cards c4 r-children">
+      <div class="card"><div class="ic">01</div><h3>Postup</h3><p>Soubor SKILL.md řídí celý audit od rozpoznání značky až po vytvoření reportu.</p></div>
+      <div class="card"><div class="ic">02</div><h3>Subagenti</h3><p>Každý subagent má jasný úkol a přiřazený model.</p></div>
+      <div class="card"><div class="ic">03</div><h3>Reference</h3><p>Obsahují pravidla pro třídění citací a rozlišení vlastních a získaných zdrojů. Načtou se jen tehdy, když je skill potřebuje.</p></div>
+      <div class="card"><div class="ic">04</div><h3>Skripty</h3><p>Seskupují témata a vytvářejí report. Výpočty probíhají mimo model a dávají pokaždé stejný výsledek.</p></div>
+    </div>
+    <p class="callout r">Plugin spojuje skill, subagenty a napojení na data do jednoho celku.</p>
+  </div>
+</section>
+
+<!-- S2-24 · plugin školení je taky plugin -->
+<section class="slide">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 2 · a teď ten tvůj</div>
+      <h2>Plugin školení, který máš od rána, je taky jen plugin.</h2>
+      <p class="lead">Čtyři skilly, čtyři skripty, návody, tahle prezentace. Všechno si můžeš přečíst a rozebrat.</p>
+      <p class="dim">A hlavně: je to nejbližší příklad toho, co si dnes stavíš. Řekni Claudovi, ať ti ukáže, jak je napsaný <code>/skoleni-automatizace</code>, a projdi to s ním.</p>
+    </div>
+    <div class="code r">rellmo-skoleni/
+├── <span class="k">.claude-plugin/</span>
+│   └── plugin.json   <span class="c"># manifest, verze</span>
+├── <span class="k">skills/</span>
+│   ├── skoleni-start/
+│   ├── skoleni-automatizace/
+│   ├── skoleni-napoveda/
+│   └── skoleni-shrnuti/
+├── <span class="k">scripts/</span>       <span class="c"># stav, prostředí, pluginy</span>
+├── <span class="k">references/</span>    <span class="c"># návody, prezentace</span>
+├── <span class="k">assets/</span>        <span class="c"># vzorový skill</span>
+└── <span class="k">tests/</span>         <span class="c"># testy</span></div>
+  </div>
+</section>
+
+<!-- S2-25 · podklady pro skill -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · podklady pro skill</div>
+    <h2 class="r">Nenech model psát skill bez podkladů</h2>
+    <p class="lead r">Bez kvalitních podkladů model většinou zopakuje obecné rady z internetu.</p>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Bez podkladů</h3>
+        <ul>
+          <li>„Zkontroluj robots.txt."</li>
+          <li>Taková rada je příliš obecná a konkrétní problém neodhalí.</li>
+          <li>Server vrátí úspěšný stavový kód a kontrola tím skončí.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>S podklady</h3>
+        <ul>
+          <li>Porovná syrové a vykreslené HTML.</li>
+          <li>Odhalí problém, který obecná kontrola přehlédne.</li>
+          <li>U Rohlíku z Bloku 1 server vrací kód 200 a robots.txt je v pořádku. Přesto se 85 % obsahu domovské stránky načte až JavaScriptem.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Skill postav na konkrétních podkladech: přepisech porad, rešerši konkurence a zahraničních zdrojích. Teprve z nich sestav postup.</p>
+  </div>
+  <div class="source">Vlastní audit rohlik.cz, 12. 6. 2026</div>
+</section>
+
+<!-- S2-26 · rešerše první -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · jak to děláme my</div>
+    <h2 class="r">Rešerše první, psaní až potom.</h2>
+    <p class="lead wide r">Než u nás vznikne skill, projde tématem rešerše napříč zdroji a trhy. Teprve z ní se skládá postup — a je z toho poznat, že v něm jsou věci, které model sám neřekne.</p>
+    <ol class="steps r-children">
+      <li><b>Sesbírej, jak to dělají odborníci.</b> Odborné zdroje, více jazyků a trhů, ne první stránka výsledků.</li>
+      <li><b>Vytáhni z toho postup</b>, ne seznam tipů. Co se dělá první, co se ověřuje, kde se to nejčastěji pokazí.</li>
+      <li><b>Doplň to, co víš jen ty.</b> Zkušenost z projektů, čísla z vlastních auditů, chyby, které jsi udělal.</li>
+      <li><b>Teprve pak piš <code>SKILL.md</code>.</b> V té chvíli už jen zapisuješ, co jsi rozmyslel.</li>
+    </ol>
+    <p class="callout r">Rozdíl je vidět na výstupu: skill psaný z paměti modelu dá obecný audit, skill psaný z rešerše najde konkrétní věc.</p>
+  </div>
+</section>
+
+<!-- S2-27 · dražší model pro návrh -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · náklady na modely</div>
+    <h2 class="r">Dražší model pro návrh, levnější pro provoz</h2>
+    <p class="lead r">Skill navrhneš a odladíš jednou. Potom ho používáš opakovaně.</p>
+    <table class="tbl r">
+      <thead><tr><th>Fáze</th><th>Model</th><th>Cena za milion tokenů, vstup / výstup</th></tr></thead>
+      <tbody>
+        <tr><td>Sběr dat</td><td class="mono">Claude Haiku 4.5</td><td class="num">1 $ / 5 $</td></tr>
+        <tr><td>Klasifikace</td><td class="mono">Claude Sonnet 5</td><td class="num">3 $ / 15 $</td></tr>
+        <tr><td>Finální syntéza a priority</td><td class="mono">Claude Opus 5</td><td class="num">5 $ / 25 $</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">V našem pluginu na obsahové mezery má každý ze tří subagentů pevně nastavený model: Haiku sbírá data, Sonnet je klasifikuje a Opus připravuje finální syntézu a priority.</p>
+    <p class="lead r dim">Stejný princip použij u vlastního skillu. Návrh a ladění postupu svěř jednou dražšímu modelu, opakovaný provoz levnějšímu.</p>
+  </div>
+  <div class="source">Ceny modelů za milion tokenů: vstup / výstup. Stav k 18. 8. 2026.</div>
+</section>
+
+<!-- S2-28 · REF: modely a hloubka uvažování -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · referenční</div>
+    <h2 class="r">Modely a hloubka uvažování.</h2>
+    <table class="tbl r">
+      <thead><tr><th>Model</th><th>Identifikátor</th><th>Kontext</th><th>Vstup / výstup za 1 M</th></tr></thead>
+      <tbody>
+        <tr><td>Claude Fable 5</td><td class="mono">claude-fable-5</td><td class="num">1 M</td><td class="num">10 $ / 50 $</td></tr>
+        <tr><td>Claude Opus 5</td><td class="mono">claude-opus-5</td><td class="num">1 M</td><td class="num">5 $ / 25 $</td></tr>
+        <tr><td>Claude Sonnet 5</td><td class="mono">claude-sonnet-5</td><td class="num">1 M</td><td class="num">3 $ / 15 $</td></tr>
+        <tr><td>Claude Haiku 4.5</td><td class="mono">claude-haiku-4-5</td><td class="num">200 K</td><td class="num">1 $ / 5 $</td></tr>
+      </tbody>
+    </table>
+    <ul class="bullets r-children">
+      <li><b>Hloubku uvažování řídí <code>effort</code></b> — od <code>low</code> po <code>max</code>. V Claude Code je výchozí <code>xhigh</code>. Pevný rozpočet na myšlení se už nenastavuje.</li>
+      <li><b>Model u subagenta se dá nastavit pevně.</b> Tam, kde se jen sbírají data, není důvod platit za nejdražší.</li>
+      <li><b>Nepřepínej model uprostřed práce.</b> Přijdeš o výhodu z uložené konverzace a zaplatíš ji znovu.</li>
+      <li><code>/fast</code> zapne rychlejší výstup na Claude Opus 5 a 4.8. Není to slabší model, jen jinak nastavený běh.</li>
+    </ul>
+    <div class="source">Stav k 18. 8. 2026.</div>
+  </div>
+</section>
+
+<!-- S2-29 · co zautomatizovat jako první -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 1 · než si vybereš téma</div>
+    <h2 class="r">Co se vyplatí zautomatizovat jako první.</h2>
+    <p class="lead wide r">Za dvacet pět minut nepostavíš nástroj na všechno. Vyber si jednu věc — a radši tu malou, která doběhne.</p>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>Dobrý první kandidát</h3>
+        <ul>
+          <li>Děláš to opakovaně.</li>
+          <li>Postup máš v hlavě a umíš ho popsat.</li>
+          <li>Vstup je jasný a výstup poznáš, když ho vidíš.</li>
+          <li>Vejde se to na jednu obrazovku zadání.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Nech na příště</h3>
+        <ul>
+          <li>Děláš to poprvé a sám nevíš jak.</li>
+          <li>Potřebuje to přístup, který teprve někdo schvaluje.</li>
+          <li>Výsledek nikdo neumí posoudit.</li>
+          <li>„Celý marketingový audit."</li>
+        </ul>
+      </div>
+    </div>
+    <p class="callout r">Skončit s nedokončeným skillem, který nikdy nic nevyrobil, je horší než mít hotovou menší verzi.</p>
+  </div>
+</section>
+
+<!-- S2-30 · cvičení: vlastní automatizace -->
+<section class="slide task">
+  <div class="inner stack">
+    <div class="task-head r">
+      <div class="kicker" style="margin:0">Cvičení</div>
+      <span class="mins">25 minut</span>
+    </div>
+    <h2 class="r">Postav si první vlastní automatizaci.</h2>
+    <div class="cmd r">/skoleni-automatizace</div>
+    <p class="lead r">Skill tě provede osmi kroky z tohohle bloku. Téma je tvoje: cokoli, co děláš opakovaně a umíš popsat.</p>
+    <div class="task-grid r">
+      <div class="card base"><div class="lb">Hotovo, když</div><p>Skill naostro vyrobil výstup na jednom malém vstupu a máš ho na disku.</p></div>
+      <div class="card"><div class="lb">Když ti zbude čas</div><p>Zabal skill do pluginu a zkus ho nainstalovat z vlastní složky.</p></div>
+      <div class="card brake"><div class="lb">Když se zasekneš</div><p>V pluginu je vzorový skill ke zkopírování. Nebo zúžit rozsah — menší verze, která doběhne.</p></div>
+    </div>
+    <p class="dim r">Bez přístupů to jde taky: text, dokument, kontrola podle pravidel. Data můžeš napojit doma.</p>
+  </div>
+</section>
+
+<!-- S2-31 · nejdřív zadání, na kterém to selže -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 7 · než něco změníš</div>
+    <h2 class="r">Nejdřív zadání, na kterém to selže.</h2>
+    <p class="lead wide r">Platí to i pro úpravu hotového skillu. Bez tohohle kroku nepoznáš, jestli tvoje změna něco spravila, nebo jen něco jiného rozbila.</p>
+    <ol class="steps r-children">
+      <li>Řekni si, jaké chování chceš změnit.</li>
+      <li>Napiš zadání, na kterém současný skill <b>selže</b>.</li>
+      <li>Spusť ho a ověř, že skutečně selhal.</li>
+      <li>Teprve pak uprav <code>SKILL.md</code>.</li>
+      <li>Pusť znovu — musí projít.</li>
+    </ol>
+    <p class="callout r">Kontrola, která projde i proti staré vadné verzi, nehlídá nic. A vypadá to úplně stejně jako kontrola, která hlídá.</p>
+  </div>
+</section>
+
+<!-- S2-32 · zabalení do pluginu -->
+<section class="slide">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 2 · krok 8 · zabalení</div>
+      <h2>Zabalení do pluginu</h2>
+      <p class="lead">Skill funguje i sám. Plugin z něj udělá věc, která má název, verzi a dá se nainstalovat jedním příkazem.</p>
+      <ul class="bullets">
+        <li><b>Manifest</b> — název, verze, popis. Jediný povinný soubor navíc.</li>
+        <li><b>Složka <code>skills/</code></b> — sem přesuneš složku svého skillu. Přidat jde i další.</li>
+        <li><b>Marketplace</b> — složka nebo repozitář, ze kterého se plugin instaluje. Kolega ho přidá jednou.</li>
+      </ul>
+      <p class="callout">Řekni Claudovi: „Zabal tenhle skill do pluginu a přidej ho jako lokální marketplace." Manifest napíše sám.</p>
+    </div>
+    <div class="stack-sm r">
+      <div class="code">muj-plugin/
+├── <span class="k">.claude-plugin/plugin.json</span>
+└── skills/
+    └── mesicni-report/
+        └── SKILL.md</div>
+      <div class="cmd">claude plugin marketplace add ./cesta-k-marketplace
+claude plugin install muj-plugin@muj-marketplace</div>
+    </div>
+  </div>
+</section>
+
+<!-- S2-33 · e-mail nestačí -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · krok 8 · než začneš sdílet</div>
+    <h2 class="r">E-mail a sdílený disk nestačí</h2>
+    <p class="lead r dim">Tyhle způsoby sdílení časem přinesou problémy.</p>
+    <div class="vs r-children">
+      <div class="col">
+        <h3>E-mail a sdílený disk</h3>
+        <ul>
+          <li>Kolují různé verze a nikdo neví, která je platná.</li>
+          <li>Oprava zapadne ve vlákně a k ostatním se nedostane.</li>
+          <li>Když autor odejde, ostatní nemusí vědět, kde najdou poslední verzi návodu.</li>
+        </ul>
+      </div>
+      <div class="col alt">
+        <h3>Repozitář</h3>
+        <ul>
+          <li>Jedna platná verze dostupná celému týmu.</li>
+          <li>Historie oprav zůstává dohledatelná.</li>
+          <li>Skill zůstává ve firmě, ne jen na jednom notebooku.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S2-34 · čtyři pojmy -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · slovník, který stačí</div>
+    <h2 class="r">Čtyři pojmy, které potřebuješ znát</h2>
+    <div class="cards c4 r-children">
+      <div class="card">
+        <div class="ic">01</div>
+        <h3>Repozitář</h3>
+        <p>Složka se skillem, ve které se ukládá historie změn.</p>
+      </div>
+      <div class="card">
+        <div class="ic">02</div>
+        <h3>Commit</h3>
+        <p>Uložený stav s krátkým popisem provedené změny.</p>
+      </div>
+      <div class="card">
+        <div class="ic">03</div>
+        <h3>Větev</h3>
+        <p>Oddělená pracovní verze skillu. Můžeš ji upravovat, aniž bys zasáhl do funkční hlavní verze.</p>
+      </div>
+      <div class="card">
+        <div class="ic">04</div>
+        <h3>Pull request</h3>
+        <p>Návrh na začlenění úpravy do hlavní verze. Kolega může úpravu před spojením zkontrolovat.</p>
+      </div>
+    </div>
+    <p class="callout r">Další pojmy dnes potřebovat nebudeš. Nemusíš psát ani jeden příkaz — Claude Code je provede za tebe.</p>
+  </div>
+</section>
+
+<!-- S2-35 · tahák -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · tahák</div>
+    <h2 class="r">Co Claudovi říct, aby to udělal.</h2>
+    <p class="lead wide r">Normálními větami. Názvy příkazů si pamatovat nemusíš.</p>
+    <table class="tbl r">
+      <thead><tr><th>Chci</th><th>Řekni</th></tr></thead>
+      <tbody>
+        <tr><td>Uložit skill na GitHub</td><td>„Ulož tenhle skill na GitHub jako privátní repozitář."</td></tr>
+        <tr><td>Poslat změnu, kterou jsem udělal</td><td>„Ulož změny a pošli je na GitHub."</td></tr>
+        <tr><td>Nabídnout úpravu ke kontrole</td><td>„Udělej z toho pull request."</td></tr>
+        <tr><td>Vzít si cizí skill k sobě</td><td>„Stáhni mi repozitář <i>účet/název</i> do <code>~/.claude/skills/</code>."</td></tr>
+        <tr><td>Zjistit, co se změnilo</td><td>„Ukaž mi, co se v tom souboru změnilo od minule."</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Než něco pošleš ven, zeptej se: „Co všechno je v tom commitu?" A odpověď si přečti.</p>
+  </div>
+</section>
+
+<!-- S2-36 · jak kolega získá skill -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · distribuce</div>
+    <h2 class="r">Jak kolega získá tvůj skill</h2>
+    <p class="lead r">Kolega přidá marketplace jen jednou. Plugin s tvým skillem pak nainstaluje jedním příkazem. Aktualizaci může stáhnout při dalším spuštění.</p>
+    <ol class="steps r-children">
+      <li><b>Marketplace přidá jen jednou.</b>
+        <div class="cmd">claude plugin marketplace add &lt;TVŮJ-ÚČET&gt;/&lt;TVŮJ-REPOZITÁŘ&gt;</div>
+      </li>
+      <li><b>Potom nainstaluje plugin jedním příkazem.</b>
+        <div class="cmd">claude plugin install &lt;NÁZEV-PLUGINU&gt;@&lt;NÁZEV-MARKETPLACE&gt;</div>
+      </li>
+      <li><b>Aktualizace</b> může kolega stáhnout při dalším spuštění.</li>
+    </ol>
+    <p class="callout r">Stejně jsi ráno získal plugin školení: přidáním marketplace a instalací jedním příkazem.</p>
+  </div>
+</section>
+
+<!-- S2-37 · MCP hub -->
+<section class="slide soft">
+  <div class="inner two top">
+    <div class="stack r">
+      <div class="kicker">Blok 2 · přístup pro tým</div>
+      <h2>Effectix MCP hub</h2>
+      <p class="lead">Jedno místo, odkud se řídí přístupy celého týmu.</p>
+      <ul class="bullets">
+        <li>MCP servery jsou rozdělené do skupin podle týmů.</li>
+        <li>Každá skupina má vlastní endpoint.</li>
+        <li>Kolega dostane jeden přístup a nic dalšího už neřeší.</li>
+      </ul>
+    </div>
+    <div class="stack r">
+      <h3>A co nástroj bez hotového MCP serveru?</h3>
+      <p class="lead">Allfred je MCP server, který jsme postavili nad API našeho interního CRM.</p>
+      <p class="callout">Pokud nástroj, který používáš, má API, dá se napojit. Nemusíš být programátor. Víc v Bloku 3.</p>
+    </div>
+  </div>
+</section>
+
+<!-- S2-38 · worktree na později -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · na později</div>
+    <h2 class="r">Až budeš mít rozdělaných více věcí</h2>
+    <p class="lead r">Worktree je další pracovní kopie stejného repozitáře. V každé kopii můžeš řešit jiný úkol, aniž by se změny míchaly.</p>
+    <p class="callout r">Dnes to zkoušet nebudeme. Na začátku worktree nepotřebuješ. Zatím stačí vědět, že existuje pro práci na více věcech současně.</p>
+  </div>
+</section>
+
+<!-- S2-39 · REF: instalace gh -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · referenční</div>
+    <h2 class="r">Instalace GitHub CLI (<code>gh</code>).</h2>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">Windows</div>
+        <div class="cmd">winget install -e --id GitHub.cli</div>
+        <p class="dim">Pak <b>zavři terminál a otevři nové okno.</b> Ne novou záložku. Bez <code>-e --id</code> se nainstaluje něco jiného.</p>
+        <div class="ic">Linux</div>
+        <div class="cmd">sudo apt-get install -y gh</div>
+      </div>
+      <div class="stack-sm">
+        <div class="ic">macOS — nejdřív Homebrew</div>
+        <div class="cmd">/bin/bash -c "$(curl -fsSL https://raw.\
+githubusercontent.com/Homebrew/install/\
+HEAD/install.sh)"</div>
+        <div class="ic">Na Apple Silicon pak tyhle dva řádky</div>
+        <div class="cmd">echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' \
+>> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"</div>
+        <div class="ic">Teprve potom</div>
+        <div class="cmd">brew install gh</div>
+      </div>
+    </div>
+    <p class="callout r">Ty dva řádky s <code>~/.zprofile</code> nejsou volitelné. Bez nich <code>brew</code> po instalaci nejde spustit.</p>
+  </div>
+</section>
+
+<!-- S2-40 · REF: přihlášení gh -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · referenční</div>
+    <h2 class="r">Přihlášení a ověření, že to funguje.</h2>
+    <div class="cmd r">gh auth login</div>
+    <p class="lead wide r">Postup v terminálu: <b>GitHub.com → HTTPS → Login with a web browser → opsat jednorázový kód.</b> Otevře se prohlížeč, vložíš kód a potvrdíš.</p>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">Ověření</div>
+        <div class="cmd">gh auth status</div>
+        <p class="dim">Ukáže účet, protokol a rozsah oprávnění. Když je tam jiný účet, než čekáš, přihlas se znovu.</p>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Co se děje</th><th>Co s tím</th></tr></thead>
+        <tbody>
+          <tr><td><code>gh: command not found</code></td><td>Zavři terminál, otevři nové okno.</td></tr>
+          <tr><td><code>brew: command not found</code></td><td>Chybí dva řádky v <code>~/.zprofile</code>.</td></tr>
+          <tr><td>Firemní repozitáře nevidíš</td><td>Chybí členství v organizaci. Napiš tomu, kdo ji spravuje.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- S2-41 · REF: než poprvé něco pošleš ven -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · referenční</div>
+    <h2 class="r">Než poprvé něco pošleš ven.</h2>
+    <p class="lead wide r">Klíč uložený v commitu zůstane v historii repozitáře i po smazání souboru. Tenhle krok nevynechávej ani při nedostatku času.</p>
+    <div class="cmd r">git status --porcelain --untracked-files=all</div>
+    <table class="tbl r">
+      <thead><tr><th>Když ve výpisu vidíš</th><th>Co udělat</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">.env, *.key, *token*.json</td><td>Doplň do <code>.gitignore</code> a vypiš znovu.</td></tr>
+        <tr><td class="mono">.mcp.json</td><td>Bývají v něm přihlašovací údaje. Do <code>.gitignore</code>.</td></tr>
+        <tr><td class="mono">*.csv, *.duckdb, exporty/</td><td>Data klienta. Do repozitáře nepatří.</td></tr>
+        <tr><td class="mono">.skoleni/</td><td>Stav průchodu školením. Pro sdílení skillu není potřeba.</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Do repozitáře jde <b>složka se skillem</b>, ne celá pracovní složka. Ta obsahuje reporty a data klienta.</p>
+  </div>
+</section>
+
+<!-- S2-42 · REF: kde skill bydlí -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Blok 2 · referenční</div>
+    <h2 class="r">Kde skill bydlí a kdo do něj smí.</h2>
+    <table class="tbl r">
+      <thead><tr><th>Co</th><th>Kam</th><th>Jak se do toho přispívá</th></tr></thead>
+      <tbody>
+        <tr><td>Tvůj vlastní skill</td><td>vlastní repozitář</td><td>Píšeš do něj přímo. Je tvůj.</td></tr>
+        <tr><td>Firemní marketplace</td><td>společný repozitář</td><td>Přes pull request, ať to někdo vidí.</td></tr>
+        <tr><td>Sdílené podklady (značka, šablony)</td><td>samostatný repozitář</td><td>Stáhneš a použiješ. Úpravu domluv s tím, kdo ho spravuje.</td></tr>
+      </tbody>
+    </table>
+    <table class="tbl r">
+      <thead><tr><th>Úroveň práva</th><th>Co s ní jde</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">read</td><td>Číst a klonovat. Na instalaci skillu stačí.</td></tr>
+        <tr><td class="mono">write</td><td>Odesílat změny z větví a otevírat pull requesty.</td></tr>
+        <tr><td class="mono">admin</td><td>Měnit nastavení repozitáře a práva ostatních.</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Když <code>git push</code> skončí na <code>Permission denied</code>, není to chyba příkazu. Nemáš právo do toho repozitáře psát — publikuj pod vlastní účet.</p>
+  </div>
+</section>
+
+<!-- ================= fragment 3 ================= -->
+<!-- S3-01 · divider Blok 3 -->
+<section class="slide divider">
+  <div class="inner stack">
+    <div class="num r">Blok 3</div>
+    <h2 class="r">Kdy nestačí Claude</h2>
+    <p class="lead wide r">Vlastní model pro jednu úzkou úlohu, data z více zdrojů a kam to jde dál.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S3-02 · kdy se vyplatí vlastní model -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · vlastní model</div>
+    <h2 class="r">Kdy se vyplatí vlastní model</h2>
+    <p class="lead wide r">Velký jazykový model je na většinu práce správná volba. Existuje ale úzký druh úloh, kde ho malý vlastní model porazí v ceně i rychlosti.</p>
+    <div class="cards c4 r-children">
+      <div class="card"><div class="ic">01</div><h3>Jedna úzká úloha</h3><p>Přiřaď štítek, roztřiď do kategorií. Žádný úsudek nad souvislostmi.</p></div>
+      <div class="card"><div class="ic">02</div><h3>Velký objem</h3><p>Desítky tisíc položek naráz, ne deset. Cena za dotaz se sčítá.</p></div>
+      <div class="card"><div class="ic">03</div><h3>Opakovaně</h3><p>Stejná úloha každý měsíc nebo u každého klienta. Ladíš jednou, používáš pořád.</p></div>
+      <div class="card"><div class="ic">04</div><h3>Nula za dotaz</h3><p>Běží na běžném počítači, bez API a bez kreditů. Data neopouštějí firmu.</p></div>
+    </div>
+    <p class="callout r">Když sedí všechny čtyři, vyplatí se natrénovat vlastní. Když ne, zůstaň u Clauda.</p>
+  </div>
+</section>
+
+<!-- S3-03 · co jsme postavili -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · vlastní model</div>
+    <h2 class="r">Co jsme postavili: klasifikátor záměru pro češtinu</h2>
+    <p class="lead wide r">Každému českému vyhledávacímu dotazu přiřadí jednu z osmi kategorií: vysvětlení, rychlá odpověď, výběr, transakce, navigace, lokální, podpora, nejasné.</p>
+    <table class="tbl r">
+      <thead><tr><th>Co</th><th>Jak</th></tr></thead>
+      <tbody>
+        <tr><td>Základní model</td><td>Seznam/small-e-czech, 14 milionů parametrů, český tokenizer</td></tr>
+        <tr><td>Trénovací data</td><td>z 3,3 milionu reálných dotazů za 12 měsíců, oštítkováno přes 60 tisíc</td></tr>
+        <tr><td>Velikost a rychlost</td><td>54 MB, 2–3 ms na dotaz, běží na procesoru</td></tr>
+        <tr><td>Kde běží</td><td>lokálně, nebo jako webová aplikace na rellmo.com</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Model neměří, co měl člověk v hlavě. Vidí jen text dotazu a učí se z toho, jak ho zařadili hodnotitelé.</p>
+  </div>
+  <div class="source">rellmo.com/nastroje/klasifikator-zameru · vlastní projekt, srpen 2026</div>
+</section>
+
+<!-- S3-04 · jak si stojí proti nástrojům -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · vlastní model</div>
+    <h2 class="r">Jak si stojí proti placeným nástrojům</h2>
+    <p class="lead wide r">Stejná sada 883 náhodných českých dotazů z různých oborů, které model při učení neviděl, proti stejnému ručně ověřenému vzorku.</p>
+    <div class="stats r-children">
+      <div class="stat"><div class="n">84,8&nbsp;%</div><div class="lab">náš model, kategorie u každého dotazu</div></div>
+      <div class="stat"><div class="n">50,1&nbsp;%</div><div class="lab">DataForSEO, kategorie u každého dotazu</div></div>
+      <div class="stat"><div class="n gold">70&nbsp;%</div><div class="lab">dotazů, u kterých Ahrefs žádnou kategorii nevrátí</div></div>
+    </div>
+    <p class="callout r">Ahrefs má na pokryté části srovnatelnou přesnost. Problém je pokrytí: dlouhý ocas českých klíčových slov zůstává nezařazený.</p>
+  </div>
+  <div class="source">Vlastní měření, 883 dotazů, srpen 2026. Sadu jsme sestavili sami podle vlastních kategorií — není to neutrální benchmark.</div>
+</section>
+
+<!-- S3-05 · graf 1 -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · vlastní model</div>
+    <div class="figure r"><img src="assets/graf-1.png" alt="Graf: přesnost odpovědi proti podílu dotazů, u kterých nástroj něco odpoví. Ahrefs přesný, ale odpoví u 30 %. DataForSEO odpoví všude, trefí polovinu. Náš model odpoví všude a trefí 85 %."></div>
+  </div>
+  <div class="source">rellmo.com/nastroje/klasifikator-zameru · vlastní měření, 883 dotazů</div>
+</section>
+
+<!-- S3-06 · dva učitelé -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · jak vznikla trénovací data</div>
+    <h2 class="r">Dva levní učitelé a jeden drahý rozhodčí</h2>
+    <p class="lead wide r">Ruční štítkování desítek tisíc dotazů nepřipadalo v úvahu. Velké modely dotazy oštítkovaly, malý se z výsledku naučil dělat totéž levně.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Učitel 1</div><h3>Qwen 3, lokálně</h3><p>Běžel na běžném počítači, zadarmo, zhruba 3,6 dotazu za sekundu.</p></div>
+      <div class="card"><div class="ic">Učitel 2</div><h3>Claude Haiku, přes API</h3><p>Levný. Stejný manuál, stejných 40 000 dotazů, bez vědomí o tom druhém.</p></div>
+      <div class="card"><div class="ic">Rozhodčí</div><h3>Claude Sonnet</h3><p>Rozsoudil jen sporné případy. Nemusel běžet na celém objemu.</p></div>
+    </div>
+    <p class="callout r">Učitelé se shodli v 75,7 % případů. Ten štítek platil. Zbylých 9 727 sporných dotazů šlo k rozhodčímu.</p>
+  </div>
+  <div class="source">Vlastní projekt, srpen 2026</div>
+</section>
+
+<!-- S3-07 · testovací sada byla vadná -->
+<section class="slide soft">
+  <div class="inner two top lean">
+    <div class="stack r">
+      <div class="kicker">Blok 3 · nejdůležitější poučka</div>
+      <h2>Testovací sada byla vadná</h2>
+      <p class="lead">Tři kola jsme model ladili proti chybě v měřítku. Z 114 zkontrolovaných dotazů bylo 45 označených špatně — překlepy a nesmysly byly zapsané jako navigace na značku.</p>
+      <p class="callout">Měřítko, o které opíráš rozhodnutí, musí projít stejnou kontrolou jako to, co měříš.</p>
+    </div>
+    <div class="figure r"><img src="assets/graf-2.png" alt="Graf: pořadí pěti modelů před a po opravě testu. Model, který byl nasazený jako nejlepší, skončil pátý. Model s lepším receptem vyhrál."></div>
+  </div>
+  <div class="source">Vlastní projekt, srpen 2026 · stejné modely, stejné dotazy, opravený test</div>
+</section>
+
+<!-- S3-08 · co nefungovalo -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · slepé uličky</div>
+    <h2 class="r">Co nefungovalo</h2>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Umělá data</div><h3>2 322 vygenerovaných dotazů</h3><p>Podle reálných vzorů, včetně překlepů. Výsledek posunuly o šum a jedné kategorii uškodily. Chyběla rozmanitost, ne objem.</p></div>
+      <div class="card"><div class="ic">Destilace</div><h3>Učit se od staršího modelu</h3><p>Během tréninku vypadala nejlíp ze všech. Na finálním testu prohrála. Průběžná čísla neříkají, jak model dopadne na neviděných datech.</p></div>
+      <div class="card"><div class="ic">Ladění prahů</div><h3>Čtyři kola</h3><p>Optimální nastavení vyšlo tak, že se nemá dělat nic. Model byl kalibrovaný sám od sebe.</p></div>
+    </div>
+    <p class="callout r">Šest pokusů o chytrou úpravu výstupu skončilo bez zlepšení. Všechno, co zabralo, přišlo z lepších dat nebo z lepšího postupu trénování.</p>
+  </div>
+  <div class="source">Vlastní projekt, srpen 2026</div>
+</section>
+
+<!-- S3-09 · Ukázka 5: klasifikátor -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Ukázka · na plátně</div>
+    <h2 class="r">Klasifikátor na vlastních klíčových slovech</h2>
+    <p class="lead wide r">Webová aplikace. Vložíš seznam dotazů, dostaneš kategorii a jistotu u každého z nich.</p>
+    <ul class="bullets r-children">
+      <li><b>Pošli mi pár svých klíčových slov.</b> Nejlíp takové, u kterých si sám nejsi jistý.</li>
+      <li><b>Jistota predikce.</b> U nejednoznačných dotazů ukáže i druhou nejpravděpodobnější třídu.</li>
+      <li><b>Rychlost.</b> Stovky dotazů za vteřinu. Tohle je ta výměna za úzký úkol.</li>
+    </ul>
+  </div>
+  <div class="source">rellmo.com/nastroje/klasifikator-zameru · ukázka rovnou, plný běh do 500 dotazů po zadání e-mailu</div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S3-10 · malý model pro úzký úkol (shrnutí) -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · co si z toho vzít</div>
+    <h2 class="r">Malý vlastní model pro úzký úkol</h2>
+    <p class="lead r dim">Na klasifikaci nepotřebuješ velký model.</p>
+    <ul class="bullets r-children">
+      <li>Data máš: exporty ze Search Console, štítky z minulých analýz, cokoli, co už někdo jednou roztřídil.</li>
+      <li>Štítky vyrobí velký model. Malý se je naučí a pak běží zadarmo.</li>
+      <li>Testovací sadu drž oddělenou a zkontrolovanou. Bez ní nevíš, jestli se zlepšuješ.</li>
+      <li>Do Claude Code ho zapojíš jako skript ve <code>scripts/</code>. Model dostane hotové kategorie, ne surové dotazy.</li>
+    </ul>
+    <p class="callout r">Pro jednu vymezenou úlohu se vyplatí vytrénovat vlastní model. Pro všechno ostatní zůstává Claude.</p>
+  </div>
+</section>
+
+<!-- S3-11 · reporty z více zdrojů -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · data z více zdrojů</div>
+    <h2 class="r">Reporty z více zdrojů</h2>
+    <p class="lead wide r">Search Console, GA4, reklamní účty. Tři přihlášení, tři formáty, jeden report pro klienta. Stejný princip jako v Bloku 1, jen s víc vstupy.</p>
+    <ol class="steps r-children">
+      <li><b>Skript stáhne a sečte.</b> Každý zdroj přes své API nebo MCP server, výsledek do jedné tabulky na disku. Stejný vstup, stejný výstup.</li>
+      <li><b>Model napíše výklad.</b> Co se změnilo, proč pravděpodobně, co s tím. Dostane čísla, ne exporty.</li>
+      <li><b>Skill se značkou vyrobí dokument.</b> Barvy, logo, font a pravidla v <code>references/</code> a <code>assets/</code>. HTML, prezentace, z obojího PDF.</li>
+    </ol>
+    <p class="callout r">Brandkit jako skill používá celá firma: jednou napsaný, každý report vypadá stejně. Když se změní logo, mění se jeden soubor.</p>
+  </div>
+</section>
+
+<!-- S3-12 · nástroj nemá MCP? stačí API -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · když server chybí</div>
+    <h2 class="r">Nástroj nemá MCP server? Stačí API</h2>
+    <p class="lead wide r">API není jen pro programátory. Dej Claudovi dokumentaci a popiš, co potřebuješ — server napíše s tebou.</p>
+    <ol class="steps r-children">
+      <li>Najdi v dokumentaci nástroje sekci API a vygeneruj si klíč.</li>
+      <li>Dej Claudovi odkaz na dokumentaci a řekni, co z nástroje chceš číst.</li>
+      <li>Claude server napíše, napojí a společně ho otestujete.</li>
+    </ol>
+    <p class="callout r">Takhle máme napojený Sklik i interní Allfred. Ani jeden hotový MCP server nenabízel.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- S3-13 · další zdroje dat -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Blok 3 · další zdroje dat</div>
+    <h2 class="r">Vždy stejný princip, jiný zdroj</h2>
+    <table class="tbl r">
+      <thead><tr><th>Zdroj</th><th>Cesta</th><th>Na co si dát pozor</th></tr></thead>
+      <tbody>
+        <tr><td>GA4</td><td>hotový MCP server</td><td>Průzkum přes MCP, pravidelný report přes skript. Sezónnost porovnávej meziročně.</td></tr>
+        <tr><td>Google Ads, Meta Ads</td><td>hotové MCP servery</td><td>Čtení ano, změny kampaní jen po schválení. Řekni to skillu výslovně.</td></tr>
+        <tr><td>Sklik</td><td>vlastní server nad API</td><td>Hotový server neexistoval. Postavili jsme si ho.</td></tr>
+        <tr><td>Mergado, feedy</td><td>hotový MCP server</td><td>Velké feedy patří do skriptu, ne do kontextu.</td></tr>
+        <tr><td>Interní CRM, sklad, dodavatelé</td><td>API nebo export</td><td>Osobní údaje do analýzy nepatří. Anonymizuj ve skriptu, dřív než data uvidí model.</td></tr>
+      </tbody>
+    </table>
+    <p class="callout r">Otázka je vždycky stejná: má to API nebo export? Když ano, jde to napojit.</p>
+  </div>
+</section>
+
+<!-- S3-14 · pravidelné spouštění -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Kam to jde dál · plánování</div>
+    <h2 class="r">Kontrolu můžeš spouštět pravidelně</h2>
+    <p class="lead r dim">Co jsi dnes viděl spustit ručně, můžeš naplánovat.</p>
+    <div class="cards c4 r-children">
+      <div class="card">
+        <div class="ic">01</div>
+        <h3>Měsíční report</h3>
+        <p>Search Console, GA4 a reklama v jednom dokumentu, každý první den v měsíci.</p>
+      </div>
+      <div class="card">
+        <div class="ic">02</div>
+        <h3>Kontrola webu</h3>
+        <p>Čitelnost pro AI boty a technické chyby po každém nasazení.</p>
+      </div>
+      <div class="card">
+        <div class="ic">03</div>
+        <h3>Kanibalizace klíčových slov</h3>
+        <p>Přehled stránek, které si konkurují ve výsledcích vyhledávání.</p>
+      </div>
+      <div class="card">
+        <div class="ic">04</div>
+        <h3>Upozornění na chybu</h3>
+        <p>Zpráva, když se při běhu něco pokazí.</p>
+      </div>
+    </div>
+    <p class="callout r">Analýza, kterou uděláš jednou, časem zastará. Pravidelný běh pomáhá sledovat stav webu, i když máš jinou práci.</p>
+  </div>
+</section>
+
+<!-- S3-15 · tři věty procesu -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Kam to jde dál · návrh procesu</div>
+    <h2 class="r">Tři věty, bez kterých proces není jasný.</h2>
+    <ol class="steps r-children">
+      <li><b>Co se hlídá a jak často.</b> Týdně to, co se mění po každém nasazení — technické chyby, kanibalizace klíčových slov. Měsíčně to, co se mění pomalu — příležitosti, viditelnost v AI, výkon kampaní.</li>
+      <li><b>Kdy má přijít zpráva.</b> Ne po každém běhu. „Dej vědět, jen když přibude nová dvojice stránek, které si konkurují."</li>
+      <li><b>Kam.</b> Do souboru, do Slacku nebo e-mailem. Tam, kam se reálně díváš.</li>
+    </ol>
+    <p class="callout r">Report, který chodí pokaždé, se po čase přestane číst. Report, který chodí při změně, se čte pořád.</p>
+    <p class="dim r">Návrh na míru tvému oboru ti sestaví <code>/skoleni-shrnuti</code> a uloží ho jako soubor. K chatu se nemusíš vracet.</p>
+  </div>
+</section>
+
+<!-- S3-16 · REF: jak se naplánovaný běh nastaví -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Kam to jde dál · referenční</div>
+    <h2 class="r">Jak se naplánovaný běh nastaví.</h2>
+    <div class="two top r">
+      <div class="stack-sm">
+        <div class="ic">V Claude Code</div>
+        <div class="cmd">/schedule</div>
+        <p class="dim">Průvodce se zeptá, co se má spouštět, jak často a co se stane s výsledkem. Stejným příkazem se existující plány vypisují a mění.</p>
+        <div class="ic">Na vlastním počítači</div>
+        <div class="cmd">crontab -e          # macOS, Linux
+Plánovač úloh       # Windows</div>
+        <p class="dim">Když data nesmí z firmy ven, spouštěj skript lokálně a interpretaci si vyžádej, až se na to díváš.</p>
+      </div>
+      <div class="stack-sm">
+        <ul class="bullets">
+          <li><b>Zadání musí být soběstačné.</b> Příští běh nebude mít tenhle rozhovor: klient, property, co s čím porovnat, kam uložit, kdy mlčet.</li>
+          <li><b>MCP servery přidané lokálně se do cloudového běhu nepřenášejí samy.</b> Naplánuj nejdřív jeden zkušební běh a podívej se, jestli doběhl.</li>
+          <li><b>Přihlášení může vypršet.</b> Ať zpráva chodí i při chybě, ne jen při nálezu.</li>
+          <li><b>Placené API stojí peníze i na pozadí.</b> Nastav limit a kontroluj kredit.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S3-17 · Paperclip -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Kam to jde dál · výhled</div>
+    <h2 class="r">Paperclip: orchestrace nad Claude Code</h2>
+    <p class="lead r dim">Ber ho jako výhled, ne jako doporučení k nasazení.</p>
+    <ul class="bullets r-children">
+      <li>Je open source, self-hosted a funguje jako vrstva nad Claude Code.</li>
+      <li>Modeluje firmu včetně organizačního schématu, rolí a cílů.</li>
+      <li>Pracuje s rozpočty, schvalovacími branami a stropy nákladů.</li>
+      <li>Agenti si berou úkoly z fronty podle rozvrhu. Člověk je schvaluje v dashboardu.</li>
+    </ul>
+    <p class="dim r">Zajímavé je na tom hlavně to, jaké otázky si klade: kdo co smí schválit, kolik to smí stát, kdo to po agentovi zkontroluje. Ty otázky přijdou dřív než ta technologie.</p>
+  </div>
+  <div class="source">Zdroj: github.com/paperclipai/paperclip</div>
+</section>
+
+<!-- S3-18 · Hermes pilot -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Kam to jde dál · náš pilot</div>
+    <h2 class="r">Hermes: agent, který bere úkoly ze Slacku</h2>
+    <p class="lead wide r">Co zkoušíme u nás. Výhled, ne hotová věc — první pilot běží pro SEO tým na dvou automatizacích bez klientských dat.</p>
+    <div class="orch r">
+      <div class="node lead">Slack nebo Allfred<br><small>úkol přijde tam, kde vzniká</small></div>
+      <div class="arrows">↓ zadání &nbsp;&nbsp; ↑ výsledek zpátky do vlákna</div>
+      <div class="workers">
+        <div class="node">Hermes<br><small>dispečink, fronta, rozvrh</small></div>
+        <div class="node">Claude Code<br><small>spustí náš plugin</small></div>
+        <div class="node">Člověk<br><small>schválí, co jde ven</small></div>
+      </div>
+    </div>
+    <p class="callout r">Nic do klientských systémů bez schválení. Otázky, na které by se Claude Code ptal, přijdou do Slacku.</p>
+  </div>
+  <div class="source">Interní pilot Effectix, září 2026 · Hermes Agent + Claude Code headless</div>
+</section>
+
+<!-- S3-19 · statement -->
+<section class="slide grad">
+  <div class="inner stack">
+    <p class="statement r">Agent, který čeká na úkol, je jen skill s rozvrhem.</p>
+    <p class="lead r">Řemeslo z Bloku 2 je to samé. Mění se jen to, kdo ho spouští.</p>
+  </div>
+  <div class="wmark"><img src="assets/logo.svg" alt="re:LLMO"></div>
+</section>
+
+<!-- ================= fragment 4 ================= -->
+<!-- S4-01 · co si dnes odnášíš -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Závěr · shrnutí</div>
+    <h2 class="r">Co si dnes odnášíš</h2>
+    <p class="lead r dim">Vraťme se k seznamu ze začátku školení.</p>
+    <ol class="steps r-children">
+      <li><b>Přehled v pojmech</b> — skill, MCP server, subagent, plugin, marketplace. A čtyři ukázky, na kterých jsi je viděl běžet.</li>
+      <li><b>Postup v osmi krocích</b>, jak si navrhnout vlastní automatizaci a zabalit ji pro kolegy. Je v pluginu jako návod.</li>
+      <li><b>Vlastní skill</b>, který dnes naostro vyrobil výstup.</li>
+      <li><b>Jak jsme vytrénovali vlastní model</b> a kdy se to vyplatí.</li>
+      <li><b>Plugin školení</b> s návody a touhle prezentací, <b>jeden plugin z katalogu zdarma</b> a 10 % na ostatní.</li>
+    </ol>
+    <p class="callout r">Cesty ke všem souborům ti vypíše <code>/skoleni-shrnuti</code>. Později je z hlavy nemusíš dohledávat.</p>
+  </div>
+</section>
+
+<!-- S4-02 · co ti zůstane -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Závěr · co ti zůstane</div>
+    <h2 class="r">Co ti zůstane nainstalované</h2>
+    <table class="tbl r">
+      <thead>
+        <tr><th>Co</th><th>K čemu</th><th>Jak se spouští</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Plugin školení</td><td>Návody, řešení problémů, tahle prezentace, postup vlastní automatizace.</td><td class="mono">/skoleni-napoveda</td></tr>
+        <tr><td>superpowers a skill-creator</td><td>Brainstorming, plán, psaní skillů, ladění, když něco nejde.</td><td>samy podle popisu</td></tr>
+        <tr><td>Kontrola přístupu AI robotů</td><td>Zdarma v katalogu. Ověří, jestli se k webu dostanou GPTBot, ClaudeBot a spol.</td><td>větou, stačí doména</td></tr>
+        <tr><td>Jeden plugin z katalogu</td><td>Vyber si: crawl, kanibalizace, příležitosti ze Search Console, audit sitemap, odkazové příležitosti. Kód dostaneš e-mailem.</td><td>větou, podle pluginu</td></tr>
+      </tbody>
+    </table>
+    <p class="dim r">Audit viditelnosti v AI chatbotech jsi dnes viděl zevnitř. Ukazovali jsme ho jako příklad toho, jak se automatizace staví — přesně to je řemeslo z Bloku 2.</p>
+  </div>
+</section>
+
+<!-- S4-03 · první týden -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Závěr · první týden</div>
+    <h2 class="r">Tři věci, které se vyplatí udělat do týdne.</h2>
+    <div class="cards c3 r-children">
+      <div class="card">
+        <div class="ic">01</div>
+        <h3>Spusť svůj skill znovu</h3>
+        <p>Ne proto, že to nefungovalo, ale proto, že podruhé už to uděláš sám. Nejlépe na jiném klientovi nebo jiném vstupu.</p>
+      </div>
+      <div class="card">
+        <div class="ic">02</div>
+        <h3>Ukaž skill kolegovi</h3>
+        <p>Ať ho zkusí spustit bez tvého vysvětlování. Kde si nebude jistý, tam uprav popis.</p>
+      </div>
+      <div class="card">
+        <div class="ic">03</div>
+        <h3>Naplánuj jeden běh</h3>
+        <p>Jednu analýzu, jednu frekvenci. Ne tři naráz. Když poběží měsíc, přidáš další.</p>
+      </div>
+    </div>
+    <p class="callout r">Co se nezopakuje do týdne, se nezopakuje. Ne kvůli tomu, že by to bylo těžké, ale protože přijde jiná práce.</p>
+  </div>
+</section>
+
+<!-- S4-04 · REF: za tři týdny -->
+<section class="slide reference">
+  <div class="inner stack">
+    <div class="kicker r">Závěr · referenční</div>
+    <h2 class="r">Když si za tři týdny nebudeš vědět rady.</h2>
+    <div class="cmd r">/skoleni-napoveda</div>
+    <p class="lead wide r">Funguje i dlouho po školení. Nemusíš si pamatovat, jak se co jmenuje — popiš, co potřebuješ.</p>
+    <div class="two top r">
+      <table class="tbl">
+        <thead><tr><th>Co v něm je</th></tr></thead>
+        <tbody>
+          <tr><td>Návody krok za krokem — instalace, terminál, MCP servery, Search Console, anatomie skillu, GitHub, opakované běhy, vlastní model, reporty z více zdrojů</td></tr>
+          <tr><td>Postup vlastní automatizace v osmi krocích, samostatně</td></tr>
+          <tr><td>Řešení situací, které se pokazí nejčastěji</td></tr>
+          <tr><td>Katalog automatizací a tahle prezentace jako soubor</td></tr>
+        </tbody>
+      </table>
+      <div class="stack-sm">
+        <div class="card">
+          <div class="ic">Ptej se konkrétně</div>
+          <h3>„Tohle mi nefunguje"</h3>
+          <p>Ukaž chybovou hlášku. Příručka z ní pozná příčinu rychleji než z popisu.</p>
+        </div>
+        <div class="card">
+          <div class="ic">Nebo</div>
+          <h3>„Jak se to dělalo?"</h3>
+          <p>Otevře ti návod na to konkrétní téma a projde ho s tebou.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S4-05 · podklady a pomoc -->
+<section class="slide soft">
+  <div class="inner stack">
+    <div class="kicker r">Závěr · podklady</div>
+    <h2 class="r">Kde najdeš podklady a pomoc</h2>
+    <ul class="bullets r-children">
+      <li>Návody, řešení problémů i tuhle prezentaci nese plugin. Otevřeš je přes <code>/skoleni-napoveda</code>.</li>
+      <li>Katalog automatizací najdeš na rellmo.com. Kontrola přístupu AI robotů je tam zdarma.</li>
+      <li>Klasifikátor záměru je na rellmo.com/nastroje/klasifikator-zameru — ukázka rovnou, plný běh do 500 dotazů po zadání e-mailu.</li>
+      <li>Pokud něco nefunguje, napiš na hello@rellmo.com.</li>
+      <li>Pro aktualizaci pluginů otevři <code>/plugin</code>. Marketplace re:LLMO nabídne novou verzi.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- S4-06 · zpětná vazba -->
+<section class="slide">
+  <div class="inner stack">
+    <div class="kicker r">Závěr · zpětná vazba</div>
+    <h2 class="r">Tři minuty na zpětnou vazbu</h2>
+    <p class="lead wide r">Krátký dotazník ti přijde e-mailem dnes odpoledne. Osm otázek, jedna otevřená. Podle něj měníme obsah dalšího běhu — srpnový deck vypadal jinak než tenhle právě kvůli němu.</p>
+    <div class="cards c3 r-children">
+      <div class="card"><div class="ic">Co</div><h3>Co ti dnes chybělo</h3><p>Téma, ukázka, postup. Cokoli, co jsi čekal a nepřišlo.</p></div>
+      <div class="card"><div class="ic">Co</div><h3>Co bylo navíc</h3><p>Slide nebo blok, který bys vyhodil. Tohle je stejně cenné jako to první.</p></div>
+      <div class="card"><div class="ic">Co</div><h3>Co dál</h3><p>Webináře k jednotlivým automatizacím, konzultace, navazující školení.</p></div>
+    </div>
+    <p class="dim r">Odkaz na dotazník doplní lektor na plátno.</p>
+  </div>
+</section>
+
+<!-- S4-07 · díky -->
+<section class="slide divider">
+  <div class="inner stack">
+    <div class="num r">Na závěr</div>
+    <h2 class="r">Díky za dnešek.</h2>
+    <p class="lead wide r">Dnešní postup si můžeš zopakovat na malé úloze. Do týdne.</p>
+    <p class="who r"><b>Lukáš Kostka</b> · re:LLMO a Effectix</p>
+    <p class="dim r">hello@rellmo.com</p>
+  </div>
+</section>
+
+<!-- ================= fragment 5 ================= -->
+<!-- fragment 5 · prázdný — všech pět bloků se vešlo do fragmentů 0–4 -->
+
+</div>
+<script>
+(function(){
+  // Reveal animace jen když je tab viditelný a bez reduce-motion (jinak fail-open: obsah rovnou vidět).
+  var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!document.hidden && !rm){document.documentElement.classList.add('anim');}
+  var deck=document.getElementById('deck');
+  var slides=Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+  var dotsWrap=document.getElementById('dots');
+  var cur=document.getElementById('cur'), tot=document.getElementById('tot'), prog=document.getElementById('progress'), hint=document.getElementById('hint');
+  tot.textContent=slides.length;
+  slides.forEach(function(s,i){
+    var b=document.createElement('button'); b.setAttribute('aria-label','Slide '+(i+1));
+    if(s.classList.contains('reference')){b.classList.add('ref');}
+    b.addEventListener('click',function(){slides[i].scrollIntoView({behavior:'smooth'});});
+    dotsWrap.appendChild(b);
+  });
+  var dots=Array.prototype.slice.call(dotsWrap.children);
+  var current=0;
+  function setActive(i){
+    if(i===current && slides[i].classList.contains('in')) return;
+    current=i;
+    dots.forEach(function(d,j){d.classList.toggle('active',j===i);});
+    cur.textContent=(i+1);
+    prog.style.width=((i+1)/slides.length*100)+'%';
+  }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); setActive(slides.indexOf(e.target)); }
+    });
+  },{threshold:0.55});
+  slides.forEach(function(s){io.observe(s);});
+  function go(d){var n=Math.max(0,Math.min(slides.length-1,current+d));slides[n].scrollIntoView({behavior:'smooth'});}
+  window.addEventListener('keydown',function(e){
+    if(['ArrowDown','ArrowRight','PageDown',' '].indexOf(e.key)>-1){e.preventDefault();go(1);}
+    else if(['ArrowUp','ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();go(-1);}
+    else if(e.key==='Home'){e.preventDefault();slides[0].scrollIntoView({behavior:'smooth'});}
+    else if(e.key==='End'){e.preventDefault();slides[slides.length-1].scrollIntoView({behavior:'smooth'});}
+  });
+  var hidHint=false;
+  deck.addEventListener('scroll',function(){if(!hidHint){hidHint=true;hint.style.opacity='0';}},{passive:true});
+})();
+</script>
+</body>
+</html>
