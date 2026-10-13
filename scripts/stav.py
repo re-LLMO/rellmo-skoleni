@@ -6,14 +6,21 @@ Jediné místo, které sahá na .skoleni/stav.json. Stav slouží třem věcem:
 plugin naváže tam, kde se přestalo. Jen standardní knihovna.
 """
 import json
+import sys
 from pathlib import Path
+
+# Claude Code čte výstup jako UTF-8. Na Windows by Python psal do roury
+# v kódování systému (cp1250) a znak, který v něm není (třeba → v poznámce),
+# by shodil print — i v heredocu ve skillu, který tenhle modul importuje.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 KROKY = ("start", "automatizace", "brandkit", "shrnuti")
 STAVY = ("nezacato", "hotovo", "ceka-na-prihlaseni",
          "jede-na-ukazkovych-datech", "blokovano", "preskoceno")
 
 POPIS_KROKU = {
-    "start": "nastavení, pluginy a první report",
+    "start": "nastavení, pluginy a prostředí",
     "automatizace": "vlastní automatizace",
     "brandkit": "brandkit a skill se značkou",
     "shrnuti": "shrnutí dne",
@@ -115,5 +122,4 @@ def veta(stav: dict) -> str:
 
 
 if __name__ == "__main__":
-    import sys
     print(veta(nacti(sys.argv[1] if len(sys.argv) > 1 else ".")))

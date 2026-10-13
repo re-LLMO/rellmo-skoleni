@@ -2,7 +2,7 @@
 name: skoleni-start
 description: Nastaví prostředí pro školení Claude Code pro markeťáky. Založí pracovní složku s CLAUDE.md a .gitignore, zeptá se na úroveň a doménu, doinstaluje pluginy superpowers a skill-creator, ověří python, git, gh a node a zapíše, jaké nástroje účastník v práci používá. Použij na začátku školení nebo když se k němu uživatel vrací a chce navázat. Spouštěj i opakovaně — dělá jen to, co chybí. Spouští se příkazem /skoleni-start nebo když účastník řekne "začínáme", "spusť školení", "kde jsem skončil", "chci pokračovat" nebo se ptá, co má udělat jako první.
 license: LicenseRef-Rellmo-Commercial
-allowed-tools: Bash(python3:*), Bash(brew:*), Bash(apt-get:*), Bash(winget:*), Read, Write, Edit, AskUserQuestion, WebSearch
+allowed-tools: Bash(python3:*), Bash(py:*), Bash(python:*), Bash(brew:*), Bash(apt-get:*), Bash(winget:*), Read, Write, Edit, AskUserQuestion, WebSearch
 metadata:
   author: Rellmo
   version: 1.0.0
@@ -27,7 +27,8 @@ dotazu, který markeťák neumí zodpovědět.
 
 Nepřehazuj to. Krok 1 je první, aby nic citlivého nevzniklo dřív než
 `.gitignore`. Krok 3 je před krokem 4 schválně: pluginy jsou to, s čím se
-během dne pracuje, chybějící `gh` nikoho nezdrží dřív než odpoledne.
+během dne pracuje, chybějící `gh` nikoho nezdrží dřív než v bloku o vlastní
+automatizaci.
 
 ## Jak mluvit
 
@@ -75,17 +76,34 @@ upraví a hned zapíše):
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 # ... uprav s ...
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 PY
 ```
 
+**Windows.** Dvě věci, na kterých by jinak spadl hned první blok:
+
+- **Kterým příkazem spouštět Python.** Bloky volají `python3`. Na Windows
+  to bývá jen odkaz do Microsoft Storu, který Python nespustí. Než spustíš
+  první blok, ověř `python3 --version`; když nevypíše `Python 3.…`, zkus
+  `py --version` a pak `python --version`. Příkaz, který verzi vypíše,
+  používej ve všech dalších blocích místo `python3` — zbytek bloku se
+  nemění. Když nefunguje ani jeden, Python na stroji chybí a bez něj
+  plugin nepoběží. Řekni účastníkovi jednou větou, ať si ho nainstaluje
+  podle návodu 01, zavře a znovu otevře Claude Code ve stejné složce a
+  spustí `/skoleni-start` znovu; když instalaci firemní notebook nedovolí,
+  je to pro IT. Dál nepokračuj — všechny kroky stojí na Pythonu.
+- **Cesty v kódu pythonu piš jako `r"…"`.** Na Windows dosazuje Claude Code
+  `${CLAUDE_PLUGIN_ROOT}` a `${CLAUDE_PROJECT_DIR}` se zpětnými lomítky
+  (`C:\Users\…`) a v obyčejném řetězci by je Python četl jako escape
+  sekvence. Předpona `r` to vypíná; drž ji i v kódu, který píšeš sám.
+
 ## Stav a navázání
 
-Na úplném začátku vždy načti stav (`stav.nacti("${CLAUDE_PROJECT_DIR}")`) a
+Na úplném začátku vždy načti stav (`stav.nacti(r"${CLAUDE_PROJECT_DIR}")`) a
 podívej se, kde je krok `start`:
 
 - **`hotovo`** — start už proběhl. Řekni to (úroveň, doména, které pluginy
@@ -118,9 +136,9 @@ Dřív, než vznikne cokoli dalšího:
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import bezpecnost
-print(bezpecnost.zajisti_gitignore("${CLAUDE_PROJECT_DIR}"))
+print(bezpecnost.zajisti_gitignore(r"${CLAUDE_PROJECT_DIR}"))
 PY
 ```
 
@@ -129,12 +147,12 @@ ať ti sem žádný klíč ani export omylem nespadne do gitu", nebo (při druh�
 spuštění) "gitignore už měl všechno, nic jsem nepřidával".
 
 Ve stejném kroku založ i prázdnou složku na budoucí skilly účastníka —
-odpoledne do ní ukládá `skoleni-automatizace`:
+v bloku o vlastní automatizaci do ní ukládá `skoleni-automatizace`:
 
 ```bash
 python3 -c "
 import os
-p = os.path.join('${CLAUDE_PROJECT_DIR}', '.claude', 'skills')
+p = os.path.join(r'${CLAUDE_PROJECT_DIR}', '.claude', 'skills')
 existovala = os.path.isdir(p)
 os.makedirs(p, exist_ok=True)
 print('existovala' if existovala else 'nova')
@@ -142,20 +160,20 @@ print('existovala' if existovala else 'nova')
 ```
 
 Pokud výstup je `nova`, řekni účastníkovi: "Zakládám i prázdnou složku
-`.claude/skills/`, kam si odpoledne uložíš vlastní skill. Claude Code
+`.claude/skills/`, kam si později uložíš vlastní skill. Claude Code
 sleduje jen složky, které existovaly při startu — proto ji vytvářím teď a
 na konci tohohle bloku tě poprosím o restart. Ušetří ti to přerušení
 uprostřed práce." Pokud je výstup `existovala`, nic z toho neříkej.
 
 Ve stejném kroku založ i krátký `CLAUDE.md` — ručně psaný rozsahem, ne
-vygenerovaný, ať je sám ukázkou toho, co odpoledne učíme (krátce, říkej kde,
+vygenerovaný, ať je sám ukázkou toho, co dnes učíme (krátce, říkej kde,
 ne co). V tuhle chvíli ještě neznáš doménu účastníka, takže do něj patří jen
 to, co platí už teď — zbytek doplní krok 2:
 
 ```bash
 python3 -c "
 import os
-print('existuje' if os.path.isfile(os.path.join('${CLAUDE_PROJECT_DIR}', 'CLAUDE.md')) else 'neexistuje')
+print('existuje' if os.path.isfile(os.path.join(r'${CLAUDE_PROJECT_DIR}', 'CLAUDE.md')) else 'neexistuje')
 "
 ```
 
@@ -181,8 +199,8 @@ veřejném repozitáři.
 
 Řekni účastníkovi jednou větou, co je tenhle soubor a proč vzniká: "Založil
 jsem i `CLAUDE.md` — krátký kontext o týhle složce, který si Claude Code
-načte pokaždé na začátku. Odpoledne na něj navážeme, až budeš psát ten samý
-typ souboru pro vlastní skill." Pokud `CLAUDE.md` už existuje (druhé
+načte pokaždé na začátku. Navážeme na něj, až budeš psát ten samý typ
+souboru pro vlastní skill." Pokud `CLAUDE.md` už existuje (druhé
 spuštění), nic nepřepisuj a jen řekni, že tam už je z dřívějška.
 
 ## Krok 2 — Úroveň a doména
@@ -202,12 +220,12 @@ Zapiš rovnou do stavu:
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 s["uroven"] = "zacatecnik"   # nebo "pokrocily", podle odpovědi
 s["domena"] = "priklad.cz"   # doména z odpovědi, bez https:// a bez lomítka; None, když žádná
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 PY
 ```
 
@@ -233,12 +251,12 @@ rovnou ho nainstaluj, bez ptaní:
 - **superpowers** — "Nejdřív rozmyslet, pak dělat. Dnes ho použijeme na
   zadání vlastní automatizace (brainstorming) i na psaní skillu."
 - **skill-creator** — "Druhý průvodce tvorbou skillu, od Anthropicu.
-  Odpoledne si vybereš, který ti sedí víc."
+  U vlastního skillu si vybereš, který ti sedí víc."
 
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import pluginy
 for p in pluginy.chybejici():
     v = pluginy.nainstaluj(p)
@@ -254,7 +272,8 @@ konci"), ne teď.
 **Když instalace selže** (síť, oprávnění), nezkoušej to znovu. Chybovou
 hlášku protáhni přes `bezpecnost.maskuj()`, řekni jednou větou, co se stalo,
 zapiš do stavu `blokovano` s názvem pluginu a pokračuj — zbytek rána bez
-pluginů funguje, odpoledne je doinstaluje lektor ručně.
+pluginů funguje, do bloku o vlastní automatizaci je doinstaluje lektor
+ručně.
 
 ## Krok 4 — Prostředí
 
@@ -269,7 +288,7 @@ rovnou ho proveď, bez ptaní:
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import prostredi
 print(prostredi.navrh_instalace("git"))
 PY
@@ -287,17 +306,17 @@ pokud k tomu dojde, řekni to účastníkovi rovnou.
 firemním notebooku), nezkoušej to znovu a neřeš proč. Zapiš do stavu, který
 nástroj chybí, řekni jednou větou, co má účastník poslat svému IT, a
 pokračuj — většina dne funguje i bez něj. Co konkrétně bez toho nástroje
-nepůjde, řekni rovnou (bez `gh` nepůjde odpoledne sdílet skill přes GitHub;
-bez `python3` nepoběží skripty ve vlastní automatizaci):
+nepůjde, řekni rovnou (bez `gh` nepůjde sdílet skill přes GitHub;
+bez Pythonu nepoběží skripty ve vlastní automatizaci):
 
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 stav.nastav_krok(s, "start", "blokovano", "git se nepodařilo doinstalovat (selhalo oprávnění) — chybí IT")
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 PY
 ```
 
@@ -308,8 +327,9 @@ práci používáš?" (Search Console, GA4, Shoptet, WordPress, Mergado, reklamn
 účty, konkrétní CRM, cokoli.) Pro každý nástroj to levně dohledej — jedno
 `WebSearch` na "`<nástroj>` MCP server" stačí:
 
-- **Existuje** → zapiš to a řekni, že napojení je krok pro odpoledne, až
-  bude jasné, jestli ho vlastní automatizace vůbec potřebuje (návod 03).
+- **Existuje** → zapiš to a řekni, že napojení je krok pro blok o vlastní
+  automatizaci, až bude jasné, jestli ho vlastní automatizace vůbec
+  potřebuje (návod 03).
 - **Neexistuje** → zapiš to a řekni jednou větou, že stačí, aby nástroj měl
   API — server nad ním jde postavit (návod 03 a 09).
 
@@ -321,16 +341,16 @@ Zapiš výsledek do `stav["nastroje"]` — čte to `skoleni-automatizace`:
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 s["nastroje"].append({
     "nazev": "Shoptet",
     "ma_mcp": False,
     "nainstalovano": False,
     "poznamka": "MCP server nenalezen, jde postavit nad API",
 })
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 PY
 ```
 

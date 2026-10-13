@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
 """pluginy.py — které pluginy Claude Code účastník má a které mu chybí.
 
-Školení stojí na dvou pluginech z oficiální marketplace Claude Code, která je
-v každé instalaci od začátku: superpowers (nejdřív rozmyslet, pak dělat; psaní
-skillů) a skill-creator (druhý, rovnocenný průvodce tvorbou skillu od
-Anthropicu). Skript je jen zjistí a doinstaluje — nic neptá, nic nevysvětluje,
-to je práce skillu. Jen standardní knihovna.
+Školení stojí na dvou pluginech z oficiální nabídky Anthropicu: superpowers
+(nejdřív rozmyslet, pak dělat; psaní skillů) a skill-creator (druhý,
+rovnocenný průvodce tvorbou skillu od Anthropicu). Skript je jen zjistí a
+doinstaluje — nic neptá, nic nevysvětluje, to je práce skillu. Jen standardní
+knihovna.
 """
+from __future__ import annotations
+
 import json
 import shutil
 import subprocess
+import sys
+
+# Claude Code čte výstup jako UTF-8. Na Windows by Python psal do roury
+# v kódování systému (cp1250) a znak, který v něm není (třeba ✘ z hlášky CLI),
+# by shodil print. Platí i pro heredoc ve skillu, který tenhle modul importuje.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 POZADOVANE = (
     "superpowers@claude-plugins-official",
@@ -20,6 +29,13 @@ K_CEMU = {
     "superpowers@claude-plugins-official": "nejdřív rozmyslet, pak dělat — brainstorming, plán, psaní skillů",
     "skill-creator@claude-plugins-official": "druhý průvodce tvorbou vlastního skillu, od Anthropicu",
 }
+
+# Čistá instalace Claude Code má nakonfigurovaný jen vestavěný adresář
+# `anthropic-plugin-directory`; stejné pluginy v něm vede pod svým jménem.
+# Plugin z kterékoli z těchhle dvou marketplace se počítá jako přítomný — jinak
+# by se nainstalovala druhá kopie. Instaluje se z `claude-plugins-official`,
+# kterou CLI dohledá, i když v seznamu marketplace není.
+OFICIALNI_MARKETPLACE = ("claude-plugins-official", "anthropic-plugin-directory")
 
 _TIMEOUT_LIST = 60
 _TIMEOUT_INSTALL = 300
@@ -39,8 +55,8 @@ def nainstalovane() -> set[str]:
     if cmd is None:
         return set()
     try:
-        r = subprocess.run([cmd, "plugin", "list", "--json"],
-                           capture_output=True, text=True, timeout=_TIMEOUT_LIST)
+        r = subprocess.run([cmd, "plugin", "list", "--json"], capture_output=True,
+                           encoding="utf-8", errors="replace", timeout=_TIMEOUT_LIST)
     except (OSError, subprocess.SubprocessError):
         return set()
     if r.returncode != 0:
@@ -62,24 +78,29 @@ def claude_dostupne() -> bool:
     return _claude() is not None
 
 
+def _je_mezi(plugin_id: str, mam: set[str]) -> bool:
+    nazev = plugin_id.split("@", 1)[0]
+    return any(f"{nazev}@{m}" in mam for m in OFICIALNI_MARKETPLACE)
+
+
 def chybejici() -> list[str]:
     mam = nainstalovane()
-    return [p for p in POZADOVANE if p not in mam]
+    return [p for p in POZADOVANE if not _je_mezi(p, mam)]
 
 
 def nainstaluj(plugin_id: str) -> dict:
     """Spustí `claude plugin install <id>`. Vrátí {"vysledek", "zprava"}.
 
     `vysledek` je `ok` nebo `selhalo`. Oba požadované pluginy jsou v oficiální
-    marketplace, kterou má Claude Code od instalace — chybějící marketplace
-    tu proto není stav, se kterým se počítá.
+    marketplace, kterou CLI dohledá i bez `claude plugin marketplace add` —
+    chybějící marketplace tu proto není stav, se kterým se počítá.
     """
     cmd = _claude()
     if cmd is None:
         return {"vysledek": "selhalo", "zprava": "Claude Code (příkaz `claude`) na tomhle stroji není v PATH."}
     try:
-        r = subprocess.run([cmd, "plugin", "install", plugin_id, "-y"],
-                           capture_output=True, text=True, timeout=_TIMEOUT_INSTALL)
+        r = subprocess.run([cmd, "plugin", "install", plugin_id, "-y"], capture_output=True,
+                           encoding="utf-8", errors="replace", timeout=_TIMEOUT_INSTALL)
     except subprocess.TimeoutExpired:
         return {"vysledek": "selhalo", "zprava": f"Instalace {plugin_id} nedoběhla do {_TIMEOUT_INSTALL} s (pomalá síť?)."}
     except (OSError, subprocess.SubprocessError) as e:
@@ -95,7 +116,7 @@ def prehled() -> dict:
     mam = nainstalovane()
     return {
         "claude": claude_dostupne(),
-        "pluginy": {p: {"pritomen": p in mam, "k_cemu": K_CEMU[p]} for p in POZADOVANE},
+        "pluginy": {p: {"pritomen": _je_mezi(p, mam), "k_cemu": K_CEMU[p]} for p in POZADOVANE},
     }
 
 

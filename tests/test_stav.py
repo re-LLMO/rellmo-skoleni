@@ -17,7 +17,7 @@ def test_nacti_zalozi_vychozi_kdyz_soubor_chybi(docasna_slozka):
 def test_nacti_opravi_poskozeny_soubor(docasna_slozka):
     cesta = docasna_slozka / ".skoleni"
     cesta.mkdir()
-    (cesta / "stav.json").write_text("{tohle není json")
+    (cesta / "stav.json").write_text("{tohle není json", encoding="utf-8")
     s = S.nacti(docasna_slozka)
     assert s["kroky"]["start"]["stav"] == "nezacato"
     assert "poškozen" in s["poznamky"][0].lower()
@@ -82,3 +82,23 @@ def test_nacti_sklada_kroky_v_kanonickem_poradi(docasna_slozka):
     assert nacteny["kroky"]["start"]["stav"] == "hotovo"
     assert nacteny["kroky"]["shrnuti"]["stav"] == "hotovo"
     assert nacteny["kroky"]["automatizace"]["stav"] == "nezacato"
+
+
+def test_heredoc_s_importem_tiskne_utf8_i_v_cp1250(docasna_slozka):
+    """Skilly tisknou stav z heredocu (`import stav` a `print`). Na české
+    Windows jde výstup do roury v cp1250 a poznámka se šipkou by print shodila."""
+    import os
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    kod = (
+        "import sys; sys.path.insert(0, sys.argv[1]); import stav;"
+        "s = stav.nacti(sys.argv[2]);"
+        "stav.nastav_krok(s, 'start', 'blokovano', 'git → chybí, řeší IT');"
+        "print(stav.veta(s))"
+    )
+    r = subprocess.run([sys.executable, "-c", kod, str(Path(S.__file__).parent), str(docasna_slozka)],
+                       capture_output=True, env={**os.environ, "PYTHONIOENCODING": "cp1250"})
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert "git → chybí, řeší IT" in r.stdout.decode("utf-8")

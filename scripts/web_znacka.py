@@ -9,6 +9,8 @@ Použití:
     python3 web_znacka.py https://priklad.cz --out brandkit/_web
 Vypíše shrnutí a zapíše `nalez.json` + stažená loga do `--out`.
 """
+from __future__ import annotations
+
 import argparse
 import colorsys
 import json
@@ -37,17 +39,25 @@ GENERICKA_PISMA = {
 }
 
 
-def stahni(url: str, limit: int, binarni: bool = False):
-    """Vrátí (bytes|str, finální URL, content-type). Chyby vrací jako None."""
+def stahni(url: str, limit: int, binarni: bool = False, duvod: list | None = None):
+    """Vrátí (bytes|str, finální URL, content-type). Chyby vrací jako None.
+
+    Do `duvod` (když je předaný) připíše, proč stažení selhalo — na firemní
+    síti je rozdíl mezi blokací webu a proxy, která podvrhuje certifikát.
+    """
     req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "cs,en;q=0.8"})
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
             data = r.read(limit + 1)
             ct = r.headers.get("Content-Type", "")
             fin = r.geturl()
-    except Exception:
+    except Exception as e:
+        if duvod is not None:
+            duvod.append(f"{type(e).__name__}: {e}")
         return None
     if len(data) > limit:
+        if duvod is not None:
+            duvod.append(f"stránka má přes {limit // 1_000_000} MB")
         return None
     if binarni:
         return data, fin, ct
@@ -311,9 +321,10 @@ def stahni_loga(kandidati: list, out: Path) -> None:
 def analyzuj(url: str, out_dir: str | None = None) -> dict:
     if not re.match(r"^https?://", url):
         url = "https://" + url
-    r = stahni(url, MAX_HTML)
+    duvod = []
+    r = stahni(url, MAX_HTML, duvod=duvod)
     if not r:
-        return {"chyba": f"Nepodařilo se stáhnout {url} (blokace, přesměrování mimo web, nebo přes 3 MB)."}
+        return {"chyba": f"Nepodařilo se stáhnout {url} — {duvod[0] if duvod else 'neznámý důvod'}."}
     html, fin, _ = r
     p = _Parser()
     p.feed(html)
@@ -383,6 +394,11 @@ def main(argv=None) -> int:
     ap.add_argument("--out", help="složka pro nalez.json, styly.css a stažená loga")
     ap.add_argument("--json", action="store_true", help="vypsat celý nález jako JSON")
     a = ap.parse_args(argv)
+    # Claude Code čte výstup jako UTF-8. Na Windows by Python psal do roury
+    # v cp1250 a znak, který v něm není (→ ve shrnutí, cokoli z titulku webu),
+    # by shodil print až po stažení všeho.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     n = analyzuj(a.url, a.out)
     print(json.dumps(n, ensure_ascii=False, indent=2) if a.json else shrnuti(n))
     return 1 if "chyba" in n else 0

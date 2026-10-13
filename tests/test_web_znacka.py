@@ -24,7 +24,7 @@ body{font-family:Poppins,Arial,sans-serif;background:#ffffff;color:#1a1a1a}
 .card{border:1px solid #eeeeee} .accent{color:#9B36F7} .accent2{color:#9b36f7}"""
 
 
-def _mock_stahni(url, limit, binarni=False):
+def _mock_stahni(url, limit, binarni=False, duvod=None):
     if url.endswith("main.css"):
         return CSS, url, "text/css"
     if url.endswith((".svg", ".png", ".jpg")):
@@ -90,7 +90,7 @@ SVG_HTML = """<html><head><title>X</title></head><body><header>
 
 def test_inline_svg_je_platne_xml(monkeypatch, tmp_path):
     import xml.dom.minidom as m
-    monkeypatch.setattr(web_znacka, "stahni", lambda url, limit, binarni=False: (SVG_HTML, url, "text/html"))
+    monkeypatch.setattr(web_znacka, "stahni", lambda url, limit, binarni=False, duvod=None: (SVG_HTML, url, "text/html"))
     n = web_znacka.analyzuj("priklad.cz", str(tmp_path))
     soubory = [k["soubor"] for k in n["loga"] if k.get("soubor", "").endswith("inline.svg")]
     assert soubory, "inline SVG z hlavičky se nezachytilo"
@@ -98,3 +98,34 @@ def test_inline_svg_je_platne_xml(monkeypatch, tmp_path):
     assert "</path>" not in text and "</stop>" not in text          # samouzavírací zůstanou samouzavírací
     assert "</linearGradient>" in text and "</lineargradient>" not in text
     m.parseString(text)                                              # platné XML
+
+
+def test_chyba_stazeni_rika_duvod(monkeypatch):
+    """Na firemní síti je rozdíl mezi blokací webu a proxy s podvrženým
+    certifikátem — lektor to musí poznat z jedné věty."""
+    def stahni(url, limit, binarni=False, duvod=None):
+        duvod.append("URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED]>")
+        return None
+
+    monkeypatch.setattr(web_znacka, "stahni", stahni)
+    assert "CERTIFICATE_VERIFY_FAILED" in web_znacka.analyzuj("priklad.cz")["chyba"]
+
+
+def test_vypis_prezije_vystup_v_cp1250():
+    """Na české Windows jde výstup do roury v cp1250; šipka ve shrnutí v něm
+    není a print by spadl až po stažení celého webu."""
+    import os
+    import subprocess
+
+    kod = (
+        "import sys; sys.path.insert(0, sys.argv[1]); import web_znacka as w;"
+        "w.analyzuj = lambda url, out: {'url': url, 'nazev': 'Firma ✓', 'theme_color': None,"
+        "'css_soubory': [], 'barvy': {'top': [], 'promenne': []},"
+        "'fonty': {'pouzite': [], 'font_face': [], 'google': []},"
+        "'loga': [{'skore': 5, 'duvod': 'img s logem', 'url': 'https://priklad.cz/logo.svg'}]};"
+        "sys.exit(w.main(['priklad.cz']))"
+    )
+    r = subprocess.run([sys.executable, "-c", kod, str(Path(web_znacka.__file__).parent)],
+                       capture_output=True, env={**os.environ, "PYTHONIOENCODING": "cp1250"})
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    assert "→ https://priklad.cz/logo.svg" in r.stdout.decode("utf-8")

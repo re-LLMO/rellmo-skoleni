@@ -58,19 +58,24 @@ skončit na GitHubu.
   "dataforseo_password": {
     "type": "string",
     "title": "DataForSEO API password",
+    "description": "Heslo k API DataForSEO",
     "sensitive": true,
     "required": true
   }
 }
 ```
 
-Claude Code se při instalaci zeptá, `sensitive: true` uloží hodnotu do
-systémové klíčenky (ne do `settings.json`) a skript ji čte z proměnné
-prostředí:
+Claude Code se při instalaci zeptá a `sensitive: true` uloží hodnotu do
+systémové klíčenky (ne do `settings.json`). Dostane ji MCP server pluginu —
+v jeho `.mcp.json` se na ni odkážeš zástupným textem:
 
-```python
-os.environ["CLAUDE_PLUGIN_OPTION_DATAFORSEO_PASSWORD"]
+```json
+"env": { "DATAFORSEO_PASSWORD": "${user_config.dataforseo_password}" }
 ```
+
+Skript, který skill spouští přes Bash, ji z prostředí nedostane — proměnnou
+`CLAUDE_PLUGIN_OPTION_…` Claude Code předává jen hookům. Pro takový skript
+drž klíč v `.env` (níž).
 
 **U MCP serveru** se přihlašovací údaje předávají při přidání:
 

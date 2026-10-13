@@ -4,7 +4,7 @@ import bezpecnost as B
 
 def test_zajisti_gitignore_zalozi_soubor(docasna_slozka):
     B.zajisti_gitignore(docasna_slozka)
-    obsah = (docasna_slozka / ".gitignore").read_text()
+    obsah = (docasna_slozka / ".gitignore").read_text(encoding="utf-8")
     assert ".skoleni/" in obsah
     assert ".env" in obsah
 
@@ -12,14 +12,14 @@ def test_zajisti_gitignore_zalozi_soubor(docasna_slozka):
 def test_zajisti_gitignore_je_idempotentni(docasna_slozka):
     B.zajisti_gitignore(docasna_slozka)
     B.zajisti_gitignore(docasna_slozka)
-    radky = (docasna_slozka / ".gitignore").read_text().splitlines()
+    radky = (docasna_slozka / ".gitignore").read_text(encoding="utf-8").splitlines()
     assert radky.count(".skoleni/") == 1
 
 
 def test_zajisti_gitignore_zachova_existujici_radky(docasna_slozka):
-    (docasna_slozka / ".gitignore").write_text("moje-slozka/\n")
+    (docasna_slozka / ".gitignore").write_text("moje-slozka/\n", encoding="utf-8")
     B.zajisti_gitignore(docasna_slozka)
-    obsah = (docasna_slozka / ".gitignore").read_text()
+    obsah = (docasna_slozka / ".gitignore").read_text(encoding="utf-8")
     assert "moje-slozka/" in obsah
     assert ".skoleni/" in obsah
 
@@ -117,3 +117,21 @@ def test_nemaskuje_znama_stavova_slova(stav):
     vysledek = B.maskuj(f"GSC token: {stav}")
     assert stav in vysledek
     assert "••••" not in vysledek
+
+
+def test_maskovani_z_roury_zvlada_diakritiku_v_cp1250():
+    """`sys.stdin.read()` by na české Windows četl UTF-8 jako cp1250 a na ň
+    nebo Ř spadl; výstup by spadl na znaku, který cp1250 nemá."""
+    import os
+    import subprocess
+    import sys
+    from pathlib import Path
+
+    skript = Path(B.__file__)
+    vstup = "Řeřicha, kůň → API_KEY=abcd1234efgh ✘".encode("utf-8")
+    r = subprocess.run([sys.executable, str(skript)], input=vstup, capture_output=True,
+                       env={**os.environ, "PYTHONIOENCODING": "cp1250"})
+    assert r.returncode == 0, r.stderr.decode("utf-8", "replace")
+    vystup = r.stdout.decode("utf-8")
+    assert "Řeřicha, kůň →" in vystup and "✘" in vystup
+    assert "abcd1234efgh" not in vystup

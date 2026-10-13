@@ -32,7 +32,7 @@ Obal pro rozdávání a verzování jednoho nebo více skillů. Má manifest
 
 - **Distribuce:** jeden příkaz `claude plugin install`.
 - **Verzování:** `version: 1.2.0`, dá se aktualizovat.
-- **Jmenný prostor:** `rellmo:cannibalization` — dva pluginy si můžou
+- **Jmenný prostor:** `rellmo-keyword-cannibalization:cannibalization` — dva pluginy si můžou
   pojmenovat skill stejně a nekoliduje to.
 
 ## MCP server — dodavatel surovin

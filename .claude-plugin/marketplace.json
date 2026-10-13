@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "rellmo-skoleni",
+  "owner": {
+    "name": "re:LLMO",
+    "url": "https://rellmo.com"
+  },
+  "description": "Plugin ke školení Claude Code pro markeťáky (re:LLMO).",
+  "plugins": [
+    {
+      "name": "rellmo-skoleni",
+      "description": "Průvodce školením Claude Code pro markeťáky: nastavení prostředí, stavba vlastní automatizace, brandkit, návody a prezentace.",
+      "source": "./"
+    }
+  ]
+}

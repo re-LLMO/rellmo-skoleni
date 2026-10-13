@@ -5,7 +5,14 @@ Zakládá .gitignore dřív, než vznikne cokoli, co by se nemělo commitnout,
 a maskuje tajemství ve všem, co jde na obrazovku. Jen standardní knihovna.
 """
 import re
+import sys
 from pathlib import Path
+
+# Claude Code čte výstup jako UTF-8. Na Windows by Python psal do roury
+# v kódování systému (cp1250) a znak, který v něm není, by shodil print —
+# i v heredocu ve skillu, který tenhle modul importuje.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 RADKY_GITIGNORE = [
     ".skoleni/",
@@ -87,5 +94,6 @@ def veta_o_odeslani(kam: str, co: str) -> str:
 
 
 if __name__ == "__main__":
-    import sys
-    print(maskuj(sys.stdin.read()))
+    # Vstup z roury je UTF-8 (výstup jiných příkazů); `sys.stdin.read()` by ho
+    # na Windows četl jako cp1250 a na ň nebo Ř spadl.
+    print(maskuj(sys.stdin.buffer.read().decode("utf-8", errors="replace")))

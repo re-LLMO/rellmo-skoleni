@@ -102,7 +102,10 @@ Spustí to kolega bez tebe?
 
 Skill v `.claude/skills/` funguje jen v té složce a jen tobě. Plugin je totéž
 zabalené k instalaci jedním příkazem: složka s `.claude-plugin/plugin.json`
-(název, verze, popis) a `skills/<jmeno>/`. Před sdílením zkontroluj obsah —
+(název, verze, popis) a `skills/<jmeno>/`. Aby si ho kolega mohl přidat jako
+marketplace, patří vedle ještě `.claude-plugin/marketplace.json` — název
+marketplace a jeden plugin se `"source": "./"`. Bez něj
+`claude plugin marketplace add` skončí chybou. Před sdílením zkontroluj obsah —
 žádné klíče, exporty, zákaznická data (`.gitignore` a kontrola souborů).
 
 Sdílení přes GitHub: repozitář, commit, kolega si přidá marketplace a

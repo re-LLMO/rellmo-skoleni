@@ -19,7 +19,8 @@ kontextové okno malý vliv.
 
 Stará poučka platí jen ve zvláštních případech: s vypnutým vyhledáváním
 nástrojů (`ENABLE_TOOL_SEARCH=false`), s vlastní `ANTHROPIC_BASE_URL`,
-u modelů starších generací a při běhu přes Bedrock, Vertex nebo Foundry.
+u modelů starších než generace 4.5 v Google Cloud a přes Microsoft Foundry,
+který vyhledávání nástrojů odmítá — Claude Code pak nástroje načte předem.
 
 **Kde kontext opravdu bolí, je výstup.** Když si nástroj řekne o deset tisíc
 řádků dat, projdou ti kontextovým oknem celé. Claude Code varuje nad

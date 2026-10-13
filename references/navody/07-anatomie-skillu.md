@@ -50,8 +50,8 @@ nemusí odklikávat, ne omezení toho, co skill smí.
 Tohle je nejdůležitější řádek celého skillu. Model podle něj rozhoduje,
 jestli skill spustit. **Není to shrnutí, je to rozhodovací věta.**
 
-- Vejde se do 1 024 znaků. Ve výpisech je vidět zhruba prvních 250 —
-  spouštěcí fráze musí být v nich.
+- Vejde se do 1 024 znaků (limit standardu Agent Skills). Spouštěcí fráze
+  dej na začátek — model čte popis odpředu a delší výpisy se ořezávají.
 - Osvědčená stavba: **co to dělá + kdy to použít + jak to lidi říkají**.
   Konkrétní věty, kterými o té práci mluví tvoji kolegové, fungují líp než
   obecný popis schopností.

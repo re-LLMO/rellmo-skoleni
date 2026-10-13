@@ -2,7 +2,7 @@
 name: skoleni-automatizace
 description: Provede účastníka školení stavbou vlastní automatizace v Claude Code v osmi krocích — od pojmenování opakovaného úkolu přes zadání, zúžení, volbu dat, kostru skillu a popis až po zkoušku naostro a zabalení do pluginu, který si nainstaluje kolega. U každého kroku říká proč, oponuje širokému zadání a vždy dotáhne skill do funkčního stavu, i kdyby se rozsah musel zúžit. Použij v bloku o vlastní automatizaci, spouští se příkazem /skoleni-automatizace nebo když účastník řekne "chci si postavit vlastní automatizaci", "chci si to zautomatizovat", "postav mi skill", "jak se dělá skill" nebo se ptá, co si může postavit sám.
 license: LicenseRef-Rellmo-Commercial
-allowed-tools: Bash(python3:*), Bash(mkdir:*), Bash(cp:*), Bash(git:*), Bash(gh:*), Read, Write, Edit, AskUserQuestion, Skill
+allowed-tools: Bash(python3:*), Bash(py:*), Bash(python:*), Bash(mkdir:*), Bash(cp:*), Bash(git:*), Bash(gh:*), Read, Write, Edit, AskUserQuestion, Skill
 metadata:
   author: Rellmo
   version: 1.0.0
@@ -55,8 +55,9 @@ má stavba a testování ještě prostoru.
 Když zbývá **méně než čtvrtina bloku** (zhruba šest minut) a skill ještě
 neběžel naostro: zastav rozšiřování, řekni to na rovinu ("zbývá nám asi šest
 minut, škrtneme tohle a dotáhneme zbytek do funkčního stavu") a jdi rovnou na
-nejmenší verzi, která projde krokem 7. Krok 8 pak zredukuj na `plugin.json`
-a jednu větu o tom, jak se sdílí — GitHub je nadstavba, ne podmínka.
+nejmenší verzi, která projde krokem 7. Krok 8 pak zredukuj na `plugin.json`,
+`marketplace.json` a jednu větu o tom, jak se sdílí — GitHub je nadstavba,
+ne podmínka.
 
 ## Jak mluvit
 
@@ -82,11 +83,11 @@ cestou přes `${CLAUDE_PLUGIN_ROOT}/scripts/…`:
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 # ... uprav s ...
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 PY
 ```
 
@@ -100,14 +101,20 @@ SKRIPT="${CLAUDE_PROJECT_DIR}/.claude/skills/<jmeno>/scripts/<nazev>.py"
 python3 "$SKRIPT" <argumenty>
 ```
 
+Na Windows: když `python3` nespustí Python (bývá to jen odkaz do Microsoft
+Storu), používej ve všech blocích místo něj `py`, případně `python` — ten,
+který vypíše verzi. Cesty v kódu pythonu nech jako `r"…"`: na Windows je
+Claude Code dosazuje se zpětnými lomítky a bez `r` by je Python četl jako
+escape sekvence.
+
 ## Krok 0 — Stav a navázání
 
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 print(s["uroven"], "|", s["domena"])
 print(s["nastroje"])
 print(s["kroky"]["automatizace"]["stav"], "|", s["kroky"]["automatizace"]["artefakty"])
@@ -372,16 +379,31 @@ mkdir -p "${CLAUDE_PROJECT_DIR}/<jmeno>-plugin/.claude-plugin" "${CLAUDE_PROJECT
 cp -R "${CLAUDE_PROJECT_DIR}/.claude/skills/<jmeno>" "${CLAUDE_PROJECT_DIR}/<jmeno>-plugin/skills/<jmeno>"
 ```
 
-Zapiš (nástrojem Write) `.claude-plugin/plugin.json` — název, verze, popis
-jednou větou, autor. Verzi začni na `0.1.0` a řekni, že se zvedá při každé
-změně, kterou má kolega dostat. Pak pluginu založ `.gitignore` a
-zkontroluj obsah, **než** ho pošleš kamkoli ven:
+Zapiš (nástrojem Write) do `.claude-plugin/` dva soubory. `plugin.json` —
+název, verze, popis jednou větou, autor. Verzi začni na `0.1.0` a řekni, že
+se zvedá při každé změně, kterou má kolega dostat. A `marketplace.json`, díky
+kterému si kolega plugin přidá jedním příkazem — bez něj
+`claude plugin marketplace add` skončí chybou „Marketplace file not found“:
+
+```json
+{
+  "name": "<jmeno>-plugin",
+  "owner": { "name": "<autor>" },
+  "description": "<popis jednou větou>",
+  "plugins": [
+    { "name": "<jmeno>", "source": "./", "description": "<popis jednou větou>" }
+  ]
+}
+```
+
+`name` marketplace je to, co kolega píše při instalaci za `@`. Pak pluginu
+založ `.gitignore` a zkontroluj obsah, **než** ho pošleš kamkoli ven:
 
 ```bash
 python3 - "${CLAUDE_PROJECT_DIR}/<jmeno>-plugin" <<'PY'
 import sys
 from pathlib import Path
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import bezpecnost
 koren = Path(sys.argv[1]).resolve()
 print(bezpecnost.zajisti_gitignore(str(koren)))
@@ -433,13 +455,13 @@ claude plugin install <jmeno>@<jmeno>-plugin
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
-stav.pridej_artefakt(s, "automatizace", "${CLAUDE_PROJECT_DIR}/.claude/skills/<jmeno>/SKILL.md")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
+stav.pridej_artefakt(s, "automatizace", r"${CLAUDE_PROJECT_DIR}/.claude/skills/<jmeno>/SKILL.md")
 # když vznikl plugin, přidej i jeho složku; když repozitář, i odkaz
 stav.nastav_krok(s, "automatizace", "hotovo", "")
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 print(stav.veta(s))
 PY
 ```

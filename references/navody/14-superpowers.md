@@ -11,9 +11,12 @@ Zdroj: `github.com/obra/superpowers`.
 ## Instalace
 
 ```bash
-claude plugin marketplace add obra/superpowers
-claude plugin install superpowers
+claude plugin install superpowers@claude-plugins-official
 ```
+
+Oficiální marketplace Anthropicu Claude Code dohledá sám, přidávat ji není
+potřeba. Repozitář `obra/superpowers` má i vlastní vývojovou marketplace
+(`superpowers-dev`) — z té neinstaluj, vznikla by druhá kopie.
 
 Po instalaci restartuj Claude Code.
 

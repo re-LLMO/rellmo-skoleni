@@ -16,14 +16,21 @@ kolegy. Po školení zůstává jako příručka. Je stejný pro každý běh š
 
 ## Instalace
 
-Plugin se instaluje jedním příkazem s licenčním klíčem, který přijde
-e-mailem:
+Repozitář je veřejný a sám je marketplace, takže stačí dva kroky.
+
+V aplikaci Claude: tlačítko + vedle pole pro zprávu → Plugins → přidat
+marketplace `re-LLMO/rellmo-skoleni` a z něj nainstalovat `rellmo-skoleni`.
+
+V terminálu:
 
 ```
-curl -fsSL "https://dist.rellmo.com/install/<KLÍČ>?lang=cs" | sh
+claude plugin marketplace add re-LLMO/rellmo-skoleni
+claude plugin install rellmo-skoleni@rellmo-skoleni
 ```
 
-Po instalaci restart Claude Code, pak `/skoleni-start`.
+Po instalaci restart Claude Code (nebo `/reload-plugins`), pak
+`/skoleni-start`. Novou verzi stáhne `claude plugin marketplace update
+rellmo-skoleni` a `claude plugin update rellmo-skoleni@rellmo-skoleni`.
 
 ## Jak je postavený
 
@@ -33,12 +40,13 @@ nenačítá — běží mimo a model vidí jen jeho výsledek. Stav průchodu dr
 
 | Složka | Co v ní je |
 |---|---|
-| `skills/` | Čtyři skilly |
-| `scripts/` | `stav`, `bezpecnost`, `prostredi`, `pluginy` — jen standardní knihovna |
-| `references/navody/` | Osmnáct návodů krok za krokem |
-| `references/reseni-problemu.md` | Sedm situací, které se pokazí nejčastěji |
+| `skills/` | Pět skillů |
+| `scripts/` | `stav`, `bezpecnost`, `prostredi`, `pluginy`, `web_znacka` — jen standardní knihovna |
+| `references/navody/` | Devatenáct návodů krok za krokem |
+| `references/reseni-problemu.md` | Osm situací, které se pokazí nejčastěji |
 | `references/podklady/` | Katalog automatizací a prezentace ze školení |
 | `assets/vzorovy-skill/` | Vzorový skill k rozkopírování |
+| `assets/vzorovy-brandkit/` | Vzorový brandkit pro `/skoleni-brandkit` |
 | `tests/` | Testy skriptů a formální kontroly skillů |
 
 Cesty do `scripts/`, `references/` a `assets/` se ve skillech píšou jako
@@ -51,7 +59,10 @@ společné wifi.
 
 ## Za běhu
 
-Python 3.11+ a jeho standardní knihovna. `pytest` je potřeba jen pro vývoj.
+Python 3.9+ a jeho standardní knihovna (na macOS stačí ten z Command Line
+Tools). Na Windows se Python často spouští jako `py` nebo `python` — `python3`
+tam bývá jen odkaz do Microsoft Storu; skilly s tím počítají. `pytest` je
+potřeba jen pro vývoj.
 
 ## Vývoj
 

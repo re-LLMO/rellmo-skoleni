@@ -5,8 +5,14 @@ Publikum jsou marketéři na firemních noteboocích. Skript proto nikdy neklade
 technické otázky: buď to umí spravit, nebo řekne jednou větou, co chtít po IT.
 Jen standardní knihovna.
 """
+import platform
 import shutil
 import subprocess
+import sys
+
+# Claude Code čte výstup jako UTF-8; na Windows by Python psal do roury v cp1250.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 NASTROJE = ("python3", "git", "gh", "node", "npx")
 
@@ -28,9 +34,12 @@ _SABLONY = {
 }
 
 
-def _verze(nastroj: str):
+def _verze(cesta: str):
+    """`cesta` je plná cesta ze `shutil.which` — na Windows je `npx` soubor
+    `npx.cmd` a samotné jméno bez přípony by se nespustilo."""
     try:
-        r = subprocess.run([nastroj, "--version"], capture_output=True, text=True, timeout=5)
+        r = subprocess.run([cesta, "--version"], capture_output=True,
+                           encoding="utf-8", errors="replace", timeout=5)
         return (r.stdout or r.stderr).strip().splitlines()[0] if r.returncode == 0 else None
     except (OSError, subprocess.SubprocessError, IndexError):
         return None
@@ -40,8 +49,14 @@ def zkontroluj(hlas=None) -> dict:
     """`hlas` je volitelná funkce, které se po každém nástroji předá jeho výsledek."""
     vysledek = {}
     for n in NASTROJE:
-        je = shutil.which(n) is not None
-        zaznam = {"pritomen": je, "verze": _verze(n) if je else None}
+        if n == "python3":
+            # Skript sám běží v Pythonu, takže ten na stroji je — ať se spouští
+            # jako `python3`, `py`, nebo `python`. Na Windows je `python3` často
+            # jen odkaz do Microsoft Storu a hledání podle jména by lhalo.
+            zaznam = {"pritomen": True, "verze": f"Python {platform.python_version()}"}
+        else:
+            cesta = shutil.which(n)
+            zaznam = {"pritomen": cesta is not None, "verze": _verze(cesta) if cesta else None}
         vysledek[n] = zaznam
         if hlas is not None:
             hlas(n, zaznam)

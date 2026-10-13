@@ -2,7 +2,7 @@
 name: skoleni-napoveda
 description: Příručka ze školení Claude Code pro markeťáky. Vysvětlí, jak nainstalovat plugin nebo MCP server, jak napsat vlastní skill a zabalit ho do pluginu, jak pracovat s GitHubem, jak naplánovat opakovaný běh, kdy se vyplatí vlastní model, jak skládat reporty z více zdrojů a co ověřit, když něco nefunguje. Použij ji po školení, když uživatel hledá materiály nebo se ptá „jak se to dělalo“, „kde to najdu“, „kde je prezentace“ nebo „tohle mi nefunguje“.
 license: LicenseRef-Rellmo-Commercial
-allowed-tools: Bash(python3:*), Read, Glob, Grep, AskUserQuestion
+allowed-tools: Bash(python3:*), Bash(py:*), Bash(python:*), Read, Glob, Grep, AskUserQuestion
 metadata:
   author: Rellmo
   version: 1.0.0
@@ -23,10 +23,11 @@ plánovanou cestu za dostupný podklad.
 
 | Cesta | Obsah, pokud soubor nebo složka existuje |
 |---|---|
-| `${CLAUDE_PLUGIN_ROOT}/references/navody/` | Návody krok za krokem (01–18) |
+| `${CLAUDE_PLUGIN_ROOT}/references/navody/` | Návody krok za krokem (01–19) |
 | `${CLAUDE_PLUGIN_ROOT}/references/reseni-problemu.md` | Řešení častých problémů |
 | `${CLAUDE_PLUGIN_ROOT}/references/podklady/` | Katalog automatizací a prezentace |
 | `${CLAUDE_PLUGIN_ROOT}/assets/vzorovy-skill/` | Vzorový skill k rozkopírování |
+| `${CLAUDE_PLUGIN_ROOT}/assets/vzorovy-brandkit/` | Vzorový brandkit — značka jako složka souborů |
 
 Soubory načítej až po určení tématu. Otevři jeden konkrétní soubor, ne celou
 složku.
@@ -104,12 +105,16 @@ python3 - "<cesta k souboru s výstupem>" <<'PY'
 import sys
 from pathlib import Path
 
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import bezpecnost
 
-print(bezpecnost.maskuj(Path(sys.argv[1]).read_text(encoding="utf-8")))
+print(bezpecnost.maskuj(Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")))
 PY
 ```
+
+Na Windows: když `python3` nespustí Python (bývá to jen odkaz do Microsoft
+Storu), použij místo něj `py`, případně `python`. Cesty v kódu pythonu nech
+jako `r"…"` — na Windows je Claude Code dosazuje se zpětnými lomítky.
 
 Pokud výstup soubor nemá, neukládej jej kvůli citlivému obsahu do nového
 trvalého souboru. Uveď jen bezpečnou parafrázi a tajné hodnoty neopakuj.
@@ -139,8 +144,8 @@ import json
 from pathlib import Path
 import sys
 
-root = Path("${CLAUDE_PROJECT_DIR}")
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+root = Path(r"${CLAUDE_PROJECT_DIR}")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
 
 stavova_cesta = root / ".skoleni" / "stav.json"

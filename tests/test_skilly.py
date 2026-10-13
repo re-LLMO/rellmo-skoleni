@@ -124,39 +124,77 @@ def test_odkazane_soubory_v_pluginu_existuji():
     assert not chybi, "odkazy bez souboru: " + ", ".join(sorted(chybi))
 
 
-def test_python_bloky_ve_skillech_jsou_syntakticky_platne():
-    """Snippet, který se nedá spustit, spadne až u účastníka.
-
-    Zástupné cesty dosazuje Claude Code do obsahu skillu, takže se před
-    kontrolou nahradí jakoukoli platnou cestou — kontroluje se syntaxe,
-    ne existence složek.
-    """
-    import ast
-
+def _python_ve_skillech():
+    """(skill, kód) pro každý python v blocích ```bash — heredoc i `python3 -c`."""
     blok = re.compile(r"```bash\n(.*?)```", re.S)
     heredoc = re.compile(r"python3\s*(?:-\s*\"[^\"]*\"\s*)?<<'PY'\n(.*?)\nPY", re.S)
-
-    chyby = []
+    prikaz_c = re.compile(r'python3 -c "\n(.*?)\n"', re.S)
     for slozka in (PLUGIN_ROOT / "skills").iterdir():
         if not slozka.is_dir():
             continue
         text = (slozka / "SKILL.md").read_text(encoding="utf-8")
         for kus in blok.findall(text):
-            for kod in heredoc.findall(kus):
-                kod = (kod.replace("${CLAUDE_PLUGIN_ROOT}", "/tmp/plugin")
-                          .replace("${CLAUDE_PROJECT_DIR}", "/tmp/projekt"))
-                try:
-                    ast.parse(kod)
-                except SyntaxError as e:
-                    chyby.append(f"{slozka.name}: řádek {e.lineno}: {e.msg}")
+            for kod in heredoc.findall(kus) + prikaz_c.findall(kus):
+                yield slozka.name, kod
+
+
+# Cesty, jak je Claude Code dosadí: na macOS a na Windows. Na Windows se
+# zpětnými lomítky — `\U` z `C:\Users` je v obyčejném řetězci chyba syntaxe,
+# `\r` z `\rellmo` se potichu změní na konec řádku.
+DOSAZENE_CESTY = (
+    ("/Users/novak/.claude/plugins/cache/rellmo/rellmo-skoleni/1.1.2", "/Users/novak/skoleni"),
+    (r"C:\Users\Novák\.claude\plugins\cache\rellmo\rellmo-skoleni\1.1.2", r"D:\rellmo\skoleni"),
+)
+
+
+def test_python_bloky_ve_skillech_jsou_syntakticky_platne():
+    """Snippet, který se nedá spustit, spadne až u účastníka.
+
+    Zástupné cesty dosazuje Claude Code do obsahu skillu, takže se před
+    kontrolou nahradí skutečným tvarem cesty z macOS i z Windows —
+    kontroluje se syntaxe, ne existence složek.
+    """
+    import ast
+
+    chyby = []
+    for skill, kod in _python_ve_skillech():
+        for plugin, projekt in DOSAZENE_CESTY:
+            dosazeny = (kod.replace("${CLAUDE_PLUGIN_ROOT}", plugin)
+                           .replace("${CLAUDE_PROJECT_DIR}", projekt))
+            try:
+                ast.parse(dosazeny)
+            except SyntaxError as e:
+                chyby.append(f"{skill}: řádek {e.lineno}: {e.msg} (cesta {plugin})")
     assert not chyby, "; ".join(chyby)
+
+
+def test_cesty_v_kodu_pythonu_jsou_raw_retezce():
+    r"""Windowsová cesta v obyčejném řetězci buď neprojde syntaxí (`\U`),
+    nebo se potichu změní (`\r`, `\t`). Předpona `r` to vypíná."""
+    holy = re.compile(r"""(?<![rR])(["'])\$\{CLAUDE_(?:PLUGIN_ROOT|PROJECT_DIR)\}""")
+    nalezy = [f"{skill}: {radek.strip()}"
+              for skill, kod in _python_ve_skillech()
+              for radek in kod.splitlines() if holy.search(radek)]
+    assert not nalezy, "cesta bez r\"…\": " + "; ".join(nalezy)
+
+
+def test_skilly_umi_python_i_pod_jmenem_z_windows():
+    """Na Windows se Python spouští jako `py` nebo `python`; bez povolení by
+    každé volání skončilo dotazem na oprávnění."""
+    for slozka in (PLUGIN_ROOT / "skills").iterdir():
+        if not slozka.is_dir():
+            continue
+        fm, _ = _frontmatter(slozka / "SKILL.md")
+        povolene = re.search(r"^allowed-tools:\s*(.+)$", fm, re.M).group(1)
+        if "Bash(python3:" in povolene:
+            assert "Bash(py:" in povolene and "Bash(python:" in povolene, slozka.name
 
 
 def test_popis_se_vejde_do_limitu_a_ma_spoustec_vpredu():
     """`description` je jediné, podle čeho se model rozhoduje.
 
-    Limit je 1 024 znaků, ale ve výpisech je vidět zhruba prvních 250 —
-    spouštěcí fráze musí být v nich, jinak skill nikdo neobjeví.
+    Limit je 1 024 znaků a delší výpisy se ořezávají — spouštěcí fráze
+    musí být vpředu, jinak skill nikdo neobjeví.
     """
     for slozka in (PLUGIN_ROOT / "skills").iterdir():
         if not slozka.is_dir():

@@ -1,6 +1,6 @@
 # Řešení problémů
 
-Sedm situací, které se pokazí nejčastěji. Každá má stejnou stavbu: **příznak,
+Osm situací, které se pokazí nejčastěji. Každá má stejnou stavbu: **příznak,
 příčina, co udělat, kde si ověřit, že to zabralo.**
 
 Když tvůj příznak nesedí ani na jednu z nich, není to důvod k panice —
@@ -28,7 +28,8 @@ Když soubor neexistuje, jsi v jiné složce. Přejdi do té původní. Když
 existuje a `domena` je `null`, pusť `/skoleni-start` znovu — doplní jen to,
 co chybí, nic nepřepíše.
 
-**Ověření.** `python3 -c "import json;print(json.load(open('.skoleni/stav.json'))['domena'])"`
+**Ověření.** `python3 -c "import json;print(json.load(open('.skoleni/stav.json', encoding='utf-8'))['domena'])"`
+(na Windows místo `python3` napiš `py`)
 
 ---
 
@@ -144,13 +145,8 @@ cat .skoleni/stav.json
 Když to není platný JSON, smaž ho a pusť `/skoleni-start` znovu — projde jen
 to, co chybí.
 
-**Ověření.**
-
-```bash
-python3 <cesta-k-pluginu>/scripts/stav.py .
-```
-
-Vypíše jednu větu o stavu průchodu.
+**Ověření.** Zeptej se v Claude Code: „kde jsem ve školení?“ —
+`/skoleni-napoveda` vypíše, co je ve stavu zapsané.
 
 ---
 
@@ -158,18 +154,21 @@ Vypíše jednu větu o stavu průchodu.
 
 **Příznak.** Přidal jsi MCP server nebo založil skill a Claude Code o něm neví.
 
-**Příčina.** Obojí se načítá při startu. Změna udělaná za běhu se neprojeví.
+**Příčina.** Obojí se načítá při startu. Nově přidaný server, plugin nebo
+nová složka se skilly se za běhu sama neprojeví.
 
 **Co udělat.**
 
-1. Ukonči Claude Code (`/exit`) a spusť ho **ve stejné složce** znovu.
-2. Ověř, že to tam je:
+1. Ukonči Claude Code (`/exit`) a spusť ho **ve stejné složce** znovu. Plugin
+   a skill jde načíst i bez restartu: `/reload-plugins`, `/reload-skills`.
+2. Ověř, že to tam je. V terminálu:
 
 ```bash
 claude mcp list        # MCP servery
 claude plugin list     # pluginy
-/help                  # dostupné příkazy včetně skillů
 ```
+
+V Claude Code vypíše dostupné příkazy včetně skillů `/help`.
 
 3. U skillu zkontroluj, že složka je na správném místě
    (`.claude/skills/<jmeno>/SKILL.md`) a že `name` ve frontmatteru odpovídá
@@ -179,3 +178,27 @@ claude plugin list     # pluginy
 
 **Ověření.** Server je v `claude mcp list` jako připojený; skill se objeví
 v `/help` a spustí se napsáním `/<jmeno>`.
+
+---
+
+## 8. Python na Windows nejde spustit
+
+**Příznak.** Skill ze školení skončí hned na začátku. `python3` vypíše
+„Python was not found; run without arguments to install from the Microsoft
+Store…“, nebo nevypíše nic a skončí chybou.
+
+**Příčina.** Na Windows je `python3` často jen odkaz do Microsoft Storu.
+Python nainstalovaný z python.org nebo přes `winget` se spouští jako `py`
+nebo `python`. Druhá možnost: Python na stroji vůbec není.
+
+**Co udělat.**
+
+1. Zkus `py --version` a `python --version`. Když jeden vypíše `Python 3.…`,
+   řekni Claude Code, ať ho používá místo `python3` — skilly ze školení
+   s tím počítají.
+2. Když nefunguje ani jeden, nainstaluj Python podle návodu 01 (oddíl
+   Python), zavři a znovu otevři Claude Code ve stejné složce a pusť
+   `/skoleni-start` znovu.
+
+**Ověření.** `py --version` (nebo `python3 --version`) vypíše `Python 3.…`
+a `/skoleni-start` doběhne přes první krok.

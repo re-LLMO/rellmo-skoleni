@@ -92,3 +92,37 @@ def test_prehled_ma_vsechny_pozadovane(monkeypatch):
     p = P.prehled()
     assert set(p["pluginy"]) == set(P.POZADOVANE)
     assert all(z["pritomen"] is False for z in p["pluginy"].values())
+
+
+def test_plugin_z_adresare_anthropicu_se_pocita_jako_pritomny(monkeypatch):
+    """Čistá instalace Claude Code má jen vestavěnou `anthropic-plugin-directory`.
+    Kdo si superpowers nainstaloval přes /plugin odtamtud, nesmí dostat druhou kopii."""
+    monkeypatch.setattr(P, "nainstalovane", lambda: {
+        "superpowers@anthropic-plugin-directory",
+        "skill-creator@claude-plugins-official",
+    })
+    assert P.chybejici() == []
+    monkeypatch.setattr(P, "claude_dostupne", lambda: True)
+    assert all(z["pritomen"] for z in P.prehled()["pluginy"].values())
+
+
+def test_plugin_z_ciziho_marketplace_se_nepocita(monkeypatch):
+    monkeypatch.setattr(P, "nainstalovane", lambda: {"superpowers@superpowers-dev"})
+    assert "superpowers@claude-plugins-official" in P.chybejici()
+
+
+def test_vystup_claude_se_cte_jako_utf8(monkeypatch):
+    """Na české Windows by `text=True` četl výstup CLI v cp1250 a na ň nebo Ř
+    (třeba v cestě k profilu) spadl s UnicodeDecodeError."""
+    volani = []
+
+    def run(args, **k):
+        volani.append(k)
+        return _Vysledek(0, _vypis(["superpowers@claude-plugins-official"]))
+
+    monkeypatch.setattr(P, "_claude", lambda: "/usr/local/bin/claude")
+    monkeypatch.setattr(P.subprocess, "run", run)
+    P.nainstalovane()
+    P.nainstaluj("superpowers@claude-plugins-official")
+    for k in volani:
+        assert k.get("encoding") == "utf-8" and "text" not in k

@@ -2,7 +2,7 @@
 name: skoleni-brandkit
 description: Postaví účastníkovi školení brandkit — značku jako složku souborů, kterou umí číst model. Vytěží logo, barvy a písma z webu skriptem, doplní je z brand manuálu (PDF), každou hodnotu ověří s účastníkem a rozdíly zapíše, vyrobí tokens.css, ukázkový report a skill se značkou, který na brandkit odkazuje. Použij, když účastník řekne "chci brandkit", "naše značka pro Claude", "skill v našich barvách", "vytáhni barvy a logo z webu", nebo když v /skoleni-automatizace padne dokument ve firemní značce.
 license: LicenseRef-Rellmo-Commercial
-allowed-tools: Bash(python3:*), Bash(mkdir:*), Bash(cp:*), Read, Write, Edit, AskUserQuestion, Skill
+allowed-tools: Bash(python3:*), Bash(py:*), Bash(python:*), Bash(mkdir:*), Bash(cp:*), Read, Write, Edit, AskUserQuestion, Skill
 metadata:
   author: Rellmo
   version: 1.0.0
@@ -70,22 +70,28 @@ Stav stejným vzorem jako ostatní skilly pluginu:
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 # ... uprav s ...
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 PY
 ```
+
+Na Windows: když `python3` nespustí Python (bývá to jen odkaz do Microsoft
+Storu), používej ve všech blocích místo něj `py`, případně `python` — ten,
+který vypíše verzi. Cesty v kódu pythonu nech jako `r"…"`: na Windows je
+Claude Code dosazuje se zpětnými lomítky a bez `r` by je Python četl jako
+escape sekvence.
 
 ## Krok 0 — Stav a navázání
 
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 print(s["domena"], "|", s["uroven"])
 print(s["kroky"]["brandkit"]["stav"], "|", s["kroky"]["brandkit"]["artefakty"])
 PY
@@ -148,7 +154,7 @@ Co s tím říct nahlas, dřív než se cokoli zapíše:
   `font-family` v CSS říká, co se používá. Když se liší, ptej se.
 
 Když skript skončí chybou (web blokuje roboty, přesměrování jinam, přes
-3 MB), neopakuj to. Řekni to jednou větou a pokračuj: barvy, písmo a logo
+3 MB, na firemní síti `CERTIFICATE_VERIFY_FAILED` od proxy), neopakuj to. Řekni to jednou větou a pokračuj: barvy, písmo a logo
 si vyžádáš od účastníka v kroku 4 (hex kódy, název písma, soubor s logem).
 Zapiš do poznámky stavu, že web nešel vytěžit.
 
@@ -252,14 +258,14 @@ když ho Claude Code nenajde, restart ve stejné složce. Výstup polož vedle
 ```bash
 python3 <<'PY'
 import sys
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
-stav.pridej_artefakt(s, "brandkit", "${CLAUDE_PROJECT_DIR}/brandkit/tokens.css")
-stav.pridej_artefakt(s, "brandkit", "${CLAUDE_PROJECT_DIR}/brandkit/examples/report.html")
-stav.pridej_artefakt(s, "brandkit", "${CLAUDE_PROJECT_DIR}/.claude/skills/<jmeno>-znacka/SKILL.md")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
+stav.pridej_artefakt(s, "brandkit", r"${CLAUDE_PROJECT_DIR}/brandkit/tokens.css")
+stav.pridej_artefakt(s, "brandkit", r"${CLAUDE_PROJECT_DIR}/brandkit/examples/report.html")
+stav.pridej_artefakt(s, "brandkit", r"${CLAUDE_PROJECT_DIR}/.claude/skills/<jmeno>-znacka/SKILL.md")
 stav.nastav_krok(s, "brandkit", "hotovo", "")
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 print(stav.veta(s))
 PY
 ```

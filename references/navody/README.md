@@ -29,11 +29,11 @@ který zrovna potřebuješ. Nebo se rovnou zeptej: `/skoleni-napoveda`.
 
 Většina textu vychází z interních návodů Effectixu (autoři Jakub Sinčák
 a Lukáš Kostka, březen až červen 2026), přepsaných pro člověka mimo Effectix
-a **prověřených k 14. 9. 2026**. Tři věci se oproti původním návodům změnily:
+a **prověřených k 12. 10. 2026**. Tři věci se oproti původním návodům změnily:
 
 - Skilly se dnes instalují přes marketplace a `claude plugin install`,
   ne přes `npx skills add`.
-- Příkazy `/ultraplan` a `/goal` v Claude Code neexistují; návod, který je
-  popisoval, tady není.
+- Příkaz `/ultraplan` v Claude Code už není (nahradil ho plan mode). `/goal`
+  existuje, ale na školení ho nepoužíváme.
 - Tvrzení, že MCP server spotřebuje desítky tisíc tokenů, jen když se načte,
   dnes obecně neplatí — viz `03-mcp-servery.md`.

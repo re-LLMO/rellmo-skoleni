@@ -1,6 +1,6 @@
 ---
 name: vzorovy-skill
-description: Vzorový skill ze školení Claude Code pro SEO. Ukazuje, co patří do SKILL.md, co do references/ a co do assets/ — na příkladu skillu, který zná firemní značku a umí v ní vyrobit dokument. Zkopíruj si ho, přejmenuj a přepiš obsah svým. Použij, když si stavíš první vlastní skill a chceš vidět hotový tvar.
+description: Vzorový skill ze školení Claude Code pro markeťáky. Ukazuje, co patří do SKILL.md, co do references/ a co do assets/ — na příkladu skillu, který zná firemní značku a umí v ní vyrobit dokument. Zkopíruj si ho, přejmenuj a přepiš obsah svým. Použij, když si stavíš první vlastní skill a chceš vidět hotový tvar.
 license: LicenseRef-Rellmo-Commercial
 allowed-tools: Read, Write, Edit
 metadata:

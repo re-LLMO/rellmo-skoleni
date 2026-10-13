@@ -83,3 +83,23 @@ def test_apt_umi_nainstalovat_gh(monkeypatch):
     navrh = P.navrh_instalace("gh")
     assert "apt-get install -y gh" in navrh
     assert "IT" not in navrh
+
+
+def test_python_je_pritomen_i_kdyz_python3_neni_v_path(monkeypatch):
+    """Na Windows se Python spouští jako `py` nebo `python` a `python3` chybí
+    nebo je jen odkaz do Microsoft Storu. Skript sám v Pythonu běží, takže
+    nesmí hlásit chybějící Python a posílat účastníka ho instalovat znovu."""
+    monkeypatch.setattr(P.shutil, "which", lambda n: None)
+    v = P.zkontroluj()
+    assert v["python3"]["pritomen"] is True
+    assert v["python3"]["verze"].startswith("Python 3.")
+    assert v["git"]["pritomen"] is False
+
+
+def test_verze_se_zjistuje_z_plne_cesty(monkeypatch):
+    """Na Windows je `npx` soubor `npx.cmd` — spustit jde jen přes plnou cestu."""
+    monkeypatch.setattr(P.shutil, "which", lambda n: rf"C:\Program Files\nodejs\{n}.cmd")
+    volane = []
+    monkeypatch.setattr(P, "_verze", lambda cesta: volane.append(cesta) or "1.0")
+    P.zkontroluj()
+    assert r"C:\Program Files\nodejs\npx.cmd" in volane

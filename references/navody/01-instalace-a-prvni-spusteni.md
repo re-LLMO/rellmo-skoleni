@@ -23,6 +23,20 @@ Po instalaci **zavři terminál a otevři nové okno.** Ne novou záložku — n
 okno. Instalace mění systémovou proměnnou `PATH` a původní okno o změně neví;
 `claude` by v něm hlásilo, že příkaz neexistuje.
 
+## Python
+
+Plugin ze školení spouští malé skripty v Pythonu. Ověř v novém okně:
+
+- **macOS** — `python3 --version`. Když se místo verze objeví nabídka
+  instalace vývojářských nástrojů (Command Line Tools), potvrď ji; Python je
+  jejich součástí.
+- **Windows** — `python3 --version`, a když nevypíše `Python 3.…`, ještě
+  `py --version`. Když nefunguje ani jedno, nainstaluj Python z Microsoft
+  Storu (vyhledej „Python“, vydavatel Python Software Foundation; nepotřebuje
+  práva správce), zavři PowerShell a ověř znovu v novém okně. Když Store
+  firemní notebook blokuje, je to žádost pro IT: „Python 3 pro uživatele,
+  s příkazem `py` v `PATH`“.
+
 ## První spuštění
 
 V novém okně napiš:
@@ -62,4 +76,5 @@ funkčnost Claude Code to nemá vliv.
 |---|---|
 | `claude: command not found` | Zavři terminál a otevři **nové okno**. |
 | Instalační skript spadne na oprávnění | Firemní notebook s omezenými právy. Pošli IT odkaz na instalaci a řekni, že jde o CLI nástroj do uživatelského profilu. |
+| `python3` na Windows vypíše „Python was not found“ | To je jen odkaz do Microsoft Storu. Zkus `py --version`; když nejde ani to, nainstaluj Python (oddíl Python výš). |
 | Přihlášení se zacyklí | Zkus jiný prohlížeč. Odkaz nekopíruj z jednoho prohlížeče do druhého — Google i Anthropic ho vážou na konkrétní relaci. |

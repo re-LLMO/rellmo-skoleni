@@ -13,11 +13,14 @@
 ```bash
 claude plugin marketplace add <organizace>/<repozitar>
 claude plugin marketplace list
-claude plugin install <nazev-pluginu>
+claude plugin install <nazev-pluginu>@<nazev-marketplace>
 ```
 
-Po instalaci **restart Claude Code**. Slash commandy z pluginu se objeví až
-potom.
+Název marketplace vypíše `claude plugin marketplace list` — nemusí se
+shodovat s názvem repozitáře.
+
+Po instalaci **restart Claude Code**, nebo v běžící relaci `/reload-plugins`.
+Slash commandy z pluginu se objeví až potom.
 
 Ověření, že to sedlo:
 

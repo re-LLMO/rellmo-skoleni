@@ -2,7 +2,7 @@
 name: skoleni-shrnuti
 description: Uzavře den školení Claude Code pro markeťáky — ze stavu vyjmenuje, co si účastník za den vyrobil, ukáže k tomu skutečné cesty k souborům, řekne, co mu zůstává nainstalované, a navrhne jeden opakovaně běžící proces přizpůsobený jeho práci a datům. Použij na konci školení, spouští se příkazem /skoleni-shrnuti nebo když účastník řekne "co jsme dnes udělali", "co si odnáším", "shrň mi to" nebo se ptá, co s tím vším teď.
 license: LicenseRef-Rellmo-Commercial
-allowed-tools: Bash(python3:*), Read, AskUserQuestion
+allowed-tools: Bash(python3:*), Bash(py:*), Bash(python:*), Read, AskUserQuestion
 metadata:
   author: Rellmo
   version: 1.0.0
@@ -55,7 +55,10 @@ nainstalovaný — vybírá si ho účastník sám po školení.
 ## Krok 1 — Přečíst stav a ověřit artefakty
 
 `${CLAUDE_PLUGIN_ROOT}` a `${CLAUDE_PROJECT_DIR}` dosazuje Claude Code do
-textu skillu dřív, než ho čte model — platí tedy i uvnitř uzavřeného heredocu:
+textu skillu dřív, než ho čte model — platí tedy i uvnitř uzavřeného heredocu.
+Na Windows: když `python3` nespustí Python (bývá to jen odkaz do Microsoft
+Storu), použij místo něj `py`, případně `python`. Cesty v kódu pythonu nech
+jako `r"…"` — na Windows je Claude Code dosazuje se zpětnými lomítky.
 
 ```bash
 python3 <<'PY'
@@ -63,8 +66,8 @@ import json
 from pathlib import Path
 import sys
 
-root = Path("${CLAUDE_PROJECT_DIR}")
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+root = Path(r"${CLAUDE_PROJECT_DIR}")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
 
 stavova_cesta = root / ".skoleni" / "stav.json"
@@ -165,14 +168,14 @@ python3 <<'PY'
 from pathlib import Path
 import sys
 
-sys.path.insert(0, "${CLAUDE_PLUGIN_ROOT}/scripts")
+sys.path.insert(0, r"${CLAUDE_PLUGIN_ROOT}/scripts")
 import stav
 
-s = stav.nacti("${CLAUDE_PROJECT_DIR}")
+s = stav.nacti(r"${CLAUDE_PROJECT_DIR}")
 s["kroky"]["shrnuti"].setdefault("artefakty", [])
-stav.pridej_artefakt(s, "shrnuti", "${CLAUDE_PROJECT_DIR}/navrh-procesu.md")
+stav.pridej_artefakt(s, "shrnuti", r"${CLAUDE_PROJECT_DIR}/navrh-procesu.md")
 stav.nastav_krok(s, "shrnuti", "hotovo", "")
-stav.zapis(s, "${CLAUDE_PROJECT_DIR}")
+stav.zapis(s, r"${CLAUDE_PROJECT_DIR}")
 print(stav.veta(s))
 PY
 ```
